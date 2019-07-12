@@ -7,7 +7,7 @@
  */
 
 import React, { Fragment } from "react";
-import { StyleSheet, StatusBar, ImageBackground } from "react-native";
+import { StyleSheet, StatusBar, ImageBackground, Button } from "react-native";
 import MySocket from "./components/MySocket";
 
 const App = () => {
@@ -18,6 +18,7 @@ const App = () => {
     >
       {/* <StatusBar barStyle="dark-content" /> */}
       <MySocket />
+      {/* <Button /> */}
     </ImageBackground>
   );
 };
