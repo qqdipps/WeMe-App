@@ -2,16 +2,20 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
-const MyButton = () => {
+const MyButton = ({ callBack, text }) => {
+  const handleButtonPress = () => {
+    this._onPressButton;
+    callBack();
+  };
+
   return (
-    <TouchableOpacity onPress={this._onPressButton}>
+    <TouchableOpacity onPress={handleButtonPress} style={styles.button}>
       <LinearGradient
-        colors={["pink", "#ff1c3a"]}
+        colors={["#Ffa163", "#c10087"]}
         start={{ x: 0, y: 0.5 }}
         end={{ x: 1, y: 0.5 }}
-        style={styles.linearGradient}
       >
-        <Text style={styles.buttonText}>Let's Get Started!</Text>
+        <Text style={styles.buttonText}>{text}</Text>
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -19,14 +23,14 @@ const MyButton = () => {
 
 const styles = StyleSheet.create({
   buttonText: {
-    fontSize: 18,
+    fontSize: 25,
     fontFamily: "Gill Sans",
     textAlign: "center",
     padding: 15,
     color: "white"
   },
-  linearGradient: {
-    marginBottom: 200,
+  button: {
+    marginBottom: 150,
     width: 250
   }
 });

@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, { Fragment } from "react";
 import {
   StyleSheet,
@@ -15,32 +7,17 @@ import {
   View
 } from "react-native";
 import MySocket from "./components/MySocket";
-import MyButton from "./components/MyButton";
+import SetupScreen from "./screens/SetupScreen";
 
 const App = () => {
   return (
-    <ImageBackground
-      source={require("./images/astronaut-4106766_640.jpg")}
-      style={{ width: "100%", height: "100%" }}
-    >
-      <StatusBar barStyle="light-content" />
-      <View style={styles.layout}>
-        <MySocket />
-        <MyButton style={styles.myButton} />
-      </View>
-    </ImageBackground>
+    <Fragment>
+      <MySocket />
+      <SetupScreen />
+    </Fragment>
   );
 };
 
-const styles = StyleSheet.create({
-  layout: {
-    flex: 1,
-    flexDirection: "column-reverse",
-    alignItems: "center"
-  },
-  myButton: {
-    marginBottom: 200
-  }
-});
+const styles = StyleSheet.create({});
 
 export default App;
