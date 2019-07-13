@@ -2,42 +2,26 @@ import React, { Component } from "react";
 import { Text } from "react-native";
 import { Socket } from "phoenix";
 
-class MySocket extends Component {
-  constructor() {
-    super();
-    this.state = { socket: undefined };
-  }
-  componentDidMount = () => {
-    if (!this.state.socket) {
-      this.initializeSocket();
-    }
-  };
+const MySocket = ({ setSocketCallback }) => {
+  const mySocket = new Socket("ws://192.168.1.12:4000/socket");
+  setSocketCallback(mySocket);
+  mySocket.connect();
+  console.log(mySocket);
 
-  initializeSocket = () => {
-    const mySocket = new Socket("ws://192.168.1.12:4000/socket");
+  mySocket.onOpen(() => {
+    console.log("Socket connection to websocket on WeMeAPI");
+  });
 
-    mySocket.connect();
+  mySocket.onClose(e => {
+    // connection closed
+    console.log(e.code, e.reason);
+  });
 
-    mySocket.onOpen(() => {
-      console.log("Socket connection to websocket on WeMeAPI");
-    });
-
-    mySocket.onClose(e => {
-      // connection closed
-      console.log(e.code, e.reason);
-    });
-
-    mySocket.onError(e => {
-      // an error occurred
-      console.log("error");
-      console.log(e.message);
-    });
-
-    this.setState({ socket: mySocket });
-  };
-
-  render() {
-    return <Text>App Connected? </Text>;
-  }
-}
+  mySocket.onError(e => {
+    // an error occurred
+    console.log("error");
+    console.log(e.message);
+  });
+  return null;
+};
 export default MySocket;
