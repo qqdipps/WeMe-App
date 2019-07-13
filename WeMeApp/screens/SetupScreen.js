@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, StatusBar, ImageBackground, View } from "react-native";
+import { StyleSheet, ImageBackground, View } from "react-native";
 import MyButton from "../components/MyButton";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Input, Overlay } from "react-native-elements";
@@ -30,7 +30,6 @@ class SetupScreen extends Component {
         source={require("../images/astronaut-4106766_640.jpg")}
         style={{ width: "100%", height: "100%" }}
       >
-        <StatusBar barStyle="light-content" />
         <View style={styles.layout}>
           {showSetup && (
             <MyButton
