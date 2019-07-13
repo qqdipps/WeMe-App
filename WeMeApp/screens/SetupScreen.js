@@ -9,16 +9,21 @@ class SetupScreen extends Component {
     super();
     this.state = {
       blurEffect: 0,
-      showSetup: true
+      showSetup: true,
+      showOverlay: false
     };
   }
 
   blurBackground = () => {
-    this.setState({ blurEffect: 25, showSetup: false });
+    this.setState({ blurEffect: 25, showSetup: false, showOverlay: true });
+  };
+
+  hideOverlay = () => {
+    this.setState({ showOverlay: false, blurEffect: 0 });
   };
 
   render() {
-    const { blurEffect, showSetup } = this.state;
+    const { blurEffect, showSetup, showOverlay } = this.state;
     return (
       <ImageBackground
         blurRadius={this.state.blurEffect}
@@ -30,21 +35,27 @@ class SetupScreen extends Component {
           {showSetup && (
             <MyButton
               style={styles.myButton}
-              blurBackgroundCallback={this.blurBackground}
+              callBack={this.blurBackground}
               text={"Let's Get Started!"}
             />
           )}
-          {!showSetup && (
-            <Overlay isVisible>
-              <Input
-                placeholder="INPUT WITH CUSTOM ICON"
-                leftIcon={<Icon name="user" size={40} color="black" />}
-              />
-              <MyButton
-                style={styles.myButton}
-                // callBack={this.blurBackground}
-                text={"Submit"}
-              />
+
+          {showOverlay && (
+            <Overlay isVisible height={380} overlayBackgroundColor={"#FFf0e6"}>
+              <View style={styles.layout}>
+                <MyButton
+                  style={styles.myButton}
+                  callBack={this.hideOverlay}
+                  text={"Submit"}
+                />
+                <Input
+                  label="Enter your desired display name:"
+                  placeholder="User 244"
+                  leftIcon={<Icon name="user" size={40} color="black" />}
+                  leftIconContainerStyle={{ marginRight: 5 }}
+                  containerStyle={{ marginBottom: 10 }}
+                />
+              </View>
             </Overlay>
           )}
         </View>
