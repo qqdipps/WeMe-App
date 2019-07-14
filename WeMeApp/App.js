@@ -4,11 +4,42 @@ import MySocket from "./components/MySocket";
 import SetupScreen from "./screens/SetupScreen";
 import TestRealm from "./components/TestRealm";
 import Realm from "realm";
+import { booleanLiteral } from "@babel/types";
 
 class App extends Component {
   constructor() {
     super();
-    this.state = { socket: undefined };
+    this.state = {
+      socket: undefined,
+      schema: [
+        {
+          name: "UserSelf",
+          properties: {
+            userId: "int",
+            displayName: "string"
+          }
+        },
+        {
+          name: "ConnectionEncryption",
+          properties: {
+            connectionId: "int",
+            encryptionKey: "string"
+          }
+        },
+        {
+          name: "Message",
+          properties: { self: "bool", contents: "string", dateTime: "string" }
+        },
+        {
+          name: "ConnectionMessages",
+          properties: {
+            connectionId: "int",
+            messages: "Message[]"
+          }
+        }
+      ]
+    };
+    console.log(this.state.schema.UserSelfSchema);
   }
 
   setSocket = socket => {
@@ -16,13 +47,13 @@ class App extends Component {
   };
 
   render() {
-    const { socket } = this.state;
+    const { socket, schema } = this.state;
     return (
       <Fragment>
         {!socket && <MySocket setSocketCallback={this.setSocket} />}
         <StatusBar barStyle="dark-content" />
-        <TestRealm />
-        <SetupScreen />
+        {console.log("checking the schma", schema.UserSelfSchema)}
+        <SetupScreen socket={socket} schema={schema} />
       </Fragment>
     );
   }

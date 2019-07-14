@@ -1,12 +1,9 @@
-import React, { Component } from "react";
-import { Text } from "react-native";
 import { Socket } from "phoenix";
 
 const MySocket = ({ setSocketCallback }) => {
   const mySocket = new Socket("ws://192.168.1.12:4000/socket");
   setSocketCallback(mySocket);
   mySocket.connect();
-  console.log(mySocket);
 
   mySocket.onOpen(() => {
     console.log("Socket connection to websocket on WeMeAPI");

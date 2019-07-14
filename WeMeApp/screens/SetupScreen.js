@@ -3,14 +3,17 @@ import { StyleSheet, ImageBackground, View } from "react-native";
 import MyButton from "../components/MyButton";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Input, Overlay } from "react-native-elements";
+import SetupScript from "../components/SetupScript";
 
 class SetupScreen extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       blurEffect: 0,
       showSetup: true,
-      showOverlay: false
+      showOverlay: false,
+      displayName: undefined,
+      runScript: false
     };
   }
 
@@ -18,12 +21,12 @@ class SetupScreen extends Component {
     this.setState({ blurEffect: 25, showSetup: false, showOverlay: true });
   };
 
-  hideOverlay = () => {
-    this.setState({ showOverlay: false, blurEffect: 0 });
+  overlayButtonPress = () => {
+    this.setState({ showOverlay: false, blurEffect: 0, runScript: true });
   };
 
   render() {
-    const { blurEffect, showSetup, showOverlay } = this.state;
+    const { showSetup, showOverlay, runScript, displayName } = this.state;
     return (
       <ImageBackground
         blurRadius={this.state.blurEffect}
@@ -44,7 +47,7 @@ class SetupScreen extends Component {
               <View style={styles.layout}>
                 <MyButton
                   style={styles.myButton}
-                  callBack={this.hideOverlay}
+                  callBack={this.overlayButtonPress}
                   text={"Submit"}
                 />
                 <Input
@@ -53,9 +56,18 @@ class SetupScreen extends Component {
                   leftIcon={<Icon name="user" size={40} color="black" />}
                   leftIconContainerStyle={{ marginRight: 5 }}
                   containerStyle={{ marginBottom: 10 }}
+                  onChangeText={text => this.setState({ displayName: text })}
                 />
               </View>
             </Overlay>
+          )}
+
+          {runScript && (
+            <SetupScript
+              socket={this.props.socket}
+              schema={schema}
+              displayName={displayName}
+            />
           )}
         </View>
       </ImageBackground>
