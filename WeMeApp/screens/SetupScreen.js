@@ -62,13 +62,13 @@ class SetupScreen extends Component {
             </Overlay>
           )}
 
-          {runScript && (
+          {/* {runScript && (
             <SetupScript
               socket={this.props.socket}
-              schema={schema}
+              schema={this.props.schema}
               displayName={displayName}
             />
-          )}
+          )} */}
         </View>
       </ImageBackground>
     );

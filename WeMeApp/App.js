@@ -16,16 +16,14 @@ class App extends Component {
           name: "UserSelf",
           properties: {
             userId: "int",
-            displayName: "string",
-            channels: "string?[]"
+            displayName: "string"
           }
         },
         {
           name: "ConnectionEncryption",
           properties: {
             connectionId: "int",
-            encryptionKey: "string",
-            inUse: "bool"
+            encryptionKey: "string"
           }
         },
         {
@@ -41,6 +39,7 @@ class App extends Component {
         }
       ]
     };
+    console.log(this.state.schema.UserSelfSchema);
   }
 
   setSocket = socket => {
@@ -53,7 +52,8 @@ class App extends Component {
       <Fragment>
         {!socket && <MySocket setSocketCallback={this.setSocket} />}
         <StatusBar barStyle="dark-content" />
-        <TestRealm schema={schema} />
+        {/* <TestRealm schema={schema} /> */}
+
         <SetupScreen socket={socket} schema={schema} />
       </Fragment>
     );

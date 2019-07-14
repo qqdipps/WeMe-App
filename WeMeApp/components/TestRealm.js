@@ -2,21 +2,23 @@ import React, { Component } from "react";
 import Realm from "realm";
 import { Text, View } from "react-native";
 class TestRealm extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = { realm: null };
   }
 
   componentWillMount() {
     Realm.open({
-      schema: [{ name: "Dog", properties: { name: "string" } }]
-    }).then(realm => {
-      realm.write(() => {
-        realm.create("Dog", { name: "Rex" });
-        realm.create("Dog", { name: "Rex" });
+      schema: this.props.schema
+    })
+      .then(realm => {
+        realm.deleteAll();
+        console.log("deleting realm");
+        this.setState({ realm });
+      })
+      .catch(error => {
+        console.log(error);
       });
-      this.setState({ realm });
-    });
   }
 
   render() {

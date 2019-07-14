@@ -2,8 +2,7 @@ import axios from "axios";
 import Realm from "realm";
 import React from "react";
 
-const SetupScripts = ({ socket, UserSelfSchema, displayName }) => {
-  console.log("HERE I AM IN THE SCRI  T**********");
+const SetupScripts = ({ socket, schema, displayName }) => {
   const params = { user: { setup: true } };
   axios
     .post("http://192.168.1.12:4000/api/users", params, {
@@ -12,10 +11,7 @@ const SetupScripts = ({ socket, UserSelfSchema, displayName }) => {
       }
     })
     .then(response => {
-      console.log("HERE I AM IN THE response **********");
-      console.log(response.data);
-      //   response = response.data.data;
-      console.log("TRYING TO CHECK SCHEMA:", UserSelfSchema);
+      response = response.data.data;
       Realm.open({ schema: schema })
         .then(realm => {
           realm.write(() => {
@@ -31,8 +27,9 @@ const SetupScripts = ({ socket, UserSelfSchema, displayName }) => {
     })
     .catch(error => {
       console.log("HERE I AM IN THE ERROR **********", error);
-      error.response;
     });
+
+  channel = socket.channel();
   return null;
 };
 
