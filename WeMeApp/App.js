@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from "react";
 import { StyleSheet, StatusBar } from "react-native";
-import MySocket from "./components/MySocket";
+import { weMeSocket } from "./functions/weMeSocket";
 import SetupScreen from "./screens/SetupScreen";
 import TestRealm from "./components/TestRealm";
 import TestAES from "./components/TestAES";
@@ -58,10 +58,10 @@ class App extends Component {
     const { socket, schema } = this.state;
     return (
       <Fragment>
-        {!socket && <MySocket setSocketCallback={this.setSocket} />}
+        {!socket && weMeSocket(this.setSocket)}
         <StatusBar barStyle="dark-content" />
         {/* <TestRealm schema={schema} /> */}
-        <TestAES />
+        {/* <TestAES /> */}
 
         <SetupScreen socket={socket} schema={schema} />
       </Fragment>

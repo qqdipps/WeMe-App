@@ -3,7 +3,7 @@ import { StyleSheet, ImageBackground, View } from "react-native";
 import MyButton from "../components/MyButton";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Input, Overlay } from "react-native-elements";
-import SetupScript from "../components/SetupScript";
+import { setupScript } from "../functions/setupScript";
 
 class SetupScreen extends Component {
   constructor(props) {
@@ -62,13 +62,8 @@ class SetupScreen extends Component {
             </Overlay>
           )}
 
-          {runScript && (
-            <SetupScript
-              socket={this.props.socket}
-              schema={this.props.schema}
-              displayName={displayName}
-            />
-          )}
+          {runScript &&
+            setupScript(this.props.socket, this.props.schema, displayName)}
         </View>
       </ImageBackground>
     );

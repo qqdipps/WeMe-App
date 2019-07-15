@@ -7,7 +7,8 @@ const TestAES = () => {
     Aes.pbkdf2(password, salt, cost, length);
 
   const encrypt = (text, keyBase64) => {
-    return Aes.randomKey(32).then(iv => {
+    return Aes.randomKey(16).then(iv => {
+      console.log("IV: ", iv);
       return Aes.encrypt(text, keyBase64, iv).then(cipher => ({
         cipher,
         iv
