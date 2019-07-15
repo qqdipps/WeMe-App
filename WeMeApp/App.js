@@ -3,8 +3,7 @@ import { StyleSheet, StatusBar } from "react-native";
 import MySocket from "./components/MySocket";
 import SetupScreen from "./screens/SetupScreen";
 import TestRealm from "./components/TestRealm";
-import Realm from "realm";
-import { booleanLiteral } from "@babel/types";
+import TestAES from "./components/TestAES";
 
 class App extends Component {
   constructor() {
@@ -62,6 +61,7 @@ class App extends Component {
         {!socket && <MySocket setSocketCallback={this.setSocket} />}
         <StatusBar barStyle="dark-content" />
         {/* <TestRealm schema={schema} /> */}
+        <TestAES />
 
         <SetupScreen socket={socket} schema={schema} />
       </Fragment>
