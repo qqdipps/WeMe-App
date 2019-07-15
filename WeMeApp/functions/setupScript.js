@@ -1,9 +1,9 @@
 import axios from "axios";
 import Realm from "realm";
+import { generateKey } from "./AESfunctions";
 
 export function setupScript(socket, schema, displayName) {
   const params = { user: { setup: true } };
-  let connectionId;
   axios
     .post("http://192.168.1.12:4000/api/users", params, {
       headers: {
@@ -11,43 +11,84 @@ export function setupScript(socket, schema, displayName) {
       }
     })
     .then(response => {
-      response = response.data.data;
-      Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
-        .then(realm => {
-          realm.write(() => {
-            realm.deleteAll();
-            const user = realm.create("UserSelf", {
-              userId: response.user_id,
-              displayName: displayName
-            });
-            user.channels.push(response.connection_id);
-            let users = realm.objects("UserSelf");
-            console.log(users);
-            channel = socket.channel(`beam:response.connection_id`, {
-              connection_id: response.connection_id,
-              user_id: response.user_id,
-              link_id: response.link_id
-            });
-            channel
-              .join()
-              .receive("ok", resp => {
-                console.log(
-                  "Joined successfully channel: ",
-                  channel.params(),
-                  channel.params().connection_id
-                );
-              })
-              .receive("error", resp => {
-                console.log("Unable to join", resp);
-              });
-          });
+      const userId = response.data.data.user_id;
+      const connectionId = response.data.data.connection_id;
+      const linkId = response.data.data.link_id;
+
+      storeUser(schema, connectionId, userId, displayName);
+
+      generateKey()
+        .then(key => {
+          storeKey(schema, key, connectionId);
         })
-        .catch(error => {
-          console.log(error);
-        });
+        .catch(error => console.log(error));
+
+      initializeChannel(socket, connectionId, userId, linkId);
     })
     .catch(error => {
       console.log("HERE I AM IN THE ERROR **********", error);
     });
   return null;
 }
+
+const storeUser = (schema, connectionId, userId, displayName) => {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
+    realm => {
+      realm
+        .write(() => {
+          realm.deleteAll();
+          const user = realm.create("UserSelf", {
+            userId: userId,
+            displayName: displayName
+          });
+          user.channels.push(connectionId);
+          console.log(realm.objects("UserSelf"));
+        })
+        .catch(error => {
+          console.log("****ERROR: USER STORE", error);
+        });
+    }
+  );
+};
+
+const storeKey = (schema, key, connectionId) => {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
+      realm.write(() => {
+        realm.create("ConnectAES", {
+          connectionId: connectionId,
+          encryptionKey: key,
+          inUse: false
+        });
+      });
+      console.log(realm.objects("ConnectAES"));
+    })
+    .catch(error => {
+      console.log("****ERROR: key STORE", error);
+    });
+  Realm.object;
+};
+
+const createChannel = (socket, connectionId, userId, linkId) => {
+  return socket.channel(`beam:${connectionId}`, {
+    connection_id: connectionId,
+    user_id: userId,
+    link_id: linkId
+  });
+};
+
+const initializeChannel = (socket, connectionId, userId, linkId) => {
+  const channel = createChannel(socket, connectionId, userId, linkId);
+  channel
+    .join()
+    .receive("ok", resp => {
+      console.log(
+        "Joined successfully channel: ",
+        channel.params(),
+        channel.params().connection_id
+      );
+    })
+    .receive("error", resp => {
+      console.log("Unable to join", resp);
+    });
+};

@@ -20,7 +20,7 @@ class App extends Component {
           }
         },
         {
-          name: "ConnectionEncryption",
+          name: "ConnectAES",
           properties: {
             connectionId: "int",
             encryptionKey: "string",
@@ -54,11 +54,16 @@ class App extends Component {
     this.setState({ socket: socket });
   };
 
+  componentDidMount = () => {
+    {
+      !this.state.socket && weMeSocket(this.setSocket);
+    }
+  };
+
   render() {
-    const { socket, schema } = this.state;
+    const { schema, socket } = this.state;
     return (
       <Fragment>
-        {!socket && weMeSocket(this.setSocket)}
         <StatusBar barStyle="dark-content" />
         {/* <TestRealm schema={schema} /> */}
         {/* <TestAES /> */}
