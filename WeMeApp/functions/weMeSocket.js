@@ -1,6 +1,6 @@
 import { Socket } from "phoenix";
 
-const MySocket = ({ setSocketCallback }) => {
+export function weMeSocket(setSocketCallback) {
   const mySocket = new Socket("ws://192.168.1.12:4000/socket");
   setSocketCallback(mySocket);
   mySocket.connect();
@@ -20,5 +20,4 @@ const MySocket = ({ setSocketCallback }) => {
     console.log(e.message);
   });
   return null;
-};
-export default MySocket;
+}

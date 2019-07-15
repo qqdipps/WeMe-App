@@ -1,10 +1,9 @@
 import React, { Fragment, Component } from "react";
 import { StyleSheet, StatusBar } from "react-native";
-import MySocket from "./components/MySocket";
+import { weMeSocket } from "./functions/weMeSocket";
 import SetupScreen from "./screens/SetupScreen";
 import TestRealm from "./components/TestRealm";
-import Realm from "realm";
-import { booleanLiteral } from "@babel/types";
+import TestAES from "./components/TestAES";
 
 class App extends Component {
   constructor() {
@@ -21,7 +20,7 @@ class App extends Component {
           }
         },
         {
-          name: "ConnectionEncryption",
+          name: "ConnectAES",
           properties: {
             connectionId: "int",
             encryptionKey: "string",
@@ -55,13 +54,19 @@ class App extends Component {
     this.setState({ socket: socket });
   };
 
+  componentDidMount = () => {
+    {
+      !this.state.socket && weMeSocket(this.setSocket);
+    }
+  };
+
   render() {
-    const { socket, schema } = this.state;
+    const { schema, socket } = this.state;
     return (
       <Fragment>
-        {!socket && <MySocket setSocketCallback={this.setSocket} />}
         <StatusBar barStyle="dark-content" />
         {/* <TestRealm schema={schema} /> */}
+        {/* <TestAES /> */}
 
         <SetupScreen socket={socket} schema={schema} />
       </Fragment>
