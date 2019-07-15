@@ -168,6 +168,7 @@ dependencies {
     implementation project(':react-native-vector-icons')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    compile project(':react-native-aes-crypto')
 
     // JSC from node_modules
     if (useIntlJsc) {
