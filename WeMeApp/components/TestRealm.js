@@ -8,11 +8,53 @@ class TestRealm extends Component {
   }
 
   componentWillMount() {
+    newRealm = [
+      {
+        name: "UserSelf",
+        properties: {
+          userId: "int",
+          displayName: "string",
+          channels: "int?[]"
+        }
+      },
+      {
+        name: "ConnectionEncryption",
+        properties: {
+          connectionId: "int",
+          encryptionKey: "string",
+          inUse: "bool"
+        }
+      },
+      {
+        name: "Message",
+        properties: { self: "bool", contents: "string", dateTime: "string" }
+      },
+      {
+        name: "Sender",
+        properties: {
+          displayName: "string",
+          notes: "string?"
+        }
+      },
+      {
+        name: "ConnectionMessages",
+        properties: {
+          connectionId: "int",
+          messages: "Message[]",
+          sender: "Sender"
+        }
+      }
+    ];
     Realm.open({
-      schema: this.props.schema
+      schema: newRealm,
+      schemaVersion: 1,
+      deleteRealmIfMigrationNeeded: true
+      // migration: (this.props.schema, newRealm) => {}
     })
       .then(realm => {
-        realm.deleteAll();
+        realm.write(() => {
+          realm.deleteAll();
+        });
         console.log("deleting realm");
         this.setState({ realm });
       })
@@ -22,16 +64,7 @@ class TestRealm extends Component {
   }
 
   render() {
-    const info = this.state.realm
-      ? "Number of dogs in this Realm: " +
-        this.state.realm.objects("Dog").length
-      : "Loading...";
-
-    return (
-      <View>
-        <Text>{info}</Text>
-      </View>
-    );
+    return null;
   }
 }
 

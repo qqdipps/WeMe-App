@@ -4,6 +4,7 @@ import React from "react";
 
 const SetupScripts = ({ socket, schema, displayName }) => {
   const params = { user: { setup: true } };
+  let connectionId;
   axios
     .post("http://192.168.1.12:4000/api/users", params, {
       headers: {
@@ -12,13 +13,34 @@ const SetupScripts = ({ socket, schema, displayName }) => {
     })
     .then(response => {
       response = response.data.data;
-      Realm.open({ schema: schema })
+      Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
         .then(realm => {
           realm.write(() => {
-            realm.create("UserSelf", {
+            realm.deleteAll();
+            const user = realm.create("UserSelf", {
               userId: response.user_id,
               displayName: displayName
             });
+            user.channels.push(response.connection_id);
+            let users = realm.objects("UserSelf");
+            console.log(users);
+            channel = socket.channel(`beam:response.connection_id`, {
+              connection_id: response.connection_id,
+              user_id: response.user_id,
+              link_id: response.link_id
+            });
+            channel
+              .join()
+              .receive("ok", resp => {
+                console.log(
+                  "Joined successfully channel: ",
+                  channel.params(),
+                  channel.params().connection_id
+                );
+              })
+              .receive("error", resp => {
+                console.log("Unable to join", resp);
+              });
           });
         })
         .catch(error => {
@@ -28,8 +50,6 @@ const SetupScripts = ({ socket, schema, displayName }) => {
     .catch(error => {
       console.log("HERE I AM IN THE ERROR **********", error);
     });
-
-  channel = socket.channel();
   return null;
 };
 

@@ -17,7 +17,7 @@ class App extends Component {
           properties: {
             userId: "int",
             displayName: "string",
-            channels: "string?[]"
+            channels: "int?[]"
           }
         },
         {
@@ -33,10 +33,18 @@ class App extends Component {
           properties: { self: "bool", contents: "string", dateTime: "string" }
         },
         {
+          name: "Sender",
+          properties: {
+            displayName: "string",
+            notes: "string?"
+          }
+        },
+        {
           name: "ConnectionMessages",
           properties: {
             connectionId: "int",
-            messages: "Message[]"
+            messages: "Message[]",
+            sender: "Sender"
           }
         }
       ]

@@ -12,7 +12,7 @@ class SetupScreen extends Component {
       blurEffect: 0,
       showSetup: true,
       showOverlay: false,
-      displayName: undefined,
+      displayName: "DefaultUser",
       runScript: false
     };
   }
@@ -62,13 +62,13 @@ class SetupScreen extends Component {
             </Overlay>
           )}
 
-          {/* {runScript && (
+          {runScript && (
             <SetupScript
               socket={this.props.socket}
               schema={this.props.schema}
               displayName={displayName}
             />
-          )} */}
+          )}
         </View>
       </ImageBackground>
     );
