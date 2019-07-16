@@ -21,18 +21,15 @@ class InitializeScreen extends Component {
       .then(realm => {
         realm.write(() => {
           // for DEV ENV TB
-          realm.deleteAll();
+          // realm.deleteAll();
         });
 
         let user = realm.objects("UserSelf");
         console.log(user);
-        console.log(user[0]);
 
         if (!user[0]) {
-          console.log("here I am in user if");
           this.props.navigation.replace("Setup");
         } else {
-          console.log("here I am in ELSE");
           this.props.navigation.replace("Home");
         }
       })
