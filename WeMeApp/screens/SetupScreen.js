@@ -26,6 +26,11 @@ class SetupScreen extends Component {
     this.setState({ showOverlay: false, blurEffect: 0, runScript: true });
   };
 
+  navigateHome = () => {
+    this.props.navigation.replace("Home");
+    console.log("GO HOME>>>>>");
+  };
+
   render() {
     const { showSetup, showOverlay, runScript, displayName } = this.state;
     const { socket, schema } = this.props.navigation.getScreenProps();
@@ -43,7 +48,6 @@ class SetupScreen extends Component {
               text={"Let's Get Started!"}
             />
           )}
-
           {showOverlay && (
             <Overlay isVisible height={380} overlayBackgroundColor={"#FFf0e6"}>
               <View style={styles.layout}>
@@ -63,9 +67,7 @@ class SetupScreen extends Component {
               </View>
             </Overlay>
           )}
-
-          {runScript && setupScript(socket, schema, displayName)}
-          {runScript && this.props.navigation.replace("Home")}
+          {runScript && setupScript(socket, schema, displayName, this.navigateHome)}
         </View>
       </ImageBackground>
     );

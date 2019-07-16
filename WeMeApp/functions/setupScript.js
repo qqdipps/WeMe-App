@@ -2,7 +2,7 @@ import axios from "axios";
 import Realm from "realm";
 import { generateKey } from "./AESfunctions";
 
-export function setupScript(socket, schema, displayName) {
+export function setupScript(socket, schema, displayName, navigateHome) {
   const params = { user: { setup: true } };
   axios
     .post("http://192.168.1.12:4000/api/users", params, {
@@ -16,6 +16,7 @@ export function setupScript(socket, schema, displayName) {
       const linkId = response.data.data.link_id;
 
       storeUser(schema, connectionId, userId, displayName);
+      navigateHome();
 
       generateKey()
         .then(key => {
