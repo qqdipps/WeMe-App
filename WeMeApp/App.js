@@ -4,12 +4,15 @@ import { weMeSocket } from "./functions/weMeSocket";
 import SetupScreen from "./screens/SetupScreen";
 import TestRealm from "./components/TestRealm";
 import TestAES from "./components/TestAES";
+import InitializeScreen from "./screens/InitializeScreen";
+import AppNavigator from "./screens/AppNavigator";
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
       socket: undefined,
+      showSetUp: false,
       schema: [
         {
           name: "UserSelf",
@@ -54,6 +57,10 @@ class App extends Component {
     this.setState({ socket: socket });
   };
 
+  toggleShowSetup = () => {
+    this.setState({ showSetUp: !showSetup });
+  };
+
   componentDidMount = () => {
     {
       !this.state.socket && weMeSocket(this.setSocket);
@@ -61,14 +68,16 @@ class App extends Component {
   };
 
   render() {
-    const { schema, socket } = this.state;
+    const { schema, socket, showSetup } = this.state;
     return (
       <Fragment>
         <StatusBar barStyle="dark-content" />
         {/* <TestRealm schema={schema} /> */}
         {/* <TestAES /> */}
 
-        <SetupScreen socket={socket} schema={schema} />
+        <AppNavigator
+          screenProps={{ schema: { schema }, socket: { socket } }}
+        />
       </Fragment>
     );
   }
