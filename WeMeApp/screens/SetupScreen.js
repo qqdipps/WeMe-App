@@ -15,6 +15,7 @@ class SetupScreen extends Component {
       displayName: "DefaultUser",
       runScript: false
     };
+    // console.log(this.props.navigation.getScreenProps());
   }
 
   blurBackground = () => {
@@ -27,6 +28,7 @@ class SetupScreen extends Component {
 
   render() {
     const { showSetup, showOverlay, runScript, displayName } = this.state;
+    const { socket, schema } = this.props.navigation.getScreenProps();
     return (
       <ImageBackground
         blurRadius={this.state.blurEffect}
@@ -62,8 +64,8 @@ class SetupScreen extends Component {
             </Overlay>
           )}
 
-          {runScript &&
-            setupScript(this.props.socket, this.props.schema, displayName)}
+          {runScript && setupScript(socket, schema, displayName)}
+          {runScript && this.props.navigation.replace("Home")}
         </View>
       </ImageBackground>
     );

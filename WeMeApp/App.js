@@ -1,9 +1,6 @@
 import React, { Fragment, Component } from "react";
 import { StyleSheet, StatusBar } from "react-native";
-import { weMeSocket } from "./functions/weMeSocket";
-import SetupScreen from "./screens/SetupScreen";
-import TestRealm from "./components/TestRealm";
-import TestAES from "./components/TestAES";
+import AppNavigator from "./screens/AppNavigator";
 
 class App extends Component {
   constructor() {
@@ -54,12 +51,6 @@ class App extends Component {
     this.setState({ socket: socket });
   };
 
-  componentDidMount = () => {
-    {
-      !this.state.socket && weMeSocket(this.setSocket);
-    }
-  };
-
   render() {
     const { schema, socket } = this.state;
     return (
@@ -68,7 +59,9 @@ class App extends Component {
         {/* <TestRealm schema={schema} /> */}
         {/* <TestAES /> */}
 
-        <SetupScreen socket={socket} schema={schema} />
+        <AppNavigator
+          screenProps={{ schema, socket, setSocket: this.setSocket }}
+        />
       </Fragment>
     );
   }
