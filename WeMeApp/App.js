@@ -1,10 +1,5 @@
 import React, { Fragment, Component } from "react";
 import { StyleSheet, StatusBar } from "react-native";
-import { weMeSocket } from "./functions/weMeSocket";
-import SetupScreen from "./screens/SetupScreen";
-import TestRealm from "./components/TestRealm";
-import TestAES from "./components/TestAES";
-import InitializeScreen from "./screens/InitializeScreen";
 import AppNavigator from "./screens/AppNavigator";
 
 class App extends Component {
@@ -60,7 +55,6 @@ class App extends Component {
     const { schema, socket } = this.state;
     return (
       <Fragment>
-        {console.log("RENDERING? ", socket)}
         <StatusBar barStyle="dark-content" />
         {/* <TestRealm schema={schema} /> */}
         {/* <TestAES /> */}

@@ -65,6 +65,7 @@ class SetupScreen extends Component {
           )}
 
           {runScript && setupScript(socket, schema, displayName)}
+          {runScript && this.props.navigation.replace("Home")}
         </View>
       </ImageBackground>
     );
