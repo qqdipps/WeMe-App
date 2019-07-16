@@ -12,7 +12,6 @@ class App extends Component {
     super();
     this.state = {
       socket: undefined,
-      showSetUp: false,
       schema: [
         {
           name: "UserSelf",
@@ -57,26 +56,17 @@ class App extends Component {
     this.setState({ socket: socket });
   };
 
-  toggleShowSetup = () => {
-    this.setState({ showSetUp: !showSetup });
-  };
-
-  componentDidMount = () => {
-    {
-      !this.state.socket && weMeSocket(this.setSocket);
-    }
-  };
-
   render() {
-    const { schema, socket, showSetup } = this.state;
+    const { schema, socket } = this.state;
     return (
       <Fragment>
+        {console.log("RENDERING? ", socket)}
         <StatusBar barStyle="dark-content" />
         {/* <TestRealm schema={schema} /> */}
         {/* <TestAES /> */}
 
         <AppNavigator
-          screenProps={{ schema: { schema }, socket: { socket } }}
+          screenProps={{ schema, socket, setSocket: this.setSocket }}
         />
       </Fragment>
     );

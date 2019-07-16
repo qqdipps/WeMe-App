@@ -1,28 +1,37 @@
 import React, { Component } from "react";
 import { View, Text, ImageBackground } from "react-native";
+import { weMeSocket } from "../functions/weMeSocket";
 
 class InitializeScreen extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props.schema);
   }
 
   componentDidMount = () => {
+    const {
+      socket,
+      setSocket,
+      schema
+    } = this.props.navigation.getScreenProps();
+    !socket && weMeSocket(setSocket);
     Realm.open({
-      schema: this.props.schema,
+      schema: schema,
       deleteRealmIfMigrationNeeded: true
     })
       .then(realm => {
-        // realm.write(() => {   // for DEV ENV TB
-        //   realm.deleteAll();
-        // });
+        realm.write(() => {
+          // for DEV ENV TB
+          realm.deleteAll();
+        });
 
         let user = realm.objects("UserSelf");
-        console.log(user);
+        console.log(user[0]);
+
         // if (user === {}) {
         //   console.log("here I am in user if");
         // ;
         // }
+        this.props.navigation.replace("Setup");
       })
       .catch(error => {
         console.log(error, "<- this is an error ******");
