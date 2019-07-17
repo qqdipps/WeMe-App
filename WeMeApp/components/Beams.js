@@ -4,10 +4,10 @@ import LinearGradient from "react-native-linear-gradient";
 // import { Icon } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const Connect = ({ callBack, text }) => {
+const Beams = ({ callBack, text }) => {
   const handleButtonPress = () => {
     this._onPressButton;
-    callBack();
+    // callBack();
   };
 
   return (
@@ -17,8 +17,8 @@ const Connect = ({ callBack, text }) => {
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
-        <Icon name="user-plus" style={styles.buttonText}>
-          <Text style={styles.buttonText}> CONNECT</Text>
+        <Icon name="envelope" style={styles.buttonText}>
+          <Text style={styles.buttonText}> BEAMS</Text>
         </Icon>
       </LinearGradient>
     </TouchableOpacity>
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     fontFamily: "Gill Sans",
     textAlign: "center",
     padding: 15,
-    paddingVertical: 45,
+    paddingVertical: 10,
     color: "white"
   },
   button: {
@@ -41,4 +41,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Connect;
+export default Beams;
