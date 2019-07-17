@@ -31,6 +31,16 @@ class SetupScreen extends Component {
     console.log("GO HOME>>>>>");
   };
 
+  xOverlay = () => {
+    this.setState({
+      blurEffect: 0,
+      showSetup: true,
+      showOverlay: false,
+      displayName: "DefaultUser",
+      runScript: false
+    });
+  };
+
   render() {
     const { showSetup, showOverlay, runScript, displayName } = this.state;
     const { socket, schema } = this.props.navigation.getScreenProps();
@@ -64,10 +74,17 @@ class SetupScreen extends Component {
                   containerStyle={{ marginBottom: 10 }}
                   onChangeText={text => this.setState({ displayName: text })}
                 />
+                <Icon
+                  name="times"
+                  onPress={this.xOverlay}
+                  size={40}
+                  style={styles.xIcon}
+                />
               </View>
             </Overlay>
           )}
-          {runScript && setupScript(socket, schema, displayName, this.navigateHome)}
+          {runScript &&
+            setupScript(socket, schema, displayName, this.navigateHome)}
         </View>
       </ImageBackground>
     );
@@ -82,6 +99,9 @@ const styles = StyleSheet.create({
   },
   myButton: {
     marginBottom: 200
+  },
+  xIcon: {
+    alignSelf: "flex-end"
   }
 });
 

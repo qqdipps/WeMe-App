@@ -4,7 +4,7 @@ import LinearGradient from "react-native-linear-gradient";
 // import { Icon } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const Connect = ({ callBack, text }) => {
+const Connect = ({ callBack, text, icon }) => {
   const handleButtonPress = () => {
     this._onPressButton;
     callBack();
@@ -17,8 +17,8 @@ const Connect = ({ callBack, text }) => {
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
-        <Icon name="user-plus" style={styles.buttonText}>
-          <Text style={styles.buttonText}> CONNECT</Text>
+        <Icon name={icon} style={styles.buttonText}>
+          <Text style={styles.buttonText}>{text}</Text>
         </Icon>
       </LinearGradient>
     </TouchableOpacity>
