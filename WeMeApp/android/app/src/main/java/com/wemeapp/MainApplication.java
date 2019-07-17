@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import io.realm.react.RealmReactPackage;
 import com.BV.LinearGradient.LinearGradientPackage;

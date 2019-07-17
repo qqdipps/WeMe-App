@@ -33,6 +33,11 @@ class HomeScreen extends Component {
     });
   };
 
+  navigateSpawn = () => {
+    this.props.navigation.navigate("Spawn");
+    this.setState({ showOverlay: false });
+  };
+
   render() {
     const { schema } = this.props.navigation.getScreenProps();
     const { showComponents, showOverlay } = this.state;
@@ -65,7 +70,7 @@ class HomeScreen extends Component {
               />
               <Connect
                 style={styles.myButton}
-                callBack={this.overlayButtonPress}
+                callBack={this.navigateSpawn}
                 text={" SPAWN"}
                 icon={"qrcode"}
               />

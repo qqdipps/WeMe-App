@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import { View } from "react-native";
+import { View } from "react-native";
 import QrGenerator from "../components/QrGenerator";
 
 class SpawnScreen extends Component {
@@ -8,7 +8,12 @@ class SpawnScreen extends Component {
   }
 
   render() {
-    <QrGenerator />;
+    const { schema } = this.props.navigation.getScreenProps();
+    return (
+      <View>
+        <QrGenerator schema={schema} />
+      </View>
+    );
   }
 }
 
