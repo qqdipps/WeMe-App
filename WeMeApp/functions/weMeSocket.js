@@ -1,7 +1,7 @@
 import { Socket } from "phoenix";
 
 export function weMeSocket(setSocketCallback) {
-  const mySocket = new Socket("ws://172.24.27.81:4000/socket");
+  const mySocket = new Socket("ws://192.168.10.113:4000/socket");
   setSocketCallback(mySocket);
   mySocket.connect();
 
