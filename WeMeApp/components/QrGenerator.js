@@ -38,14 +38,14 @@ class QrGenerator extends Component {
         console.log("HERE I AM>>>>>>>>>>");
         const connectAES = realm.objects("ConnectAES");
         console.log(connectAES[connectAES.length - 1]);
-        let availConnect = connectAES[connectAES.length - 1];
-        if (!availConnect.inUse) {
-          this.setState({
-            connectionId: availConnect.connectionId,
-            encryptionKey: availConnect.encryptionKey
-          });
-          this.setQrValue();
-        }
+        let availConnect = realm
+          .objects("ConnectAES")
+          .filtered("inUse == false")[0];
+        this.setState({
+          connectionId: availConnect.connectionId,
+          encryptionKey: availConnect.encryptionKey
+        });
+        this.setQrValue();
       })
       .catch(error => {});
   };
