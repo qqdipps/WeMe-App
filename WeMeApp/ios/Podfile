@@ -38,6 +38,8 @@ target 'WeMeApp' do
 
   pod 'react-native-webview', :path => '../node_modules/react-native-webview'
 
+  pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
   target 'WeMeAppTests' do
     inherit! :search_paths
     # Pods for testing

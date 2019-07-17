@@ -52,7 +52,7 @@ const storeUser = (schema, connectionId, userId, displayName) => {
   );
 };
 
-const storeKey = (schema, key, connectionId) => {
+export function storeKey(schema, key, connectionId) {
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
     .then(realm => {
       realm.write(() => {
@@ -68,7 +68,7 @@ const storeKey = (schema, key, connectionId) => {
       console.log("****ERROR: key STORE", error);
     });
   Realm.object;
-};
+}
 
 const createChannel = (socket, connectionId, userId, linkId) => {
   return socket.channel(`beam:${connectionId}`, {
@@ -78,7 +78,7 @@ const createChannel = (socket, connectionId, userId, linkId) => {
   });
 };
 
-const initializeChannel = (socket, connectionId, userId, linkId) => {
+export function initializeChannel(socket, connectionId, userId, linkId) {
   const channel = createChannel(socket, connectionId, userId, linkId);
   channel
     .join()
@@ -92,4 +92,7 @@ const initializeChannel = (socket, connectionId, userId, linkId) => {
     .receive("error", resp => {
       console.log("Unable to join", resp);
     });
-};
+}
+
+// export function initializeChannel(socket, connectionId, userId, linkId);
+// export function storeKey(schema, key, connectionId);

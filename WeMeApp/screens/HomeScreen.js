@@ -33,8 +33,8 @@ class HomeScreen extends Component {
     });
   };
 
-  navigateSpawn = () => {
-    this.props.navigation.navigate("Spawn");
+  navigateScreen = screen => {
+    this.props.navigation.navigate(screen);
     this.setState({ showOverlay: false });
   };
 
@@ -70,14 +70,18 @@ class HomeScreen extends Component {
               />
               <Connect
                 style={styles.myButton}
-                callBack={this.navigateSpawn}
+                callBack={() => {
+                  this.navigateScreen("Spawn");
+                }}
                 text={" SPAWN"}
                 icon={"qrcode"}
               />
 
               <Connect
                 style={styles.myButton}
-                callBack={this.overlayButtonPress}
+                callBack={() => {
+                  this.navigateScreen("Capture");
+                }}
                 text={" CAPTURE"}
                 icon={"qr-scan"}
               />
