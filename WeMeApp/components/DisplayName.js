@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Realm from "realm";
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import LinearGradient from "react-native-linear-gradient";
 
 class DisplayName extends Component {
   constructor(props) {
@@ -21,6 +22,7 @@ class DisplayName extends Component {
       deleteRealmIfMigrationNeeded: true
     })
       .then(realm => {
+        console.log("HERE I AM>>>>>>>>>>");
         this.setState({
           displayName: realm.objects("UserSelf")[0].displayName
         });
@@ -44,11 +46,11 @@ const styles = StyleSheet.create({
   view: {
     // width: 400,
     // height: 100,
-    // backgroundColor: "blue"
+    // backgroundColor: "rgb(232, 201, 222)e"
   },
   text: {
     fontSize: RFPercentage(7),
-    color: "#E8C9DE",
+    color: "rgb(232, 201, 222)",
     fontFamily: "Gill Sans",
     textAlign: "center"
   }
