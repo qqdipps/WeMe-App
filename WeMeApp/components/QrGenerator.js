@@ -14,7 +14,7 @@ class QrGenerator extends Component {
   }
 
   componentDidMount = () => {
-    this.getDisplayName();
+    this.prepQr();
   };
 
   setQrValue = () => {
@@ -50,7 +50,7 @@ class QrGenerator extends Component {
       .catch(error => {});
   };
 
-  getDisplayName = () => {
+  prepQr = () => {
     Realm.open({
       schema: this.props.schema,
       deleteRealmIfMigrationNeeded: true
