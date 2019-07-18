@@ -168,7 +168,14 @@ export function deleteMessageHx(connectionId) {
         for (let message of connectionMessage.messages) {
           realm.delete(message);
         }
-        // add a message about hx cleared locally
+        const message = realm.create("Message", {
+          self: `${isSelf}`,
+          contents: `History has been cleared`,
+          dateTime: JSON.stringify({
+            date: new Date(Date.now()).toDateString(),
+            time: new Date(Date.now()).toDateString()
+          })
+        });
       });
     }
   );
