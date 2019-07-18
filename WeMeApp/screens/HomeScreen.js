@@ -35,7 +35,11 @@ class HomeScreen extends Component {
 
   navigateScreen = screen => {
     this.props.navigation.navigate(screen);
-    this.setState({ showOverlay: false });
+    this.setState({
+      showOverlay: false,
+      blurEffect: 0,
+      showComponents: true
+    });
   };
 
   render() {
@@ -44,7 +48,7 @@ class HomeScreen extends Component {
     return (
       <ImageBackground
         blurRadius={this.state.blurEffect}
-        source={require("../images/stars-828650_640.jpg")}
+        source={require("../images/night-sky-569319_640.jpg")}
         style={{ width: "100%", height: "100%" }}
       >
         {showComponents && (
@@ -56,11 +60,11 @@ class HomeScreen extends Component {
               text={" Connect"}
               icon={"account-plus"}
             />
-            <Beams />
+            <Beams style={styles.beams} />
           </View>
         )}
         {showOverlay && (
-          <Overlay isVisible height={380} overlayBackgroundColor={"#FFf0e6"}>
+          <Overlay isVisible height={380} overlayBackgroundColor={"#9498aa"}>
             <View style={styles.overlayLayout}>
               <Icon
                 name="times"
@@ -98,7 +102,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-around"
+  },
+
+  beams: {
+    marginBottom: -100
   },
   connect: {},
   overlayLayout: {
@@ -106,9 +114,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center"
   },
-  myButton: {
-    // marginBottom:
-  },
+  myButton: {},
   xIcon: {
     alignSelf: "flex-end"
   }

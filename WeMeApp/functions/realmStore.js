@@ -102,7 +102,7 @@ export function storeConnectionMessages(displayName, connectionId) {
         });
 
         const message = realm.create("Message", {
-          self: "true",
+          self: true,
           contents: "New Connection!",
           dateTime: JSON.stringify({
             date: new Date(Date.now()).toDateString(),
@@ -176,6 +176,44 @@ export function deleteMessageHx(connectionId) {
             time: new Date(Date.now()).toDateString()
           })
         });
+      });
+    }
+  );
+}
+
+export function storeConnectionData(displayName, connectionId, key, inUse) {
+  let inRealm;
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
+    realm => {
+      const inAes =
+        realm.objects("ConnectAES").filtered(`connectionId == ${connectionId}`)
+          .length != 0;
+
+      const inConnectionMessages =
+        realm
+          .objects("ConnectionMessages")
+          .filtered(`connectionId == ${connectionId}`).length != 0;
+
+      inRealm = inAes || inConnectionMessages;
+      if (!inRealm) {
+        storeConnectionMessages(displayName, connectionId);
+        storeConnectAES(key, connectionId, inUse);
+        addChannelToSelf(connectionId);
+        console.log("storing new connection data");
+      } else {
+        console.log("connection error: users already appeared to be connected");
+      }
+    }
+  );
+}
+
+export function addChannelToSelf(connectionId) {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
+    realm => {
+      realm.write(() => {
+        const userSelf = realm.objects("UserSelf")[0];
+        userSelf.channels.push(connectionId);
+        console.log(userSelf);
       });
     }
   );

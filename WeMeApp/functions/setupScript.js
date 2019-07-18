@@ -5,7 +5,7 @@ import { generateKey } from "./AESfunctions";
 export function setupScript(socket, schema, displayName, navigateHome) {
   const params = { user: { setup: true } };
   axios
-    .post("http://192.168.1.12:4000/api/users", params, {
+    .post("http://172.24.27.81:4000/api/users", params, {
       headers: {
         "Content-Type": "application/json"
       }

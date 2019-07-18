@@ -5,7 +5,7 @@ const QrReader = ({ qrDataCallback }) => {
   onSuccess = e => {
     console.log("READING QRRRR", e);
     const sharedData = JSON.parse(e.data);
-    console.log(sharedData);
+    console.log("THIS DATA IS PARESE->>>>>>>>.", sharedData);
     qrDataCallback(sharedData);
   };
 

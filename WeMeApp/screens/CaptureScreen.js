@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import { View } from "react-native";
 import QrReader from "../components/QrReader";
-import {
-  storeConnectAES,
-  storeConnectionMessages
-} from "../functions/realmStore";
+import { storeConnectionData } from "../functions/realmStore";
 
 class CaptureScreen extends Component {
   constructor() {
@@ -18,17 +15,22 @@ class CaptureScreen extends Component {
     this.setState({
       connectionId: qrData.connectionId
     });
+    storeConnectionData(
+      qrData.displayName,
+      qrData.connectionId,
+      qrData.encryptionKey,
+      true
+    );
+  };
 
-    storeConnectionMessages(qrData.displayName, qrData.connectionId);
-    storeConnectAES(qrData.encryptionKey, qrData.connectionId, true);
+  componentDidUpdate = () => {
+    console.log("IIIIII UUUUPPPDDDAAATTTEEED", console.log(this.state));
   };
 
   render() {
-    // const { schema } = this.props.navigation.getScreenProps();
     return (
       <View>
         <QrReader qrDataCallback={this.getQrData} />
-        {console.log(this.state, ",---- yay boi")}
       </View>
     );
   }
