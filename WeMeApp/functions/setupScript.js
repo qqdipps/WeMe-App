@@ -5,7 +5,7 @@ import { generateKey } from "./AESfunctions";
 export function setupScript(socket, schema, displayName, navigateHome) {
   const params = { user: { setup: true } };
   axios
-    .post("http://172.24.27.81:4000/api/users", params, {
+    .post("http://192.168.1.12:4000/api/users", params, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -78,7 +78,7 @@ const createChannel = (socket, connectionId, userId, linkId) => {
   });
 };
 
-const initializeChannel = (socket, connectionId, userId, linkId) => {
+export function initializeChannel(socket, connectionId, userId, linkId) {
   const channel = createChannel(socket, connectionId, userId, linkId);
   channel
     .join()
@@ -92,4 +92,4 @@ const initializeChannel = (socket, connectionId, userId, linkId) => {
     .receive("error", resp => {
       console.log("Unable to join", resp);
     });
-};
+}
