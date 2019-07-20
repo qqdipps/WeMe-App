@@ -3,19 +3,20 @@ import { View } from "react-native";
 import QrReader from "../components/QrReader";
 import { storeConnectionData } from "../functions/realmStore";
 import { createConnection } from "../functions/weMeConnections";
-import axios from "axios";
 
 class CaptureScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      connectionId: undefined
+      connectionId: undefined,
+      connectionDisplayName: undefined
     };
   }
 
   getQrData = qrData => {
     this.setState({
-      connectionId: qrData.connectionId
+      connectionId: qrData.connectionId,
+      connectionDisplayName: qrData.displayName
     });
     storeConnectionData(
       qrData.displayName,
@@ -28,7 +29,18 @@ class CaptureScreen extends Component {
   componentDidUpdate = () => {
     // postLink()
     const { schema, socket } = this.props.navigation.getScreenProps();
-    createConnection(this.state.connectionId, schema, socket);
+    createConnection(
+      this.state.connectionId,
+      () => {
+        this.props.navigation.replace("Home", {
+          newConnection: true,
+          connectionId: this.state.connectionId,
+          connectionDisplayName: this.state.connectionDisplayName
+        });
+      },
+      schema,
+      socket
+    );
   };
 
   render() {

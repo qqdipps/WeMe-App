@@ -1,19 +1,35 @@
 import axios from "axios";
 import Realm from "realm";
 
-export function createConnection(connectionId, schema, socket) {
-  console.log(schema);
+export function createConnection(
+  connectionId,
+  navigationAction,
+  schema,
+  socket
+) {
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
     realm => {
       const userSelf = realm.objects("UserSelf")[0];
       const userId = userSelf.userId;
       const displayName = userSelf.displayName;
-      postLink(connectionId, displayName, socket, userId);
+      establishLink(
+        connectionId,
+        displayName,
+        navigationAction,
+        socket,
+        userId
+      );
     }
   );
 }
 
-const postLink = (connectionId, displayName, socket, userId) => {
+const establishLink = (
+  connectionId,
+  displayName,
+  navigationAction,
+  socket,
+  userId
+) => {
   const params = { link: { user_id: userId, connection_id: connectionId } };
   axios
     .post("http://192.168.1.12:4000/api/links", params, {
@@ -23,17 +39,25 @@ const postLink = (connectionId, displayName, socket, userId) => {
     })
     .then(response => {
       const linkId = response.data.data.id;
-      initializeChannel(connectionId, displayName, linkId, socket, userId);
+      registerChannel(
+        connectionId,
+        displayName,
+        linkId,
+        navigationAction,
+        socket,
+        userId
+      );
     })
     .catch(error => {
       console.log("Post link failed:", error);
     });
 };
 
-const initializeChannel = (
+const registerChannel = (
   connectionId,
   displayName,
   linkId,
+  navigationAction,
   socket,
   userId
 ) => {
@@ -46,8 +70,8 @@ const initializeChannel = (
         channel.params(),
         channel.params().connection_id
       );
-      channel.push("register", { displayName: displayName });
-      console.log("displayName sent");
+      register(channel, connectionId, displayName);
+      listenOnChannel(channel, navigationAction);
     })
     .receive("error", resp => {
       console.log("Unable to join", resp);
@@ -62,14 +86,20 @@ const createChannel = (connectionId, linkId, socket, userId) => {
   });
 };
 
-const shareDisplayName = (connectionId, schema, socket) => {
-  console.log("TRYING TO PUSH MESSAGEs");
-  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
-    .then(realm => {
-      const userSelf = realm.objects("UserSelf")[0];
-      const channel = socket.channel(`beam:${connectionId}`);
-      channel.push("connect", { displayName: userSelf.displayName });
-      console.log("displayName sent");
-    })
-    .catch(error => console.log(error));
+const register = (channel, connectionId, displayName) => {
+  channel.push("register", {
+    displayName: displayName,
+    connectionId: connectionId
+  });
+  console.log("displayName sent");
+};
+
+const listenOnChannel = (channel, navigationAction) => {
+  channel.on("shout", msg => {
+    console.log("\nGot message from", msg, "->", msg);
+  });
+  channel.on("register", msg => {
+    console.log("\nRegistering New connection: ", msg, "->", msg);
+    navigationAction();
+  });
 };
