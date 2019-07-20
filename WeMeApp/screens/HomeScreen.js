@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { ImageBackground, StyleSheet, View } from "react-native";
+import { ImageBackground, StyleSheet, View, Text } from "react-native";
 import { Overlay } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import DisplayName from "../components/DisplayName";
@@ -12,14 +12,46 @@ class HomeScreen extends Component {
     this.state = {
       showOverlay: false,
       blurEffect: 0,
-      showComponents: true
+      showComponents: true,
+      newConnection: { show: false }
     };
   }
+
+  // {
+  //   newConnection: true,
+  //   connectionId: this.state.connectionId,
+  //   connectionDisplayName: this.state.connectionDisplayName
+  // });
+
+  componentDidMount = () => {
+    const newConnection = this.props.navigation.getParam(
+      "newConnection",
+      false
+    );
+    if (newConnection) {
+      const connectionId = this.props.navigation.getParam(
+        "connectionId",
+        false
+      );
+      const name = this.props.navigation.getParam(
+        "connectionDisplayName",
+        false
+      );
+      this.setState({
+        newConnection: {
+          show: true,
+          id: connectionId,
+          name: name
+        },
+        blurEffect: 5,
+        showComponents: false
+      });
+    }
+  };
 
   blurBackground = () => {
     this.setState({
       blurEffect: 5,
-      showSetup: false,
       showOverlay: true,
       showComponents: false
     });
@@ -33,18 +65,30 @@ class HomeScreen extends Component {
     });
   };
 
-  navigateSpawn = () => {
-    this.props.navigation.navigate("Spawn");
-    this.setState({ showOverlay: false });
+  xNewConnection = () => {
+    this.setState({
+      newConnection: { show: false },
+      blurEffect: 0,
+      showComponents: true
+    });
+  };
+
+  navigateScreen = screen => {
+    this.props.navigation.navigate(screen);
+    this.setState({
+      showOverlay: false,
+      blurEffect: 0,
+      showComponents: true
+    });
   };
 
   render() {
     const { schema } = this.props.navigation.getScreenProps();
-    const { showComponents, showOverlay } = this.state;
+    const { showComponents, showOverlay, newConnection } = this.state;
     return (
       <ImageBackground
         blurRadius={this.state.blurEffect}
-        source={require("../images/stars-828650_640.jpg")}
+        source={require("../images/night-sky-569319_640.jpg")}
         style={{ width: "100%", height: "100%" }}
       >
         {showComponents && (
@@ -56,11 +100,11 @@ class HomeScreen extends Component {
               text={" Connect"}
               icon={"account-plus"}
             />
-            <Beams />
+            <Beams style={styles.beams} />
           </View>
         )}
         {showOverlay && (
-          <Overlay isVisible height={380} overlayBackgroundColor={"#FFf0e6"}>
+          <Overlay isVisible height={380} overlayBackgroundColor={"#9498aa"}>
             <View style={styles.overlayLayout}>
               <Icon
                 name="times"
@@ -70,17 +114,37 @@ class HomeScreen extends Component {
               />
               <Connect
                 style={styles.myButton}
-                callBack={this.navigateSpawn}
+                callBack={() => {
+                  this.navigateScreen("Spawn");
+                }}
                 text={" SPAWN"}
                 icon={"qrcode"}
               />
 
               <Connect
                 style={styles.myButton}
-                callBack={this.overlayButtonPress}
+                callBack={() => {
+                  this.navigateScreen("Capture", {
+                    newProp: "NEW PROP"
+                  });
+                }}
                 text={" CAPTURE"}
                 icon={"qr-scan"}
               />
+            </View>
+          </Overlay>
+        )}
+
+        {newConnection.show && (
+          <Overlay isVisible height={380} overlayBackgroundColor={"#9498aa"}>
+            <View style={styles.overlayLayout}>
+              <Icon
+                name="times"
+                onPress={this.xNewConnection}
+                size={40}
+                style={styles.xIcon}
+              />
+              <Text>New Connection: {newConnection.name} </Text>
             </View>
           </Overlay>
         )}
@@ -94,7 +158,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-around"
+  },
+
+  beams: {
+    marginBottom: -100
   },
   connect: {},
   overlayLayout: {
@@ -102,9 +170,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center"
   },
-  myButton: {
-    // marginBottom:
-  },
+  myButton: {},
   xIcon: {
     alignSelf: "flex-end"
   }

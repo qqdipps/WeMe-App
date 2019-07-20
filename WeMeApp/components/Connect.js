@@ -13,7 +13,7 @@ const Connect = ({ callBack, text, icon }) => {
   return (
     <TouchableOpacity onPress={handleButtonPress} style={styles.button}>
       <LinearGradient
-        colors={["#A84200", "#c10087", "#200016"]}
+        colors={["#8f7386", "#200016"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
