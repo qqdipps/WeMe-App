@@ -26,18 +26,20 @@ class CaptureScreen extends Component {
     );
   };
 
+  handleNavigateOnConnect = () => {
+    this.props.navigation.replace("Home", {
+      newConnection: true,
+      connectionId: this.state.connectionId,
+      connectionDisplayName: this.state.connectionDisplayName
+    });
+  };
+
   componentDidUpdate = () => {
     // postLink()
     const { schema, socket } = this.props.navigation.getScreenProps();
     createConnection(
       this.state.connectionId,
-      () => {
-        this.props.navigation.replace("Home", {
-          newConnection: true,
-          connectionId: this.state.connectionId,
-          connectionDisplayName: this.state.connectionDisplayName
-        });
-      },
+      this.handleNavigateOnConnect,
       schema,
       socket
     );

@@ -32,7 +32,7 @@ const establishLink = (
 ) => {
   const params = { link: { user_id: userId, connection_id: connectionId } };
   axios
-    .post("http://192.168.1.12:4000/api/links", params, {
+    .post("http://192.168.1.73:4000/api/links", params, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -103,3 +103,32 @@ const listenOnChannel = (channel, navigationAction) => {
     navigationAction();
   });
 };
+
+export function reConnectChannels(connectedChannels, socket) {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
+    realm => {
+      const channels = realm.objects("UserSelf").channels;
+      const unconnectedChannels = channels.filter(channel => {
+        return !connectedChannels.includes(channel);
+      });
+    }
+  );
+  unconnectedChannels
+    .forEach(channelId => {
+      const channel = socket.channel(`beam:${channelId}`);
+      channel
+        .join()
+        .receive("ok", resp => {
+          console.log(
+            "Joined successfully channel: ",
+            channel.params(),
+            channel.params().connection_id
+          );
+          listenOnChannel(channel, navigationAction);
+        })
+        .receive("error", resp => {
+          console.log("Unable to join", resp);
+        });
+    })
+    .catch(error => {});
+}

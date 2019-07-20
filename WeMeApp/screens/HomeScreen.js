@@ -13,7 +13,8 @@ class HomeScreen extends Component {
       showOverlay: false,
       blurEffect: 0,
       showComponents: true,
-      newConnection: { show: false }
+      newConnection: { show: false },
+      channels = []
     };
   }
 
@@ -71,6 +72,7 @@ class HomeScreen extends Component {
       blurEffect: 0,
       showComponents: true
     });
+    // this.props.navigation.pop(2);
   };
 
   navigateScreen = screen => {
