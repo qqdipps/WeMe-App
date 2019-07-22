@@ -22,12 +22,22 @@ class BeamCollectionScreen extends Component {
       .catch(error => console.log("Beam collection Realm error:", error));
   };
 
+  handleNavigateBeamUI = beamData => {
+    this.props.navigation.navigate("BeamUI", {
+      beamData: JSON.stringify(beamData)
+    });
+  };
+
   render() {
     return (
       <FlatList
         data={this.state.beamCollection}
         renderItem={({ item }) => (
-          <Beam text={item.sender.displayName} beamData={item} />
+          <Beam
+            text={item.sender.displayName}
+            beamData={item}
+            callBack={this.handleNavigateBeamUI}
+          />
         )}
         keyExtractor={({ item }) => {
           item;

@@ -5,6 +5,7 @@ import HomeScreen from "./HomeScreen";
 import SpawnScreen from "./SpawnScreen";
 import CaptureScreen from "./CaptureScreen";
 import BeamCollectionScreen from "./BeamCollectionScreen";
+import BeamUIScreen from "./BeamUIScreen";
 
 const rootStack = createStackNavigator({
   Initialize: { screen: InitializeScreen },
@@ -12,7 +13,8 @@ const rootStack = createStackNavigator({
   Home: { screen: HomeScreen },
   Spawn: { screen: SpawnScreen },
   Capture: { screen: CaptureScreen },
-  BeamCollection: { screen: BeamCollectionScreen }
+  BeamCollection: { screen: BeamCollectionScreen },
+  BeamUI: { screen: BeamUIScreen }
 });
 
 const AppContainer = createAppContainer(rootStack);
