@@ -28,7 +28,6 @@ class SetupScreen extends Component {
 
   navigateHome = () => {
     this.props.navigation.replace("Home");
-    console.log("GO HOME>>>>>");
   };
 
   xOverlay = () => {
@@ -83,8 +82,7 @@ class SetupScreen extends Component {
               </View>
             </Overlay>
           )}
-          {runScript &&
-            setupScript(socket, schema, displayName, this.navigateHome)}
+          {runScript && setupScript(schema, displayName, this.navigateHome)}
         </View>
       </ImageBackground>
     );

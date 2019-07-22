@@ -25,7 +25,7 @@ class InitializeScreen extends Component {
         });
 
         let user = realm.objects("UserSelf");
-        console.log(user);
+        console.log("User if user exists:", user);
 
         if (!user[0]) {
           this.props.navigation.replace("Setup");
@@ -34,7 +34,10 @@ class InitializeScreen extends Component {
         }
       })
       .catch(error => {
-        console.log(error, "<- this is an error ******");
+        console.log(
+          error,
+          "Error: components did mount, initialize screen ******"
+        );
       });
   };
 

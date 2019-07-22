@@ -20,12 +20,26 @@ class QrGenerator extends Component {
 
   componentDidMount = () => {
     this.prepQr();
-    const channel = getChannel(this.state.connectionId, socket);
-    listenForRegisteringChannel(
-      channel,
-      this.props.handleNavigateOnConnect,
-      this.props.getNewConnectionInfoCallback
-    );
+  };
+
+  componentDidUpdate = () => {
+    if (this.state.valueForQRCode) {
+      const { socket } = this.props;
+      const channel = getChannel(this.state.connectionId, socket);
+      channel
+        .join()
+        .receive("ok", resp => {
+          console.log("Joined successfully channel: ", this.state.connectionId);
+          listenForRegisteringChannel(
+            channel,
+            this.props.handleNavigateOnConnect,
+            this.props.getNewConnectionInfoCallback
+          );
+        })
+        .receive("error", resp => {
+          console.log("Unable to join", resp);
+        });
+    }
   };
 
   setQrValue = () => {
@@ -47,7 +61,6 @@ class QrGenerator extends Component {
     })
       .then(realm => {
         const connectAES = realm.objects("ConnectAES");
-        console.log(connectAES[connectAES.length - 1]);
         let availConnect = realm
           .objects("ConnectAES")
           .filtered("inUse == false")[0];
@@ -69,7 +82,6 @@ class QrGenerator extends Component {
         this.setState({
           displayName: realm.objects("UserSelf")[0].displayName
         });
-        console.log(this.state.displayName);
         this.getConnectEncrypt();
       })
       .catch(error => {});
@@ -78,7 +90,7 @@ class QrGenerator extends Component {
   render() {
     return (
       <View style={styles.MainContainer}>
-        {console.log(this.state.valueForQRCode)}
+        {console.log("QR code value", this.state.valueForQRCode)}
         {this.state.valueForQRCode !== "" && (
           <QRCode
             value={this.state.valueForQRCode}

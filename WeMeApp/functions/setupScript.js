@@ -6,7 +6,7 @@ import { initializeChannel } from "./weMeConnections";
 export function setupScript(schema, displayName, navigateHome) {
   const params = { user: { setup: true } };
   axios
-    .post("http://192.168.1.73:4000/api/users", params, {
+    .post(`http://${global.WeMeServerAddress}/api/users`, params, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -26,7 +26,7 @@ export function setupScript(schema, displayName, navigateHome) {
         .catch(error => console.log(error));
     })
     .catch(error => {
-      console.log("HERE I AM IN THE ERROR **********", error);
+      console.log("HERE I AM IN THE ERROR ********** setupScript", error);
     });
   return null;
 }
@@ -42,7 +42,7 @@ const storeUser = (schema, connectionId, userId, displayName) => {
             displayName: displayName
           });
           user.channels.push(connectionId);
-          console.log(realm.objects("UserSelf"));
+          console.log("Saving user self", realm.objects("UserSelf"));
         })
         .catch(error => {
           console.log("****ERROR: USER STORE", error);
@@ -61,7 +61,7 @@ const storeKey = (schema, key, connectionId) => {
           inUse: false
         });
       });
-      console.log(realm.objects("ConnectAES"));
+      console.log("Saving connection and key", realm.objects("ConnectAES"));
     })
     .catch(error => {
       console.log("****ERROR: key STORE", error);

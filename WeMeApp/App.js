@@ -18,6 +18,7 @@ class App extends Component {
         },
         {
           name: "ConnectAES",
+          primaryKey: "connectionId",
           properties: {
             connectionId: "int",
             encryptionKey: "string",

@@ -1,7 +1,8 @@
 import {
   storeConnectionMessages,
   storeConnectAES,
-  addChannelToSelf
+  addChannelToSelf,
+  setInUseConnection
 } from "../functions/realmStore";
 import { generateKey } from "../functions/AESfunctions";
 import axios from "axios";
@@ -18,14 +19,14 @@ export function spawnComplete(
   prepNewConnection(socket, schema);
 }
 
-prepNewConnection = () => {
+prepNewConnection = (socket, schema) => {
   Realm.open({
     schema: schema,
     deleteRealmIfMigrationNeeded: true
   }).then(realm => {
     const userId = realm.objects("UserSelf")[0].userId;
     axios
-      .post("http://192.168.1.73:4000/api/connections", params, {
+      .post(`http://${global.WeMeServerAddress}/api/connections`, params, {
         headers: {
           "Content-Type": "application/json"
         }
@@ -36,24 +37,30 @@ prepNewConnection = () => {
           link: { user_id: userId, connection_id: connectionId }
         };
         axios
-          .post("http://192.168.1.73:4000/api/links", params, {
+          .post(`http://${global.WeMeServerAddress}/api/links`, params, {
             headers: {
               "Content-Type": "application/json"
             }
           })
           .then(response => {
             const linkId = response.data.data.id;
+            console.log("New Link and Connection on board");
             initializeChannel(socket, connectionId, userId, linkId);
             addChannelToSelf(connectionId);
-            const key = generateKey();
-            storeConnectAES(key, connectionId, inUse);
+            generateKey()
+              .then(key => {
+                console.log("generated new key", key);
+                console.log("connection pair for key", connectionId);
+                storeConnectAES(key, connectionId, false);
+              })
+              .catch(error => console.log("Unable to generate key", error));
           })
           .catch(error => {
             console.log(error);
           });
       })
       .catch(error => {
-        console.log(error);
+        console.log("Error unable to post link:", error);
       });
   });
 };

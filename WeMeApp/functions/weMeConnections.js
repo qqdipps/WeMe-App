@@ -1,6 +1,5 @@
 import axios from "axios";
 import Realm from "realm";
-import { connect } from "http2";
 
 export function createConnection(
   connectionId,
@@ -33,7 +32,7 @@ const establishLink = (
 ) => {
   const params = { link: { user_id: userId, connection_id: connectionId } };
   axios
-    .post("http://192.168.1.73:4000/api/links", params, {
+    .post(`http://${global.WeMeServerAddress}/api/links`, params, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -87,16 +86,17 @@ const createChannel = (connectionId, linkId, socket, userId) => {
   });
 };
 
-export function getChannel(connectionId) {
-  return socket.channel(`beam:${connectionId}`);
+export function getChannel(connectionId, socket) {
+  const channel = socket.channel(`beam:${connectionId}`);
+  return channel;
 }
 
 const register = (channel, connectionId, displayName) => {
-  channel.push("register", {
+  const params = {
     displayName: displayName,
     connectionId: connectionId
-  });
-  console.log("displayName sent");
+  };
+  channel.push("register", params);
 };
 
 const listenOnChannel = (channel, navigationAction) => {
@@ -112,7 +112,7 @@ export function listenForRegisteringChannel(
   spawnAction
 ) {
   channel.on("register", msg => {
-    console.log("\nRegistering New connection: ", msg, "->", msg);
+    console.log("Register response: ", msg);
     if (spawnAction) {
       spawnAction(msg.connectionId, msg.displayName);
     }

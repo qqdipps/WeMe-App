@@ -11,6 +11,7 @@ const schema = [
   },
   {
     name: "ConnectAES",
+    primaryKey: "connectionId",
     properties: {
       connectionId: "int",
       encryptionKey: "string",
@@ -48,7 +49,7 @@ export function storeUserSelf(connectionId, userId, displayName) {
           displayName: displayName
         });
         user.channels.push(connectionId);
-        console.log(realm.objects("UserSelf"));
+        console.log("Storing user self", realm.objects("UserSelf"));
       });
     })
     .catch(error => {
@@ -66,7 +67,7 @@ export function storeConnectAES(key, connectionId, inUse) {
           inUse: inUse
         });
       });
-      console.log(realm.objects("ConnectAES"));
+      console.log("Storing connection and key", realm.objects("ConnectAES"));
     })
     .catch(error => {
       console.log("****ERROR: ", error);
@@ -82,7 +83,7 @@ export function storeSender(displayName) {
           notes: `Connected on ${new Date(Date.now()).toLocaleDateString()}`
         });
       });
-      console.log(realm.objects("Sender"));
+      console.log("storing sender", realm.objects("Sender"));
     })
     .catch(error => {
       console.log("****ERROR: Sender Store", error);
@@ -111,8 +112,8 @@ export function storeConnectionMessages(displayName, connectionId) {
           sender: sender
         });
         connection.messages.push(message);
+        console.log("Success: stored ConnectionMessages", connection);
       });
-      console.log(realm.objects("Sender"));
     })
     .catch(error => {
       console.log("****ERROR: ConnectionMessages Store", error);
@@ -218,7 +219,7 @@ export function addChannelToSelf(connectionId) {
       realm.write(() => {
         const userSelf = realm.objects("UserSelf")[0];
         userSelf.channels.push(connectionId);
-        console.log(userSelf);
+        console.log("Adding channel to self", userSelf);
       });
     })
     .catch(error => {
@@ -227,16 +228,19 @@ export function addChannelToSelf(connectionId) {
 }
 
 export function setInUseConnection(connectionId) {
+  console.log("Setting connection in use to false");
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
     .then(realm => {
       realm.write(() => {
-        connectionAES = realm
-          .objects("ConnectAES")
-          .filtered(`connectionId == ${connectionId}`);
-        connectionAES.inUse = true;
+        const connection = realm.create(
+          "ConnectAES",
+          { connectionId: connectionId, inUse: true },
+          true
+        );
+        console.log("Set connection in use to true ", connection);
       });
     })
     .catch(error => {
-      console.log("****ERROR: ", error);
+      console.log("****ERROR: Setting connection in use to false", error);
     });
 }
