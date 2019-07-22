@@ -13,8 +13,7 @@ class HomeScreen extends Component {
       showOverlay: false,
       blurEffect: 0,
       showComponents: true,
-      newConnection: { show: false },
-      channels = []
+      newConnection: { show: false }
     };
   }
 

@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import QRCode from "react-native-qrcode";
 import { View, StyleSheet } from "react-native";
+import {
+  getChannel,
+  listenForRegisteringChannel
+} from "../functions/weMeConnections";
+import { spawnComplete } from "../functions/spawnCompleteScript";
 
 class QrGenerator extends Component {
   constructor(props) {
@@ -15,6 +20,12 @@ class QrGenerator extends Component {
 
   componentDidMount = () => {
     this.prepQr();
+    const channel = getChannel(this.state.connectionId, socket);
+    listenForRegisteringChannel(
+      channel,
+      this.props.handleNavigateOnConnect,
+      this.props.getNewConnectionInfoCallback
+    );
   };
 
   setQrValue = () => {

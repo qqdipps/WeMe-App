@@ -1,5 +1,6 @@
 import axios from "axios";
 import Realm from "realm";
+import { connect } from "http2";
 
 export function createConnection(
   connectionId,
@@ -86,6 +87,10 @@ const createChannel = (connectionId, linkId, socket, userId) => {
   });
 };
 
+export function getChannel(connectionId) {
+  return socket.channel(`beam:${connectionId}`);
+}
+
 const register = (channel, connectionId, displayName) => {
   channel.push("register", {
     displayName: displayName,
@@ -98,37 +103,61 @@ const listenOnChannel = (channel, navigationAction) => {
   channel.on("shout", msg => {
     console.log("\nGot message from", msg, "->", msg);
   });
-  channel.on("register", msg => {
-    console.log("\nRegistering New connection: ", msg, "->", msg);
-    navigationAction();
-  });
+  listenForRegisteringChannel(channel, navigationAction);
 };
 
-export function reConnectChannels(connectedChannels, socket) {
-  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
-    realm => {
-      const channels = realm.objects("UserSelf").channels;
-      const unconnectedChannels = channels.filter(channel => {
-        return !connectedChannels.includes(channel);
-      });
+export function listenForRegisteringChannel(
+  channel,
+  navigationAction,
+  spawnAction
+) {
+  channel.on("register", msg => {
+    console.log("\nRegistering New connection: ", msg, "->", msg);
+    if (spawnAction) {
+      spawnAction(msg.connectionId, msg.displayName);
     }
-  );
-  unconnectedChannels
-    .forEach(channelId => {
-      const channel = socket.channel(`beam:${channelId}`);
-      channel
-        .join()
-        .receive("ok", resp => {
-          console.log(
-            "Joined successfully channel: ",
-            channel.params(),
-            channel.params().connection_id
-          );
-          listenOnChannel(channel, navigationAction);
-        })
-        .receive("error", resp => {
-          console.log("Unable to join", resp);
-        });
+    if (navigationAction) {
+      navigationAction();
+    }
+  });
+}
+
+export function reConnectChannels(socket, navigationAction) {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
+      const unconnectedChannels = realm.objects("UserSelf").channels;
+      unconnectedChannels.forEach(channelId => {
+        const channel = socket.channel(`beam:${channelId}`);
+        channel
+          .join()
+          .receive("ok", resp => {
+            console.log(
+              "Joined successfully channel: ",
+              channel.params(),
+              channel.params().connection_id
+            );
+            listenOnChannel(channel, navigationAction);
+          })
+          .receive("error", resp => {
+            console.log("Unable to join", resp);
+          });
+      });
     })
     .catch(error => {});
+}
+
+export function initializeChannel(socket, connectionId, userId, linkId) {
+  const channel = createChannel(socket, connectionId, userId, linkId);
+  channel
+    .join()
+    .receive("ok", resp => {
+      console.log(
+        "Joined successfully channel: ",
+        channel.params(),
+        channel.params().connection_id
+      );
+    })
+    .receive("error", resp => {
+      console.log("Unable to join", resp);
+    });
 }
