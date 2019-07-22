@@ -120,18 +120,18 @@ export function storeConnectionMessages(displayName, connectionId) {
 export function addMessage(connectionId, contents, isSelf) {
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
     .then(realm => {
+      const connectionMessage = realm
+        .objects("ConnectionMessages")
+        .filtered(`connectionId == ${connectionId}`)[0];
       realm.write(() => {
-        const connectionMessage = realm
-          .objects("ConnectionMessages")
-          .filtered(`connectionId == ${connectionId}`)[0];
         const message = realm.create("Message", {
           self: isSelf,
           contents: `${contents}`,
           dateTime: new Date(Date.now()).toString()
         });
         connectionMessage.messages.push(message);
-        console.log("success message added:", message);
       });
+      console.log("success message added:", connectionMessage);
     })
     .catch(error => {
       console.log(" Adding Message ****ERROR: ", error);

@@ -55,7 +55,7 @@ class App extends Component {
 
   componentDidUpdate() {
     const { socket, schema } = this.state;
-    reConnectChannels(socket, schema, undefined);
+    reConnectChannels(socket, schema);
   }
 
   render() {

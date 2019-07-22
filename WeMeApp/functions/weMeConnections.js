@@ -1,5 +1,6 @@
 import axios from "axios";
 import Realm from "realm";
+import { addMessage } from "./realmStore";
 
 export function createConnection(
   connectionId,
@@ -71,7 +72,8 @@ const registerChannel = (
         channel.params().connection_id
       );
       register(channel, connectionId, displayName);
-      listenOnChannel(channel, navigationAction);
+      listenOnChannel(channel);
+      listenForRegisteringChannel(channel, navigationAction);
     })
     .receive("error", resp => {
       console.log("Unable to join", resp);
@@ -99,11 +101,12 @@ const register = (channel, connectionId, displayName) => {
   channel.push("register", params);
 };
 
-const listenOnChannel = (channel, navigationAction) => {
+const listenOnChannel = channel => {
+  console.log("listening on channel", channel.topic);
   channel.on("shout", msg => {
-    console.log("\nGot message from", msg, "->", msg);
+    console.log("Message received:", msg);
+    addMessage(msg.connectionId, msg.contents, false);
   });
-  listenForRegisteringChannel(channel, navigationAction);
 };
 
 export function listenForRegisteringChannel(
@@ -122,7 +125,7 @@ export function listenForRegisteringChannel(
   });
 }
 
-export function reConnectChannels(socket, schema, navigationAction) {
+export function reConnectChannels(socket, schema) {
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
     .then(realm => {
       const unconnectedChannels = realm.objects("UserSelf")[0].channels;
@@ -133,7 +136,7 @@ export function reConnectChannels(socket, schema, navigationAction) {
           .join()
           .receive("ok", resp => {
             console.log("Joined successfully channel: ", channel.topic);
-            listenOnChannel(channel, navigationAction);
+            listenOnChannel(channel);
           })
           .receive("error", resp => {
             console.log("Unable to join", resp);
