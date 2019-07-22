@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { FlatList, Text } from "react-native";
+import Beam from "../components/Beam";
 
 class BeamCollectionScreen extends Component {
   constructor(props) {
@@ -13,7 +14,8 @@ class BeamCollectionScreen extends Component {
       .then(realm => {
         const entries = realm.objects("ConnectionMessages");
         beamCollection = entries.map(entry => {
-          return entry.connectionId;
+          console.log(entry);
+          return entry;
         });
         this.setState({ beamCollection: beamCollection });
       })
@@ -24,7 +26,9 @@ class BeamCollectionScreen extends Component {
     return (
       <FlatList
         data={this.state.beamCollection}
-        renderItem={({ item }) => <Text>{item}</Text>}
+        renderItem={({ item }) => (
+          <Beam text={item.sender.displayName} beamData={item} />
+        )}
         keyExtractor={({ item }) => {
           item;
         }}
