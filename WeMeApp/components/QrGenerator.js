@@ -1,6 +1,11 @@
 import React, { Component } from "react";
 import QRCode from "react-native-qrcode";
 import { View, StyleSheet } from "react-native";
+import {
+  getChannel,
+  listenForRegisteringChannel
+} from "../functions/weMeConnections";
+import { spawnComplete } from "../functions/spawnCompleteScript";
 
 class QrGenerator extends Component {
   constructor(props) {
@@ -15,6 +20,26 @@ class QrGenerator extends Component {
 
   componentDidMount = () => {
     this.prepQr();
+  };
+
+  componentDidUpdate = () => {
+    if (this.state.valueForQRCode) {
+      const { socket } = this.props;
+      const channel = getChannel(this.state.connectionId, socket);
+      channel
+        .join()
+        .receive("ok", resp => {
+          console.log("Joined successfully channel: ", this.state.connectionId);
+          listenForRegisteringChannel(
+            channel,
+            this.props.handleNavigateOnConnect,
+            this.props.getNewConnectionInfoCallback
+          );
+        })
+        .receive("error", resp => {
+          console.log("Unable to join", resp);
+        });
+    }
   };
 
   setQrValue = () => {
@@ -35,9 +60,7 @@ class QrGenerator extends Component {
       deleteRealmIfMigrationNeeded: true
     })
       .then(realm => {
-        console.log("HERE I AM>>>>>>>>>>");
         const connectAES = realm.objects("ConnectAES");
-        console.log(connectAES[connectAES.length - 1]);
         let availConnect = realm
           .objects("ConnectAES")
           .filtered("inUse == false")[0];
@@ -56,11 +79,9 @@ class QrGenerator extends Component {
       deleteRealmIfMigrationNeeded: true
     })
       .then(realm => {
-        console.log("HERE I AM>>>>>>>>>>");
         this.setState({
           displayName: realm.objects("UserSelf")[0].displayName
         });
-        console.log(this.state.displayName);
         this.getConnectEncrypt();
       })
       .catch(error => {});
@@ -69,11 +90,11 @@ class QrGenerator extends Component {
   render() {
     return (
       <View style={styles.MainContainer}>
-        {console.log("STATE: ", this.state)}
+        {console.log("QR code value", this.state.valueForQRCode)}
         {this.state.valueForQRCode !== "" && (
           <QRCode
             value={this.state.valueForQRCode}
-            size={250}
+            size={400}
             bgColor="#000"
             fgColor="#fff"
           />
@@ -86,29 +107,10 @@ class QrGenerator extends Component {
 const styles = StyleSheet.create({
   MainContainer: {
     flex: 1,
-    margin: 10,
+    margin: 50,
     alignItems: "center",
     paddingTop: 40
-  },
-  TextInputStyle: {
-    width: "100%",
-    height: 40,
-    marginTop: 20,
-    borderWidth: 1,
-    textAlign: "center"
-  },
-  button: {
-    width: "100%",
-    paddingTop: 8,
-    marginTop: 10,
-    paddingBottom: 8,
-    backgroundColor: "#F44336",
-    marginBottom: 20
-  },
-  TextStyle: {
-    color: "#fff",
-    textAlign: "center",
-    fontSize: 18
+    // width: 300
   }
 });
 

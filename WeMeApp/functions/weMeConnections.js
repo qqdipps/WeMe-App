@@ -32,7 +32,7 @@ const establishLink = (
 ) => {
   const params = { link: { user_id: userId, connection_id: connectionId } };
   axios
-    .post("http://192.168.1.12:4000/api/links", params, {
+    .post(`http://${global.WeMeServerAddress}/api/links`, params, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -86,20 +86,75 @@ const createChannel = (connectionId, linkId, socket, userId) => {
   });
 };
 
+export function getChannel(connectionId, socket) {
+  const channel = socket.channel(`beam:${connectionId}`);
+  return channel;
+}
+
 const register = (channel, connectionId, displayName) => {
-  channel.push("register", {
+  const params = {
     displayName: displayName,
     connectionId: connectionId
-  });
-  console.log("displayName sent");
+  };
+  channel.push("register", params);
 };
 
 const listenOnChannel = (channel, navigationAction) => {
   channel.on("shout", msg => {
     console.log("\nGot message from", msg, "->", msg);
   });
-  channel.on("register", msg => {
-    console.log("\nRegistering New connection: ", msg, "->", msg);
-    navigationAction();
-  });
+  listenForRegisteringChannel(channel, navigationAction);
 };
+
+export function listenForRegisteringChannel(
+  channel,
+  navigationAction,
+  spawnAction
+) {
+  channel.on("register", msg => {
+    console.log("Register response: ", msg);
+    if (spawnAction) {
+      spawnAction(msg.connectionId, msg.displayName);
+    }
+    if (navigationAction) {
+      navigationAction();
+    }
+  });
+}
+
+export function reConnectChannels(socket, schema, navigationAction) {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
+      const unconnectedChannels = realm.objects("UserSelf")[0].channels;
+      console.log("reconnecting channels: ", unconnectedChannels);
+      unconnectedChannels.forEach(channelId => {
+        const channel = socket.channel(`beam:${channelId}`);
+        channel
+          .join()
+          .receive("ok", resp => {
+            console.log("Joined successfully channel: ", channel.topic);
+            listenOnChannel(channel, navigationAction);
+          })
+          .receive("error", resp => {
+            console.log("Unable to join", resp);
+          });
+      });
+    })
+    .catch(error => {});
+}
+
+export function initializeChannel(socket, connectionId, userId, linkId) {
+  const channel = createChannel(connectionId, linkId, socket, userId);
+  channel
+    .join()
+    .receive("ok", resp => {
+      console.log(
+        "Joined successfully channel: ",
+        channel.params(),
+        channel.params().connection_id
+      );
+    })
+    .receive("error", resp => {
+      console.log("Unable to join", resp);
+    });
+}

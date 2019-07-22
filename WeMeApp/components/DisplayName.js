@@ -22,11 +22,9 @@ class DisplayName extends Component {
       deleteRealmIfMigrationNeeded: true
     })
       .then(realm => {
-        console.log("HERE I AM>>>>>>>>>>");
         this.setState({
           displayName: realm.objects("UserSelf")[0].displayName
         });
-        console.log(this.state.displayName);
       })
       .catch(error => {});
   };

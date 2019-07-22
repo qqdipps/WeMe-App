@@ -11,6 +11,7 @@ const schema = [
   },
   {
     name: "ConnectAES",
+    primaryKey: "connectionId",
     properties: {
       connectionId: "int",
       encryptionKey: "string",
@@ -39,23 +40,21 @@ const schema = [
 ];
 
 export function storeUserSelf(connectionId, userId, displayName) {
-  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
-    realm => {
-      realm
-        .write(() => {
-          realm.deleteAll();
-          const user = realm.create("UserSelf", {
-            userId: userId,
-            displayName: displayName
-          });
-          user.channels.push(connectionId);
-          console.log(realm.objects("UserSelf"));
-        })
-        .catch(error => {
-          console.log("****ERROR: USER STORE", error);
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
+      realm.write(() => {
+        realm.deleteAll();
+        const user = realm.create("UserSelf", {
+          userId: userId,
+          displayName: displayName
         });
-    }
-  );
+        user.channels.push(connectionId);
+        console.log("Storing user self", realm.objects("UserSelf"));
+      });
+    })
+    .catch(error => {
+      console.log("****ERROR: ", error);
+    });
 }
 
 export function storeConnectAES(key, connectionId, inUse) {
@@ -68,12 +67,11 @@ export function storeConnectAES(key, connectionId, inUse) {
           inUse: inUse
         });
       });
-      console.log(realm.objects("ConnectAES"));
+      console.log("Storing connection and key", realm.objects("ConnectAES"));
     })
     .catch(error => {
-      console.log("****ERROR:ConnectAES STORE", error);
+      console.log("****ERROR: ", error);
     });
-  Realm.object;
 }
 
 export function storeSender(displayName) {
@@ -85,7 +83,7 @@ export function storeSender(displayName) {
           notes: `Connected on ${new Date(Date.now()).toLocaleDateString()}`
         });
       });
-      console.log(realm.objects("Sender"));
+      console.log("storing sender", realm.objects("Sender"));
     })
     .catch(error => {
       console.log("****ERROR: Sender Store", error);
@@ -114,8 +112,8 @@ export function storeConnectionMessages(displayName, connectionId) {
           sender: sender
         });
         connection.messages.push(message);
+        console.log("Success: stored ConnectionMessages", connection);
       });
-      console.log(realm.objects("Sender"));
     })
     .catch(error => {
       console.log("****ERROR: ConnectionMessages Store", error);
@@ -123,8 +121,8 @@ export function storeConnectionMessages(displayName, connectionId) {
 }
 
 export function addMessage(connectionId, contents, isSelf) {
-  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
-    realm => {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
       realm.write(() => {
         const connectionMessage = realm
           .objects("ConnectionMessages")
@@ -139,13 +137,15 @@ export function addMessage(connectionId, contents, isSelf) {
         });
         connectionMessage.messages.push(message);
       });
-    }
-  );
+    })
+    .catch(error => {
+      console.log("****ERROR: ", error);
+    });
 }
 
 export function updateSender(connectionId, displayName, notes) {
-  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
-    realm => {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
       realm.write(() => {
         const connectionMessage = realm
           .objects("ConnectionMessages")
@@ -154,13 +154,15 @@ export function updateSender(connectionId, displayName, notes) {
         connectionMessage.sender.notes = notes;
         connectionMessage.sender.displayName = displayName;
       });
-    }
-  );
+    })
+    .catch(error => {
+      console.log("****ERROR: ", error);
+    });
 }
 
 export function deleteMessageHx(connectionId) {
-  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
-    realm => {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
       realm.write(() => {
         const connectionMessage = realm
           .objects("ConnectionMessages")
@@ -177,14 +179,16 @@ export function deleteMessageHx(connectionId) {
           })
         });
       });
-    }
-  );
+    })
+    .catch(error => {
+      console.log("****ERROR: ", error);
+    });
 }
 
 export function storeConnectionData(displayName, connectionId, key, inUse) {
   let inRealm;
-  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
-    realm => {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
       const inAes =
         realm.objects("ConnectAES").filtered(`connectionId == ${connectionId}`)
           .length != 0;
@@ -203,18 +207,39 @@ export function storeConnectionData(displayName, connectionId, key, inUse) {
       } else {
         console.log("connection error: users already appeared to be connected");
       }
-    }
-  );
+    })
+    .catch(error => {
+      console.log("****ERROR: ", error);
+    });
 }
 
 export function addChannelToSelf(connectionId) {
-  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
-    realm => {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
       realm.write(() => {
         const userSelf = realm.objects("UserSelf")[0];
         userSelf.channels.push(connectionId);
-        console.log(userSelf);
+        console.log("Adding channel to self", userSelf);
       });
-    }
-  );
+    })
+    .catch(error => {
+      console.log("****ERROR: ", error);
+    });
+}
+
+export function setInUseConnection(connectionId) {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
+      realm.write(() => {
+        const connection = realm.create(
+          "ConnectAES",
+          { connectionId: connectionId, inUse: true },
+          true
+        );
+        console.log("Set connection in use to true ", connection);
+      });
+    })
+    .catch(error => {
+      console.log("****ERROR: Setting connection in use to true", error);
+    });
 }
