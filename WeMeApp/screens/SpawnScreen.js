@@ -30,7 +30,13 @@ class SpawnScreen extends Component {
   componentDidUpdate = () => {
     const { schema, socket } = this.props.navigation.getScreenProps();
     const { connectionId, connectionDisplayName } = this.state;
-    spawnComplete(socket, schema, connectionId, connectionDisplayName);
+    spawnComplete(
+      socket,
+      schema,
+      connectionId,
+      connectionDisplayName,
+      this.handleNavigateOnConnect
+    );
   };
 
   render() {
@@ -40,7 +46,7 @@ class SpawnScreen extends Component {
         <QrGenerator
           schema={schema}
           socket={socket}
-          handleNavigateOnConnect={this.handleNavigateOnConnect}
+          handleNavigateOnConnect={undefined}
           getNewConnectionInfoCallback={this.getNewConnectionInfo}
         />
       </View>

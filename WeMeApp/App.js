@@ -1,6 +1,7 @@
 import React, { Fragment, Component } from "react";
 import { StyleSheet, StatusBar } from "react-native";
 import AppNavigator from "./screens/AppNavigator";
+import { reConnectChannels } from "./functions/weMeConnections";
 
 class App extends Component {
   constructor() {
@@ -51,6 +52,11 @@ class App extends Component {
   setSocket = socket => {
     this.setState({ socket: socket });
   };
+
+  componentDidUpdate() {
+    const { socket, schema } = this.state;
+    reConnectChannels(socket, schema, undefined);
+  }
 
   render() {
     const { schema, socket } = this.state;

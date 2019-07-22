@@ -21,7 +21,7 @@ class InitializeScreen extends Component {
       .then(realm => {
         realm.write(() => {
           // for DEV ENV TB
-          realm.deleteAll();
+          // realm.deleteAll();
         });
 
         let user = realm.objects("UserSelf");

@@ -228,7 +228,6 @@ export function addChannelToSelf(connectionId) {
 }
 
 export function setInUseConnection(connectionId) {
-  console.log("Setting connection in use to false");
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
     .then(realm => {
       realm.write(() => {
@@ -241,6 +240,6 @@ export function setInUseConnection(connectionId) {
       });
     })
     .catch(error => {
-      console.log("****ERROR: Setting connection in use to false", error);
+      console.log("****ERROR: Setting connection in use to true", error);
     });
 }

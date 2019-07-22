@@ -12,19 +12,23 @@ export function spawnComplete(
   socket,
   schema,
   connectionId,
-  connectionDisplayName
+  connectionDisplayName,
+  navigateHome
 ) {
   setInUseConnection(connectionId);
   storeConnectionMessages(connectionDisplayName, connectionId);
-  prepNewConnection(socket, schema);
+  prepNewConnection(socket, schema, navigateHome);
 }
 
-prepNewConnection = (socket, schema) => {
+const prepNewConnection = (socket, schema, navigateHome) => {
+  console.log("Prepping New Connection");
   Realm.open({
     schema: schema,
     deleteRealmIfMigrationNeeded: true
   }).then(realm => {
     const userId = realm.objects("UserSelf")[0].userId;
+    console.log("fetch userId self", userId);
+    const params = { connection: {} };
     axios
       .post(`http://${global.WeMeServerAddress}/api/connections`, params, {
         headers: {
@@ -33,6 +37,7 @@ prepNewConnection = (socket, schema) => {
       })
       .then(response => {
         const connectionId = response.data.data.id;
+        console.log("Generating new connectionId: ", connectionId);
         const params = {
           link: { user_id: userId, connection_id: connectionId }
         };
@@ -52,6 +57,7 @@ prepNewConnection = (socket, schema) => {
                 console.log("generated new key", key);
                 console.log("connection pair for key", connectionId);
                 storeConnectAES(key, connectionId, false);
+                navigateHome();
               })
               .catch(error => console.log("Unable to generate key", error));
           })
