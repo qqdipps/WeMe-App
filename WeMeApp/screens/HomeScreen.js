@@ -17,12 +17,6 @@ class HomeScreen extends Component {
     };
   }
 
-  // {
-  //   newConnection: true,
-  //   connectionId: this.state.connectionId,
-  //   connectionDisplayName: this.state.connectionDisplayName
-  // });
-
   componentDidMount = () => {
     const newConnection = this.props.navigation.getParam(
       "newConnection",
@@ -101,7 +95,12 @@ class HomeScreen extends Component {
               text={" Connect"}
               icon={"account-plus"}
             />
-            <Beams style={styles.beams} />
+            <Beams
+              style={styles.beams}
+              callBack={() => {
+                this.navigateScreen("BeamCollection");
+              }}
+            />
           </View>
         )}
         {showOverlay && (

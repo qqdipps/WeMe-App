@@ -7,7 +7,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 const Beams = ({ callBack, text }) => {
   const handleButtonPress = () => {
     this._onPressButton;
-    // callBack();
+    callBack();
   };
 
   return (
