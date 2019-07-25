@@ -62,13 +62,12 @@ class App extends Component {
     if (!this.state.channelsSet) {
       reConnectChannels(socket, schema, this.initializeChannelsState);
       this.setState({ channelsSet: true });
-    } else {
-      console.log(this.state);
     }
   }
 
   setUserId = userId => {
     this.setState({ userId: userId });
+    console.log("User id set:", userId);
   };
 
   addChannel = channel => {
@@ -82,7 +81,7 @@ class App extends Component {
   };
 
   render() {
-    const { schema, socket, channels, userID } = this.state;
+    const { schema, socket, channels, userId } = this.state;
     return (
       <Fragment>
         <StatusBar barStyle="dark-content" />
@@ -94,7 +93,7 @@ class App extends Component {
             schema,
             socket,
             channels,
-            userID,
+            userId,
             setSocket: this.setSocket,
             initializeChannelsState: this.initializeChannelsState,
             addChannelState: this.addChannel,

@@ -33,30 +33,36 @@ class BeamUIScreen extends Component {
 
   updateMessages = () => {
     this.state.channel.on("shout", msg => {
-      console.log("HERE IS MY NEW MESSAGE=>, ", msg, "YOYOYOYOYOYO");
-      Realm.open({
-        schema: this.props.navigation.getScreenProps().schema,
-        deleteRealmIfMigrationNeeded: true
-      })
-        .then(realm => {
-          const key = realm.objectForPrimaryKey("ConnectAES", msg.connectionId)
-            .encryptionKey;
-
-          decryptMessage(msg.contents, key)
-            .then(message => {
-              console.log("Message received in chat UI:", msg, message);
-              // addMessage(msg.connectionId, message, false);
-              const messages = [this.readMessage(message)];
-              console.log("HERE IS MY NEW MESSAGE=>, ", messages);
-              this.setState(previousState => ({
-                messages: GiftedChat.append(previousState.messages, messages)
-              }));
-            })
-            .catch(error => console.log("decryption error: in beamUI", error));
+      if (this.props.navigation.getScreenProps().userId !== msg.userId) {
+        console.log("HERE IS MY NEW MESSAGE=>, ", msg, "YOYOYOYOYOYO");
+        Realm.open({
+          schema: this.props.navigation.getScreenProps().schema,
+          deleteRealmIfMigrationNeeded: true
         })
-        .catch(error => {
-          console.log("error getting key: ", error);
-        });
+          .then(realm => {
+            const key = realm.objectForPrimaryKey(
+              "ConnectAES",
+              msg.connectionId
+            ).encryptionKey;
+
+            decryptMessage(msg.contents, key)
+              .then(message => {
+                console.log("Message received in chat UI:", msg, message);
+                addMessage(msg.connectionId, message, false);
+                const messages = [this.readMessage(message)];
+                console.log("HERE IS MY NEW MESSAGE=>, ", messages);
+                this.setState(previousState => ({
+                  messages: GiftedChat.append(previousState.messages, messages)
+                }));
+              })
+              .catch(error =>
+                console.log("decryption error: in beamUI", error)
+              );
+          })
+          .catch(error => {
+            console.log("error getting key: ", error);
+          });
+      }
     });
   };
 
@@ -84,7 +90,8 @@ class BeamUIScreen extends Component {
       this.state.channel,
       connectionId,
       messages[0].text,
-      this.props.navigation.getScreenProps().schema
+      this.props.navigation.getScreenProps().schema,
+      this.props.navigation.getScreenProps().userId
     );
   }
 

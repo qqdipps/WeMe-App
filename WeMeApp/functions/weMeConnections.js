@@ -186,7 +186,7 @@ export function initializeChannel(socket, connectionId, userId, linkId) {
     });
 }
 
-export function sendMessage(channel, connectionId, contents, schema) {
+export function sendMessage(channel, connectionId, contents, schema, userId) {
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
     .then(realm => {
       const key = realm.objectForPrimaryKey("ConnectAES", connectionId)
@@ -195,7 +195,8 @@ export function sendMessage(channel, connectionId, contents, schema) {
         .then(encryptedData => {
           channel.push("shout", {
             connectionId: connectionId,
-            contents: encryptedData
+            contents: encryptedData,
+            userId: userId
           });
           console.log("Message sent");
         })
