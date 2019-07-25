@@ -45,7 +45,7 @@ class BeamUIScreen extends Component {
   readMessage = msg => {
     const { beamData, messages } = this.state;
     return {
-      _id: messages.length - 1,
+      _id: Date.now(),
       text: msg.contents,
       createdAt: new Date(Date.now()),
       user: {
@@ -84,6 +84,7 @@ class BeamUIScreen extends Component {
   };
 
   render() {
+    console.log("Message sent to GiftedChat:", this.state.messages);
     return (
       <GiftedChat
         messages={this.state.messages}
