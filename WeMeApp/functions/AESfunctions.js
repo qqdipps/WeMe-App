@@ -27,5 +27,7 @@ export function encryptMessage(message, keyBase64) {
 
 // return promise, message
 export function decryptMessage(encryptedData, key) {
+  const Aes = NativeModules.Aes;
+  console.log("OK HERE IN AES?", encryptedData.cipher, key, encryptedData.iv);
   Aes.decrypt(encryptedData.cipher, key, encryptedData.iv);
 }

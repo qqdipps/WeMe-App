@@ -1,6 +1,7 @@
 import axios from "axios";
 import Realm from "realm";
 import { addMessage } from "./realmStore";
+import { encryptMessage, decryptMessage } from "./AESfunctions";
 
 // used to create connection on capture of QR code.
 // get userId and displayName
@@ -23,6 +24,7 @@ export function createConnection(
         connectionId,
         displayName,
         navigationAction,
+        schema,
         socket,
         userId
       );
@@ -34,6 +36,7 @@ const establishLink = (
   connectionId,
   displayName,
   navigationAction,
+  schema,
   socket,
   userId
 ) => {
@@ -51,6 +54,7 @@ const establishLink = (
         displayName,
         linkId,
         navigationAction,
+        schema,
         socket,
         userId
       );
@@ -65,6 +69,7 @@ const registerChannel = (
   displayName,
   linkId,
   navigationAction,
+  schema,
   socket,
   userId
 ) => {
@@ -78,7 +83,7 @@ const registerChannel = (
         channel.params().connection_id
       );
       register(channel, connectionId, displayName);
-      listenOnChannel(channel);
+      listenOnChannel(channel, schema);
       listenForRegisteringChannel(channel, navigationAction);
     })
     .receive("error", resp => {
@@ -107,11 +112,23 @@ const register = (channel, connectionId, displayName) => {
   channel.push("register", params);
 };
 
-const listenOnChannel = channel => {
+const listenOnChannel = (channel, schema) => {
   console.log("listening on channel", channel.topic);
   channel.on("shout", msg => {
-    console.log("Message received:", msg);
-    addMessage(msg.connectionId, msg.contents, false);
+    Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+      .then(realm => {
+        const key = realm.objectForPrimaryKey("ConnectAES", msg.connectionId)
+          .encryptionKey;
+        decryptMessage(msg.contents, key)
+          .then(message => {
+            // console.log("Message received:", msg, message);
+            // addMessage(msg.connectionId, message, false);
+          })
+          .catch(error => console.log("decryption error: ", error));
+      })
+      .catch(error => {
+        console.log("error getting key: ", error);
+      });
   });
 };
 
@@ -169,10 +186,23 @@ export function initializeChannel(socket, connectionId, userId, linkId) {
     });
 }
 
-export function sendMessage(channel, connectionId, contents) {
-  channel.push("shout", {
-    connectionId: connectionId,
-    contents: contents
-  });
-  console.log("Message sent");
+export function sendMessage(channel, connectionId, contents, schema) {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
+      const key = realm.objectForPrimaryKey("ConnectAES", connectionId)
+        .encryptionKey;
+      console.log(key);
+      encryptMessage(contents, key)
+        .then(encryptedData => {
+          channel.push("shout", {
+            connectionId: connectionId,
+            contents: encryptedData
+          });
+          console.log("Message sent");
+        })
+        .catch(error => console.log("Encryption Error: ", error));
+    })
+    .catch(error => {
+      console.log("Realm error, getting key", error);
+    });
 }

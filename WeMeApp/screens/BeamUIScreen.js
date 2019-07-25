@@ -46,7 +46,7 @@ class BeamUIScreen extends Component {
     const { beamData, messages } = this.state;
     return {
       _id: Date.now(),
-      text: msg.contents,
+      text: msg.contents.cipher,
       createdAt: new Date(Date.now()),
       user: {
         _id: 2,
@@ -62,8 +62,12 @@ class BeamUIScreen extends Component {
       messages: GiftedChat.append(previousState.messages, messages)
     }));
     addMessage(connectionId, messages[0].text, true);
-
-    sendMessage(this.state.channel, connectionId, messages[0].text);
+    sendMessage(
+      this.state.channel,
+      connectionId,
+      messages[0].text,
+      this.props.navigation.getScreenProps().schema
+    );
   }
 
   loadMessages = () => {
