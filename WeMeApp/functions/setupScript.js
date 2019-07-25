@@ -6,7 +6,7 @@ import { initializeChannel } from "./weMeConnections";
 export function setupScript(schema, displayName, navigateHome) {
   const params = { user: { setup: true } };
   axios
-    .post(`http://${global.WeMeServerAddress}/api/users`, params, {
+    .post(`https://${global.WeMeServerAddress}/api/users`, params, {
       headers: {
         "Content-Type": "application/json"
       }

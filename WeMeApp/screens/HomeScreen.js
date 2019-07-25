@@ -65,7 +65,6 @@ class HomeScreen extends Component {
       blurEffect: 0,
       showComponents: true
     });
-    // this.props.navigation.pop(2);
   };
 
   navigateScreen = screen => {

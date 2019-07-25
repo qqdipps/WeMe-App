@@ -1,20 +1,73 @@
 import React, { Component } from "react";
-// import { FlatList, Text } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 import { addMessage } from "../functions/realmStore";
+import { sendMessage, getChannel } from "../functions/weMeConnections";
 
 class BeamUIScreen extends Component {
   constructor(props) {
     super(props);
+    const beamData = JSON.parse(this.props.navigation.getParam("beamData", ""));
     this.state = {
       messages: undefined,
-      beamData: JSON.parse(this.props.navigation.getParam("beamData", ""))
+      beamData: beamData,
+      channel: getChannel(
+        JSON.parse(beamData.connectionId),
+        this.props.navigation.getScreenProps().socket
+      )
     };
   }
 
   componentDidMount = () => {
+    this.loadMessages();
+    this.state.channel
+      .join()
+      .receive("ok", resp => {
+        console.log("Joined successfully channel: ", this.state.channel.topic);
+        this.updateMessages();
+      })
+      .receive("error", resp => {
+        console.log("Unable to join", resp);
+      });
+  };
+
+  updateMessages = () => {
+    this.state.channel.on("shout", msg => {
+      console.log("Message received NOW IN UI:", msg);
+      addMessage(msg.connectionId, msg.contents, false);
+      const message = this.readMessage(msg);
+      const messages = [message];
+      this.setState(previousState => ({
+        messages: GiftedChat.append(previousState.messages, messages)
+      }));
+    });
+  };
+
+  readMessage = msg => {
+    const { beamData, messages } = this.state;
+    return {
+      _id: messages.length - 1,
+      text: msg.contents,
+      createdAt: new Date(Date.now()),
+      user: {
+        _id: 2,
+        name: beamData.sender.displayName,
+        avatar: "https://placeimg.com/140/140/any"
+      }
+    };
+  };
+
+  onSend(messages = []) {
+    const { connectionId } = this.state.beamData;
+    this.setState(previousState => ({
+      messages: GiftedChat.append(previousState.messages, messages)
+    }));
+    addMessage(connectionId, messages[0].text, true);
+
+    sendMessage(this.state.channel, connectionId, messages[0].text);
+  }
+
+  loadMessages = () => {
     const { beamData } = this.state;
-    console.log("BeamData read from params:", beamData);
     const chatUIMessages = Object.keys(beamData.messages).map((key, i) => {
       return {
         _id: i,
@@ -27,16 +80,8 @@ class BeamUIScreen extends Component {
         }
       };
     });
-    this.setState({ messages: chatUIMessages });
+    this.setState({ messages: chatUIMessages.reverse() });
   };
-
-  onSend(messages = []) {
-    this.setState(previousState => ({
-      messages: GiftedChat.append(previousState.messages, messages)
-    }));
-    console.log(messages);
-    addMessage(this.state.beamData.connectionId, messages[0].text, true);
-  }
 
   render() {
     return (

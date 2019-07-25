@@ -7,7 +7,10 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      userId: undefined,
+      channels: [],
       socket: undefined,
+      channelsSet: false,
       schema: [
         {
           name: "UserSelf",
@@ -55,11 +58,30 @@ class App extends Component {
 
   componentDidUpdate() {
     const { socket, schema } = this.state;
-    reConnectChannels(socket, schema);
+    if (!this.state.channelsSet) {
+      reConnectChannels(socket, schema, this.initializeChannelsState);
+      this.setState({ channelsSet: true });
+    } else {
+      console.log(this.state);
+    }
   }
 
+  setUserId = userId => {
+    this.setState({ userId: userId });
+  };
+
+  addChannel = channel => {
+    const channels = this.state.channels;
+    channels.push(channel);
+    this.setState({ channels: channels });
+  };
+
+  initializeChannelsState = channels => {
+    this.setState({ channels: channels });
+  };
+
   render() {
-    const { schema, socket } = this.state;
+    const { schema, socket, channels, userID } = this.state;
     return (
       <Fragment>
         <StatusBar barStyle="dark-content" />
@@ -67,7 +89,16 @@ class App extends Component {
         {/* <TestAES /> */}
 
         <AppNavigator
-          screenProps={{ schema, socket, setSocket: this.setSocket }}
+          screenProps={{
+            schema,
+            socket,
+            channels,
+            userID,
+            setSocket: this.setSocket,
+            initializeChannelsState: this.initializeChannelsState,
+            addChannelState: this.addChannel,
+            setUserId: this.setUserId
+          }}
         />
       </Fragment>
     );

@@ -40,7 +40,7 @@ class SpawnScreen extends Component {
   };
 
   render() {
-    const { schema, socket } = this.props.navigation.getScreenProps();
+    const { schema, socket, channels } = this.props.navigation.getScreenProps();
     return (
       <View>
         <QrGenerator
@@ -48,6 +48,7 @@ class SpawnScreen extends Component {
           socket={socket}
           handleNavigateOnConnect={undefined}
           getNewConnectionInfoCallback={this.getNewConnectionInfo}
+          channels={channels}
         />
       </View>
     );

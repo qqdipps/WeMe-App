@@ -35,7 +35,6 @@ class CaptureScreen extends Component {
   };
 
   componentDidUpdate = () => {
-    // postLink()
     const { schema, socket } = this.props.navigation.getScreenProps();
     createConnection(
       this.state.connectionId,

@@ -2,6 +2,12 @@ import axios from "axios";
 import Realm from "realm";
 import { addMessage } from "./realmStore";
 
+// used to create connection on capture of QR code.
+// get userId and displayName
+// post link to api
+// register channel (push displayName & connectionID to channel)
+// listen on channel (shout and register) w/ actions
+
 export function createConnection(
   connectionId,
   navigationAction,
@@ -33,7 +39,7 @@ const establishLink = (
 ) => {
   const params = { link: { user_id: userId, connection_id: connectionId } };
   axios
-    .post(`http://${global.WeMeServerAddress}/api/links`, params, {
+    .post(`https://${global.WeMeServerAddress}/api/links`, params, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -62,7 +68,7 @@ const registerChannel = (
   socket,
   userId
 ) => {
-  const channel = createChannel(connectionId, linkId, socket, userId);
+  const channel = createChannel(connectionId, socket, linkId, userId);
   channel
     .join()
     .receive("ok", resp => {
@@ -80,7 +86,7 @@ const registerChannel = (
     });
 };
 
-const createChannel = (connectionId, linkId, socket, userId) => {
+const createChannel = (connectionId, socket, linkId, userId) => {
   return socket.channel(`beam:${connectionId}`, {
     connection_id: connectionId,
     user_id: userId,
@@ -125,18 +131,23 @@ export function listenForRegisteringChannel(
   });
 }
 
-export function reConnectChannels(socket, schema) {
+export function reConnectChannels(socket, schema, setStateChannels) {
+  let stateChannels = [];
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
     .then(realm => {
       const unconnectedChannels = realm.objects("UserSelf")[0].channels;
       console.log("reconnecting channels: ", unconnectedChannels);
-      unconnectedChannels.forEach(channelId => {
+      unconnectedChannels.forEach((channelId, i) => {
         const channel = socket.channel(`beam:${channelId}`);
         channel
           .join()
           .receive("ok", resp => {
             console.log("Joined successfully channel: ", channel.topic);
             listenOnChannel(channel);
+            stateChannels.push(channel);
+            if (i === unconnectedChannels.length - 1) {
+              setStateChannels(stateChannels);
+            }
           })
           .receive("error", resp => {
             console.log("Unable to join", resp);
@@ -147,17 +158,21 @@ export function reConnectChannels(socket, schema) {
 }
 
 export function initializeChannel(socket, connectionId, userId, linkId) {
-  const channel = createChannel(connectionId, linkId, socket, userId);
+  const channel = createChannel(connectionId, socket, linkId, userId);
   channel
     .join()
     .receive("ok", resp => {
-      console.log(
-        "Joined successfully channel: ",
-        channel.params(),
-        channel.params().connection_id
-      );
+      console.log("Joined successfully channel: ", channel.topic);
     })
     .receive("error", resp => {
       console.log("Unable to join", resp);
     });
+}
+
+export function sendMessage(channel, connectionId, contents) {
+  channel.push("shout", {
+    connectionId: connectionId,
+    contents: contents
+  });
+  console.log("Message sent");
 }
