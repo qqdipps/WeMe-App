@@ -14,7 +14,6 @@ class BeamCollectionScreen extends Component {
       .then(realm => {
         const entries = realm.objects("ConnectionMessages");
         beamCollection = entries.map(entry => {
-          console.log(entry);
           return entry;
         });
         this.setState({ beamCollection: beamCollection });

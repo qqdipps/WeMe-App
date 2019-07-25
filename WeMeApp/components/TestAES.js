@@ -19,29 +19,36 @@ const TestAES = () => {
     Aes.decrypt(encryptedData.cipher, key, encryptedData.iv);
 
   try {
-    generateKey("Arnold", "salt", 5000, 128).then(key => {
-      console.log("Key:", key);
-      encrypt("These violent delights have violent ends", key)
-        .then(({ cipher, iv }) => {
-          console.log("Encrypted:", cipher);
+    // generateKey("Arnold", "salt", 5000, 128).then(key => {
+    //   console.log("Key:", key);
+    //   encrypt("These violent delights have violent ends", key)
+    //     .then(encryptedData => {
+    //       console.log("Encrypted:", encryptedData.cipher);
 
-          decrypt({ cipher, iv }, key)
-            .then(text => {
-              console.log("Decrypted:", text);
-            })
-            .catch(error => {
-              console.log(error);
-            });
+    const encryptedData = {
+      cipher: "R6tiqhAcVqz9qKh3j8mt7w==",
+      iv: "ed9b42f26f60e9b6e25e6d03355571b7"
+    };
 
-          Aes.hmac256(cipher, key).then(hash => {
-            console.log("HMAC", hash);
-          });
-        })
-        .catch(error => {
-          console.log("Errror????");
-          console.log(error);
-        });
-    });
+    const key = "c1daf76b53c4cd959d5fef5c89b2af02";
+
+    decrypt(encryptedData, key)
+      .then(text => {
+        console.log("Decrypted:", text);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    // Aes.hmac256(encryptedData.cipher, key).then(hash => {
+    //   console.log("HMAC", hash);
+    // });
+    // })
+    // .catch(error => {
+    //   console.log("Errror????");
+    //   console.log(error);
+    //       });
+    //   });
   } catch (e) {
     console.error(e);
   }

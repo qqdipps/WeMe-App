@@ -2,6 +2,7 @@ import React, { Fragment, Component } from "react";
 import { StyleSheet, StatusBar } from "react-native";
 import AppNavigator from "./screens/AppNavigator";
 import { reConnectChannels } from "./functions/weMeConnections";
+import TestAES from "./components/TestAES";
 
 class App extends Component {
   constructor() {

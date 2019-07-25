@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { GiftedChat } from "react-native-gifted-chat";
 import { addMessage } from "../functions/realmStore";
 import { sendMessage, getChannel } from "../functions/weMeConnections";
+import { decryptMessage } from "../functions/AESfunctions";
 
 class BeamUIScreen extends Component {
   constructor(props) {
@@ -32,13 +33,30 @@ class BeamUIScreen extends Component {
 
   updateMessages = () => {
     this.state.channel.on("shout", msg => {
-      console.log("Message received NOW IN UI:", msg);
-      addMessage(msg.connectionId, msg.contents, false);
-      const message = this.readMessage(msg);
-      const messages = [message];
-      this.setState(previousState => ({
-        messages: GiftedChat.append(previousState.messages, messages)
-      }));
+      console.log("HERE IS MY NEW MESSAGE=>, ", msg, "YOYOYOYOYOYO");
+      Realm.open({
+        schema: this.props.navigation.getScreenProps().schema,
+        deleteRealmIfMigrationNeeded: true
+      })
+        .then(realm => {
+          const key = realm.objectForPrimaryKey("ConnectAES", msg.connectionId)
+            .encryptionKey;
+
+          decryptMessage(msg.contents, key)
+            .then(message => {
+              console.log("Message received in chat UI:", msg, message);
+              // addMessage(msg.connectionId, message, false);
+              const messages = [this.readMessage(message)];
+              console.log("HERE IS MY NEW MESSAGE=>, ", messages);
+              this.setState(previousState => ({
+                messages: GiftedChat.append(previousState.messages, messages)
+              }));
+            })
+            .catch(error => console.log("decryption error: in beamUI", error));
+        })
+        .catch(error => {
+          console.log("error getting key: ", error);
+        });
     });
   };
 
@@ -46,7 +64,7 @@ class BeamUIScreen extends Component {
     const { beamData, messages } = this.state;
     return {
       _id: Date.now(),
-      text: msg.contents.cipher,
+      text: msg,
       createdAt: new Date(Date.now()),
       user: {
         _id: 2,
@@ -88,7 +106,6 @@ class BeamUIScreen extends Component {
   };
 
   render() {
-    console.log("Message sent to GiftedChat:", this.state.messages);
     return (
       <GiftedChat
         messages={this.state.messages}

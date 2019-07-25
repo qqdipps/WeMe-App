@@ -121,8 +121,8 @@ const listenOnChannel = (channel, schema) => {
           .encryptionKey;
         decryptMessage(msg.contents, key)
           .then(message => {
-            // console.log("Message received:", msg, message);
-            // addMessage(msg.connectionId, message, false);
+            console.log("Message received:", msg, message);
+            addMessage(msg.connectionId, message, false);
           })
           .catch(error => console.log("decryption error: ", error));
       })
@@ -191,7 +191,6 @@ export function sendMessage(channel, connectionId, contents, schema) {
     .then(realm => {
       const key = realm.objectForPrimaryKey("ConnectAES", connectionId)
         .encryptionKey;
-      console.log(key);
       encryptMessage(contents, key)
         .then(encryptedData => {
           channel.push("shout", {

@@ -131,7 +131,7 @@ export function addMessage(connectionId, contents, isSelf) {
         });
         connectionMessage.messages.push(message);
       });
-      console.log("success message added:", connectionMessage);
+      console.log("success message added:", contents);
     })
     .catch(error => {
       console.log(" Adding Message ****ERROR: ", error);
