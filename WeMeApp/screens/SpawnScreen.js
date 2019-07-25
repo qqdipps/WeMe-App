@@ -8,7 +8,8 @@ class SpawnScreen extends Component {
     super(props);
     this.state = {
       connectionId: undefined,
-      connectionDisplayName: undefined
+      connectionDisplayName: undefined,
+      isSpawnComplete: false
     };
   }
 
@@ -29,18 +30,23 @@ class SpawnScreen extends Component {
 
   componentDidUpdate = () => {
     const { schema, socket } = this.props.navigation.getScreenProps();
-    const { connectionId, connectionDisplayName } = this.state;
-    spawnComplete(
-      socket,
-      schema,
-      connectionId,
-      connectionDisplayName,
-      this.handleNavigateOnConnect
-    );
+    const { connectionId, connectionDisplayName, isSpawnComplete } = this.state;
+    if (!isSpawnComplete) {
+      spawnComplete(
+        socket,
+        schema,
+        connectionId,
+        connectionDisplayName,
+        this.handleNavigateOnConnect
+      );
+      this.setState({ isSpawnComplete: true });
+    } else {
+      console.log("trying to update again");
+    }
   };
 
   render() {
-    const { schema, socket } = this.props.navigation.getScreenProps();
+    const { schema, socket, channels } = this.props.navigation.getScreenProps();
     return (
       <View>
         <QrGenerator
@@ -48,6 +54,7 @@ class SpawnScreen extends Component {
           socket={socket}
           handleNavigateOnConnect={undefined}
           getNewConnectionInfoCallback={this.getNewConnectionInfo}
+          channels={channels}
         />
       </View>
     );

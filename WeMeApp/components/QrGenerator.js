@@ -20,6 +20,10 @@ class QrGenerator extends Component {
 
   componentDidMount = () => {
     this.prepQr();
+    // console.log(
+    //   "testing channels, comp did mount",
+    //   this.props.channels[0].bindings
+    // );
   };
 
   componentDidUpdate = () => {

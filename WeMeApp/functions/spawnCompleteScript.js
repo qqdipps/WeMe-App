@@ -30,7 +30,7 @@ const prepNewConnection = (socket, schema, navigateHome) => {
     console.log("fetch userId self", userId);
     const params = { connection: {} };
     axios
-      .post(`http://${global.WeMeServerAddress}/api/connections`, params, {
+      .post(`https://${global.WeMeServerAddress}/api/connections`, params, {
         headers: {
           "Content-Type": "application/json"
         }
@@ -42,7 +42,7 @@ const prepNewConnection = (socket, schema, navigateHome) => {
           link: { user_id: userId, connection_id: connectionId }
         };
         axios
-          .post(`http://${global.WeMeServerAddress}/api/links`, params, {
+          .post(`https://${global.WeMeServerAddress}/api/links`, params, {
             headers: {
               "Content-Type": "application/json"
             }

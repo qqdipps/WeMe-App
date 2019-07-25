@@ -1,24 +1,24 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-// import { Icon } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const Beams = ({ callBack, text }) => {
+const Beam = props => {
   const handleButtonPress = () => {
     this._onPressButton;
-    callBack();
+    props.callBack(props.beamData);
   };
 
   return (
     <TouchableOpacity onPress={handleButtonPress} style={styles.button}>
+      {console.log(props)}
       <LinearGradient
         colors={["#8f7386", "#200016"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
         <Icon name="envelope" style={styles.buttonText}>
-          <Text style={styles.buttonText}> BEAMS</Text>
+          <Text style={styles.buttonText}>{props.text}</Text>
         </Icon>
       </LinearGradient>
     </TouchableOpacity>
@@ -41,4 +41,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Beams;
+export default Beam;

@@ -3,10 +3,15 @@ import Realm from "realm";
 import { generateKey } from "./AESfunctions";
 import { initializeChannel } from "./weMeConnections";
 
-export function setupScript(schema, displayName, navigateHome) {
+export function setupScript(
+  schema,
+  displayName,
+  navigateHome,
+  setUserIdCallback
+) {
   const params = { user: { setup: true } };
   axios
-    .post(`http://${global.WeMeServerAddress}/api/users`, params, {
+    .post(`https://${global.WeMeServerAddress}/api/users`, params, {
       headers: {
         "Content-Type": "application/json"
       }
@@ -15,7 +20,7 @@ export function setupScript(schema, displayName, navigateHome) {
       const userId = response.data.data.user_id;
       const connectionId = response.data.data.connection_id;
       const linkId = response.data.data.link_id;
-
+      setUserIdCallback(userId);
       storeUser(schema, connectionId, userId, displayName);
       navigateHome();
 

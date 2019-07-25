@@ -102,10 +102,7 @@ export function storeConnectionMessages(displayName, connectionId) {
         const message = realm.create("Message", {
           self: true,
           contents: "New Connection!",
-          dateTime: JSON.stringify({
-            date: new Date(Date.now()).toDateString(),
-            time: new Date(Date.now()).toDateString()
-          })
+          dateTime: new Date(Date.now()).toString()
         });
         const connection = realm.create("ConnectionMessages", {
           connectionId: connectionId,
@@ -123,23 +120,21 @@ export function storeConnectionMessages(displayName, connectionId) {
 export function addMessage(connectionId, contents, isSelf) {
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
     .then(realm => {
+      const connectionMessage = realm
+        .objects("ConnectionMessages")
+        .filtered(`connectionId == ${connectionId}`)[0];
       realm.write(() => {
-        const connectionMessage = realm
-          .objects("ConnectionMessages")
-          .filtered(`connectionId == ${connectionId}`)[0];
         const message = realm.create("Message", {
-          self: `${isSelf}`,
+          self: isSelf,
           contents: `${contents}`,
-          dateTime: JSON.stringify({
-            date: new Date(Date.now()).toDateString(),
-            time: new Date(Date.now()).toDateString()
-          })
+          dateTime: new Date(Date.now()).toString()
         });
         connectionMessage.messages.push(message);
       });
+      console.log("success message added:", contents);
     })
     .catch(error => {
-      console.log("****ERROR: ", error);
+      console.log(" Adding Message ****ERROR: ", error);
     });
 }
 
@@ -173,10 +168,7 @@ export function deleteMessageHx(connectionId) {
         const message = realm.create("Message", {
           self: `${isSelf}`,
           contents: `History has been cleared`,
-          dateTime: JSON.stringify({
-            date: new Date(Date.now()).toDateString(),
-            time: new Date(Date.now()).toDateString()
-          })
+          dateTime: new Date(Date.now()).toString()
         });
       });
     })
