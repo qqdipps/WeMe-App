@@ -63,7 +63,6 @@ class BeamCollectionScreen extends Component {
   render() {
     return (
       <ImageBackground
-        // blurRadius={this.state.blurEffect}
         source={require("../images/carina-nebula-647114_640.jpg")}
         style={{ width: "100%", height: "100%" }}
       >
