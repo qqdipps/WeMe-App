@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import { List, ListItem } from "react-native-elements";
-import { FlatList, Text, ImageBackground } from "react-native";
-import Beam from "../components/Beam";
+import { ListItem, Avatar } from "react-native-elements";
+import { ImageBackground, View, FlatList } from "react-native";
 
 class BeamCollectionScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = { beamCollection: undefined };
+    this.state = {
+      beamCollection: []
+    };
   }
 
   static navigationOptions = {};
@@ -17,19 +18,47 @@ class BeamCollectionScreen extends Component {
       .then(realm => {
         const entries = realm.objects("ConnectionMessages");
         beamCollection = entries.map(entry => {
-          console.log("checking out entry list", entry);
-          return entry;
+          return {
+            name: entry.sender.displayName,
+            subtitle: entry.sender.notes,
+            beamData: entry
+          };
         });
         this.setState({ beamCollection: beamCollection });
       })
       .catch(error => console.log("Beam collection Realm error:", error));
   };
 
+  // componentDidUpdate = () => {
+  //   console.log(this.state.beamCollection);
+  // };
+
   handleNavigateBeamUI = beamData => {
     this.props.navigation.navigate("BeamUI", {
       beamData: JSON.stringify(beamData)
     });
   };
+
+  keyExtractor = (item, index) => index.toString();
+
+  renderItem = ({ item }) => (
+    <ListItem
+      title={item.name}
+      subtitle={item.subtitle}
+      topDivider
+      bottomDivider
+      leftAvatar={
+        <Avatar
+          size="small"
+          rounded
+          title={item.name.substring(0, 2).toUpperCase()}
+          onPress={() => console.log("Works!")}
+          activeOpacity={0.7}
+        />
+      }
+      onPress={() => this.handleNavigateBeamUI(item.beamData)}
+    />
+  );
 
   render() {
     return (
@@ -39,17 +68,9 @@ class BeamCollectionScreen extends Component {
         style={{ width: "100%", height: "100%" }}
       >
         <FlatList
+          keyExtractor={this.keyExtractor}
           data={this.state.beamCollection}
-          renderItem={({ item }) => (
-            <Beam
-              text={item.sender.displayName}
-              beamData={item}
-              callBack={this.handleNavigateBeamUI}
-            />
-          )}
-          keyExtractor={({ item }) => {
-            item;
-          }}
+          renderItem={this.renderItem}
         />
       </ImageBackground>
     );

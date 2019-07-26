@@ -17,7 +17,7 @@ const Beam = props => {
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
-        <Icon name="atom" style={styles.buttonText}>
+        <Icon name="" style={styles.buttonText}>
           <Text style={styles.buttonText}> {props.text}</Text>
         </Icon>
       </LinearGradient>
