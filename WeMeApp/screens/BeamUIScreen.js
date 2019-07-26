@@ -33,9 +33,10 @@ class BeamUIScreen extends Component {
       });
   };
 
-  updateMessages = () => {
+  updateMessages = alert => {
+    const { userId, notify } = this.props.navigation.getScreenProps();
     this.state.channel.on("shout", msg => {
-      if (this.props.navigation.getScreenProps().userId !== msg.userId) {
+      if (userId !== msg.userId) {
         console.log("HERE IS MY NEW MESSAGE=>, ", msg, "YOYOYOYOYOYO");
         Realm.open({
           schema: this.props.navigation.getScreenProps().schema,
@@ -46,6 +47,13 @@ class BeamUIScreen extends Component {
               "ConnectAES",
               msg.connectionId
             ).encryptionKey;
+
+            const senderDisplayName = realm.objectForPrimaryKey(
+              "ConnectionMessages",
+              msg.connectionId
+            ).sender.displayName;
+
+            notify(senderDisplayName);
 
             decryptMessage(msg.contents, key)
               .then(message => {

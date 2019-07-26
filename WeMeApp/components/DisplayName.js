@@ -32,7 +32,7 @@ class DisplayName extends Component {
   render() {
     return (
       <View style={styles.view}>
-        <Text numberOfLines={1} style={styles.text}>
+        <Text numberOfLines={1} style={styles.text} onPress={this.props.notify}>
           {this.state.displayName}
         </Text>
       </View>

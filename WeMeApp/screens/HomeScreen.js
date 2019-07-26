@@ -81,7 +81,7 @@ class HomeScreen extends Component {
   };
 
   render() {
-    const { schema } = this.props.navigation.getScreenProps();
+    const { schema, notify } = this.props.navigation.getScreenProps();
     const { showComponents, showOverlay, newConnection } = this.state;
     return (
       <ImageBackground
@@ -91,7 +91,7 @@ class HomeScreen extends Component {
       >
         {showComponents && (
           <View style={styles.layout}>
-            <DisplayName schema={schema} />
+            <DisplayName schema={schema} notify={notify} />
             <Connect
               style={styles.connect}
               callBack={this.blurBackground}
@@ -107,7 +107,7 @@ class HomeScreen extends Component {
           </View>
         )}
         {showOverlay && (
-          <Overlay isVisible height={380} overlayBackgroundColor={"#9498aa"}>
+          <Overlay isVisible height={380} overlayBackgroundColor={"#FFf0e6"}>
             <View style={styles.overlayLayout}>
               <Icon
                 name="times"
@@ -139,7 +139,7 @@ class HomeScreen extends Component {
         )}
 
         {newConnection.show && (
-          <Overlay isVisible height={380} overlayBackgroundColor={"#9498aa"}>
+          <Overlay isVisible height={380} overlayBackgroundColor={"#FFf0e6"}>
             <View style={styles.overlayLayout}>
               <Icon
                 name="times"

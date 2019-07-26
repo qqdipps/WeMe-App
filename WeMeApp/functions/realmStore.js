@@ -31,6 +31,7 @@ const schema = [
   },
   {
     name: "ConnectionMessages",
+    primaryKey: "connectionId",
     properties: {
       connectionId: "int",
       messages: "Message[]",

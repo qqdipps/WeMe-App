@@ -37,12 +37,13 @@ class CaptureScreen extends Component {
   };
 
   componentDidUpdate = () => {
-    const { schema, socket } = this.props.navigation.getScreenProps();
+    const { schema, socket, notify } = this.props.navigation.getScreenProps();
     createConnection(
       this.state.connectionId,
       this.handleNavigateOnConnect,
       schema,
-      socket
+      socket,
+      notify
     );
   };
 

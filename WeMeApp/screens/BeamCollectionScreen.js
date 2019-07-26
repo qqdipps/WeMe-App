@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { List, ListItem } from "react-native-elements";
 import { FlatList, Text, ImageBackground } from "react-native";
 import Beam from "../components/Beam";
 
@@ -16,6 +17,7 @@ class BeamCollectionScreen extends Component {
       .then(realm => {
         const entries = realm.objects("ConnectionMessages");
         beamCollection = entries.map(entry => {
+          console.log("checking out entry list", entry);
           return entry;
         });
         this.setState({ beamCollection: beamCollection });

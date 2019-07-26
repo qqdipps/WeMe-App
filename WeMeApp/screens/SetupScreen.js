@@ -15,7 +15,6 @@ class SetupScreen extends Component {
       displayName: "DefaultUser",
       runScript: false
     };
-    // console.log(this.props.navigation.getScreenProps());
   }
 
   static navigationOptions = {};
