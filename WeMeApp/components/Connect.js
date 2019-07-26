@@ -13,7 +13,7 @@ const Connect = ({ callBack, text, icon }) => {
   return (
     <TouchableOpacity onPress={handleButtonPress} style={styles.button}>
       <LinearGradient
-        colors={["#8f7386", "#200016"]}
+        colors={["#F3ebee", "#A7b4ae"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     fontFamily: "Gill Sans",
     textAlign: "center",
     padding: 15,
-    paddingVertical: 45,
-    color: "white"
+    paddingVertical: 15,
+    color: "black"
   },
   button: {
     marginBottom: 50,

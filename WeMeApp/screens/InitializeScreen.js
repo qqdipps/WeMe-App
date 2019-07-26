@@ -7,6 +7,8 @@ class InitializeScreen extends Component {
     super(props);
   }
 
+  static navigationOptions = {};
+
   componentDidMount = () => {
     const {
       socket,

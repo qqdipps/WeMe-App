@@ -21,6 +21,8 @@ class SpawnScreen extends Component {
     });
   };
 
+  static navigationOptions = {};
+
   getNewConnectionInfo = (connectionId, connectionDisplayName) => {
     this.setState({
       connectionId: connectionId,

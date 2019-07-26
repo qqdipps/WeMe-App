@@ -13,7 +13,7 @@ const Beam = props => {
     <TouchableOpacity onPress={handleButtonPress} style={styles.button}>
       {console.log(props)}
       <LinearGradient
-        colors={["#8f7386", "#200016"]}
+        colors={["#Ffa163", "#c10087"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >

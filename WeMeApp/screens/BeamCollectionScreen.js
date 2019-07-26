@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FlatList, Text } from "react-native";
+import { FlatList, Text, ImageBackground } from "react-native";
 import Beam from "../components/Beam";
 
 class BeamCollectionScreen extends Component {
@@ -7,6 +7,8 @@ class BeamCollectionScreen extends Component {
     super(props);
     this.state = { beamCollection: undefined };
   }
+
+  static navigationOptions = {};
 
   componentDidMount = () => {
     const { schema, socket } = this.props.navigation.getScreenProps();
@@ -29,19 +31,25 @@ class BeamCollectionScreen extends Component {
 
   render() {
     return (
-      <FlatList
-        data={this.state.beamCollection}
-        renderItem={({ item }) => (
-          <Beam
-            text={item.sender.displayName}
-            beamData={item}
-            callBack={this.handleNavigateBeamUI}
-          />
-        )}
-        keyExtractor={({ item }) => {
-          item;
-        }}
-      />
+      <ImageBackground
+        // blurRadius={this.state.blurEffect}
+        source={require("../images/carina-nebula-647114_640.jpg")}
+        style={{ width: "100%", height: "100%" }}
+      >
+        <FlatList
+          data={this.state.beamCollection}
+          renderItem={({ item }) => (
+            <Beam
+              text={item.sender.displayName}
+              beamData={item}
+              callBack={this.handleNavigateBeamUI}
+            />
+          )}
+          keyExtractor={({ item }) => {
+            item;
+          }}
+        />
+      </ImageBackground>
     );
   }
 }

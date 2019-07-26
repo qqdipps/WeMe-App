@@ -17,6 +17,10 @@ class HomeScreen extends Component {
     };
   }
 
+  static navigationOptions = {
+    title: "Home"
+  };
+
   componentDidMount = () => {
     const newConnection = this.props.navigation.getParam(
       "newConnection",
@@ -82,7 +86,7 @@ class HomeScreen extends Component {
     return (
       <ImageBackground
         blurRadius={this.state.blurEffect}
-        source={require("../images/night-sky-569319_640.jpg")}
+        source={require("../images/saturn-1463606_640.jpg")}
         style={{ width: "100%", height: "100%" }}
       >
         {showComponents && (

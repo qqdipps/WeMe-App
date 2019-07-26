@@ -13,6 +13,8 @@ class CaptureScreen extends Component {
     };
   }
 
+  static navigationOptions = {};
+
   getQrData = qrData => {
     this.setState({
       connectionId: qrData.connectionId,

@@ -18,6 +18,8 @@ class BeamUIScreen extends Component {
     };
   }
 
+  static navigationOptions = {};
+
   componentDidMount = () => {
     this.loadMessages();
     this.state.channel
