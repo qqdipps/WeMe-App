@@ -3,6 +3,9 @@ import { StyleSheet, ImageBackground, View, Text } from "react-native";
 import MyButton from "../components/MyButton";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Input, Overlay } from "react-native-elements";
+import { RFPercentage } from "react-native-responsive-fontsize";
+import Disconnect from "../components/Disconnect";
+import DeleteHistory from "../components/DeleteHistory";
 
 class SettingsScreen extends Component {
   static navigationOptions = {};
@@ -11,7 +14,7 @@ class SettingsScreen extends Component {
     super(props);
     this.state = {
       displayName: this.props.navigation.getParam("displayName", ""),
-      isUser: this.props.navigation.getParam("isUser", false),
+      isUser: this.props.navigation.getParam("isUser", true),
       notes: this.props.navigation.getParam("notes", "")
     };
   }
@@ -27,19 +30,46 @@ class SettingsScreen extends Component {
           <Text numberOfLines={1} style={styles.text}>
             {this.state.displayName}
           </Text>
+          <View style={styles.card}>
+            <Input
+              label="Change Display Name:"
+              placeholder={this.props.navigation.getParam("displayName", "")}
+              leftIcon={<Icon name="user" size={40} color="black" />}
+              leftIconContainerStyle={{ marginRight: 5 }}
+              containerStyle={{
+                padding: 10,
+                width: 300,
+                height: 100,
+                alignSelf: "center",
+                fontSize: 18
+              }}
+              onChangeText={text => this.setState({ displayName: text })}
+            />
+            {!this.state.isUser && (
+              <Input
+                label="Add User Note:"
+                placeholder={this.props.navigation.getParam("notes", "")}
+                leftIcon={<Icon name="clipboard" size={40} color="black" />}
+                leftIconContainerStyle={{ marginRight: 5 }}
+                containerStyle={{
+                  height: 300,
+                  width: 300
+                }}
+                onChangeText={text => {
+                  const notes = this.state.notes;
+                  notes.push(text);
+                  this.setState({ notes: notes });
+                }}
+              />
+            )}
+          </View>
+          {!this.state.isUser && (
+            <View>
+              <Disconnect style={styles.disconnect} />
+              <DeleteHistory />
+            </View>
+          )}
         </View>
-        <Input
-          label="Change Display Name:"
-          placeholder={this.props.navigation.getParam("displayName", "")}
-          leftIcon={<Icon name="user" size={40} color="black" />}
-          leftIconContainerStyle={{ marginRight: 5 }}
-          containerStyle={{
-            marginTop: 200,
-            backgroundColor: "white",
-            width: 300
-          }}
-          onChangeText={text => this.setState({ displayName: text })}
-        />
       </ImageBackground>
     );
   }
@@ -47,12 +77,19 @@ class SettingsScreen extends Component {
 
 const styles = StyleSheet.create({
   view: {
-    // width: 400,
-    // height: 100,
-    // backgroundColor: "rgb(232, 201, 222)e"
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center"
   },
+  card: {
+    backgroundColor: "white",
+    opacity: 0.8,
+    marginTop: 20,
+    padding: 10
+  },
+  disconnect: {},
   text: {
-    fontSize: 28,
+    fontSize: RFPercentage(7),
     color: "white",
     fontFamily: "Gill Sans",
     textAlign: "center"
@@ -60,3 +97,38 @@ const styles = StyleSheet.create({
 });
 
 export default SettingsScreen;
+
+{
+  /* <View style={styles.view}>
+<Text numberOfLines={1} style={styles.text}>
+  {this.state.displayName}
+</Text>
+</View>
+<Input
+label="Change Display Name:"
+placeholder={this.props.navigation.getParam("displayName", "")}
+leftIcon={<Icon name="user" size={40} color="black" />}
+leftIconContainerStyle={{ marginRight: 5 }}
+containerStyle={{
+  marginTop: 150,
+  backgroundColor: "white",
+  width: 300,
+  height: 200
+}}
+onChangeText={text => this.setState({ displayName: text })}
+/>
+{!this.state.isUser && (
+<Input
+  label="Add User Note:"
+  placeholder={this.props.navigation.getParam("notes", "")}
+  leftIcon={<Icon name="clipboard" size={40} color="black" />}
+  leftIconContainerStyle={{ marginRight: 5 }}
+  containerStyle={{
+    height: 300,
+    backgroundColor: "white",
+    width: 300
+  }}
+  onChangeText={text => this.setState({ notes: text })}
+/>
+)} */
+}

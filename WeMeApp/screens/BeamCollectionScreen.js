@@ -20,7 +20,7 @@ class BeamCollectionScreen extends Component {
         beamCollection = entries.map(entry => {
           return {
             name: entry.sender.displayName,
-            subtitle: entry.sender.notes,
+            subtitle: entry.sender.notes[0],
             beamData: entry
           };
         });

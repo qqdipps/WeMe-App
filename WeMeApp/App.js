@@ -38,7 +38,7 @@ class App extends Component {
           name: "Sender",
           properties: {
             displayName: "string",
-            notes: "string?"
+            notes: "string?[]"
           }
         },
         {

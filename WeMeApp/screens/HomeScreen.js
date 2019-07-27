@@ -139,7 +139,7 @@ class HomeScreen extends Component {
           </View>
         )}
         {showOverlay && (
-          <Overlay isVisible height={380} overlayBackgroundColor={"#FFf0e6"}>
+          <Overlay isVisible height={380} overlayBackgroundColor={"#D0D7D7"}>
             <View style={styles.overlayLayout}>
               <Icon
                 name="times"
@@ -171,7 +171,7 @@ class HomeScreen extends Component {
         )}
 
         {newConnection.show && (
-          <Overlay isVisible height={380} overlayBackgroundColor={"#FFf0e6"}>
+          <Overlay isVisible height={380} overlayBackgroundColor={"#D0D7D7"}>
             <View style={styles.overlayLayout}>
               <Icon
                 name="times"

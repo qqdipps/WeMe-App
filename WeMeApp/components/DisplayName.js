@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Realm from "realm";
-import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import LinearGradient from "react-native-linear-gradient";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 class DisplayName extends Component {
   constructor(props) {
@@ -50,7 +49,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: RFPercentage(7),
-    color: "rgb(232, 201, 222)",
+    color: "white",
     fontFamily: "Gill Sans",
     textAlign: "center"
   }
