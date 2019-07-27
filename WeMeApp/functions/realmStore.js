@@ -26,11 +26,12 @@ const schema = [
     name: "Sender",
     properties: {
       displayName: "string",
-      notes: "string?"
+      notes: "string?[]"
     }
   },
   {
     name: "ConnectionMessages",
+    primaryKey: "connectionId",
     properties: {
       connectionId: "int",
       messages: "Message[]",
@@ -78,10 +79,12 @@ export function storeSender(displayName) {
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
     .then(realm => {
       realm.write(() => {
-        realm.create("Sender", {
-          displayName: displayName,
-          notes: `Connected on ${new Date(Date.now()).toLocaleDateString()}`
+        const sender = realm.create("Sender", {
+          displayName: displayName
         });
+        sender.notes.push(
+          `Connected on ${new Date(Date.now()).toLocaleDateString()}`
+        );
       });
       console.log("storing sender", realm.objects("Sender"));
     })
@@ -95,9 +98,11 @@ export function storeConnectionMessages(displayName, connectionId) {
     .then(realm => {
       realm.write(() => {
         const sender = realm.create("Sender", {
-          displayName: displayName,
-          notes: `Connected on ${new Date(Date.now()).toLocaleDateString()}`
+          displayName: displayName
         });
+        sender.notes.push(
+          `Connected on ${new Date(Date.now()).toLocaleDateString()}`
+        );
 
         const message = realm.create("Message", {
           self: true,

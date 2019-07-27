@@ -1,25 +1,23 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-// import { Icon } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const Connect = ({ callBack, text, icon }) => {
+const SettingBtn = props => {
   const handleButtonPress = () => {
     this._onPressButton;
-    callBack();
+    props.callBack();
   };
 
   return (
-    <TouchableOpacity onPress={handleButtonPress} style={styles.button}>
+    <TouchableOpacity onPress={handleButtonPress}>
       <LinearGradient
-        colors={["#F3ebee", "#A7b4ae"]}
+        colors={props.colors}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
+        style={styles.button}
       >
-        <Icon name={icon} style={styles.buttonText}>
-          <Text style={styles.buttonText}>{text}</Text>
-        </Icon>
+        <Text style={styles.buttonText}>{props.text}</Text>
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -27,18 +25,19 @@ const Connect = ({ callBack, text, icon }) => {
 
 const styles = StyleSheet.create({
   buttonText: {
-    fontSize: 30,
+    fontSize: 20,
     fontFamily: "Gill Sans",
     textAlign: "center",
     padding: 15,
-    paddingVertical: 15,
+    paddingVertical: 10,
     color: "black"
   },
   button: {
-    marginBottom: 50,
-    width: 250
-    // height: 300
+    width: 150,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#fff"
   }
 });
 
-export default Connect;
+export default SettingBtn;

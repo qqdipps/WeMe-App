@@ -2,7 +2,7 @@ import React, { Fragment, Component } from "react";
 import { StyleSheet, StatusBar } from "react-native";
 import AppNavigator from "./screens/AppNavigator";
 import { reConnectChannels } from "./functions/weMeConnections";
-import TestAES from "./components/TestAES";
+import { withInAppNotification } from "react-native-in-app-notification";
 
 class App extends Component {
   constructor() {
@@ -38,11 +38,12 @@ class App extends Component {
           name: "Sender",
           properties: {
             displayName: "string",
-            notes: "string?"
+            notes: "string?[]"
           }
         },
         {
           name: "ConnectionMessages",
+          primaryKey: "connectionId",
           properties: {
             connectionId: "int",
             messages: "Message[]",
@@ -60,7 +61,12 @@ class App extends Component {
   componentDidUpdate() {
     const { socket, schema } = this.state;
     if (!this.state.channelsSet) {
-      reConnectChannels(socket, schema, this.initializeChannelsState);
+      reConnectChannels(
+        this.notify,
+        socket,
+        schema,
+        this.initializeChannelsState
+      );
       this.setState({ channelsSet: true });
     }
   }
@@ -80,6 +86,14 @@ class App extends Component {
     this.setState({ channels: channels });
   };
 
+  notify = displayName => {
+    this.props.showNotification({
+      title: "🚀 New Beam Received!",
+      message: `Sent from ${displayName}.`,
+      onPress: () => {}
+    });
+  };
+
   render() {
     const { schema, socket, channels, userId } = this.state;
     return (
@@ -97,7 +111,8 @@ class App extends Component {
             setSocket: this.setSocket,
             initializeChannelsState: this.initializeChannelsState,
             addChannelState: this.addChannel,
-            setUserId: this.setUserId
+            setUserId: this.setUserId,
+            notify: this.notify
           }}
         />
       </Fragment>
@@ -107,4 +122,4 @@ class App extends Component {
 
 const styles = StyleSheet.create({});
 
-export default App;
+export default withInAppNotification(App);

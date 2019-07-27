@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View } from "react-native";
+import { ImageBackground, StyleSheet } from "react-native";
 import QrGenerator from "../components/QrGenerator";
 import { spawnComplete } from "../functions/spawnCompleteScript";
 
@@ -20,6 +20,8 @@ class SpawnScreen extends Component {
       connectionDisplayName: this.state.connectionDisplayName
     });
   };
+
+  static navigationOptions = {};
 
   getNewConnectionInfo = (connectionId, connectionDisplayName) => {
     this.setState({
@@ -48,17 +50,28 @@ class SpawnScreen extends Component {
   render() {
     const { schema, socket, channels } = this.props.navigation.getScreenProps();
     return (
-      <View>
+      <ImageBackground
+        source={require("../images/carina-nebula-647114_640.jpg")}
+        style={{ width: "100%", height: "100%" }}
+      >
         <QrGenerator
+          style={styles.qr}
           schema={schema}
           socket={socket}
           handleNavigateOnConnect={undefined}
           getNewConnectionInfoCallback={this.getNewConnectionInfo}
           channels={channels}
         />
-      </View>
+      </ImageBackground>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  qr: {
+    // width: 200,
+    // padding: 400
+  }
+});
 
 export default SpawnScreen;

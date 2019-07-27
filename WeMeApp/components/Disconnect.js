@@ -1,10 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-// import { Icon } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const Connect = ({ callBack, text, icon }) => {
+const Disconnect = ({ callBack, text }) => {
   const handleButtonPress = () => {
     this._onPressButton;
     callBack();
@@ -17,9 +16,7 @@ const Connect = ({ callBack, text, icon }) => {
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
-        <Icon name={icon} style={styles.buttonText}>
-          <Text style={styles.buttonText}>{text}</Text>
-        </Icon>
+        <Text style={styles.buttonText}>⚠️ Disconnect ⚠️</Text>
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -31,14 +28,14 @@ const styles = StyleSheet.create({
     fontFamily: "Gill Sans",
     textAlign: "center",
     padding: 15,
-    paddingVertical: 15,
+    paddingVertical: 10,
     color: "black"
   },
   button: {
-    marginBottom: 50,
-    width: 250
+    marginBottom: 0,
+    width: 300
     // height: 300
   }
 });
 
-export default Connect;
+export default Disconnect;

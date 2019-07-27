@@ -19,6 +19,7 @@
     "react-native-elements": "^1.1.0",
     "react-native-gesture-handler": "^1.3.0",
     "react-native-gifted-chat": "^0.9.11",
+    "react-native-in-app-notification": "^3.0.0",
     "react-native-linear-gradient": "^2.5.4",
     "react-native-qrcode": "github:wanxsb/react-native-qrcode#1a08f9cedcb747fd230be717fe815c686e4427cb",
     "react-native-qrcode-scanner": "^1.2.1",

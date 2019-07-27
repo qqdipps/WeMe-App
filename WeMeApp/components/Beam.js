@@ -13,12 +13,12 @@ const Beam = props => {
     <TouchableOpacity onPress={handleButtonPress} style={styles.button}>
       {console.log(props)}
       <LinearGradient
-        colors={["#8f7386", "#200016"]}
+        colors={["#e0e8e1", "#949FA0"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
-        <Icon name="envelope" style={styles.buttonText}>
-          <Text style={styles.buttonText}>{props.text}</Text>
+        <Icon name="" style={styles.buttonText}>
+          <Text style={styles.buttonText}> {props.text}</Text>
         </Icon>
       </LinearGradient>
     </TouchableOpacity>
@@ -32,11 +32,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 15,
     paddingVertical: 10,
-    color: "white"
+    color: "black"
   },
   button: {
     marginBottom: 50,
-    width: 250
+    borderStyle: "solid",
+    borderWidth: 2,
+    borderRadius: 2
+    // width:
     // height: 300
   }
 });

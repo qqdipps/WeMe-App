@@ -13,7 +13,7 @@ const Beams = ({ callBack, text }) => {
   return (
     <TouchableOpacity onPress={handleButtonPress} style={styles.button}>
       <LinearGradient
-        colors={["#8f7386", "#200016"]}
+        colors={["#F3ebee", "#A7b4ae"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
       >
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 15,
     paddingVertical: 10,
-    color: "white"
+    color: "black"
   },
   button: {
     marginBottom: 50,

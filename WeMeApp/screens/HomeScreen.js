@@ -13,9 +13,30 @@ class HomeScreen extends Component {
       showOverlay: false,
       blurEffect: 0,
       showComponents: true,
-      newConnection: { show: false }
+      newConnection: { show: false },
+      displayName: ""
     };
   }
+
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerTitle: "Home",
+      headerRight: (
+        <View style={{ marginRight: 30 }}>
+          <Icon
+            name="bars"
+            size={30}
+            color="white"
+            onPress={() => {
+              navigation.navigate("UserSettings", {
+                displayName: navigation.getParam("displayName", "garble")
+              });
+            }}
+          />
+        </View>
+      )
+    };
+  };
 
   componentDidMount = () => {
     const newConnection = this.props.navigation.getParam(
@@ -43,6 +64,13 @@ class HomeScreen extends Component {
     }
   };
 
+  componentDidUpdate = () => {
+    if (this.state.displayName) {
+      this.props.navigation.setParams({ displayName: this.state.displayName });
+      this.setState({ displayName: undefined });
+    }
+  };
+
   blurBackground = () => {
     this.setState({
       blurEffect: 5,
@@ -67,6 +95,10 @@ class HomeScreen extends Component {
     });
   };
 
+  setDisplayName = displayName => {
+    this.setState({ displayName: displayName });
+  };
+
   navigateScreen = screen => {
     this.props.navigation.navigate(screen);
     this.setState({
@@ -77,17 +109,21 @@ class HomeScreen extends Component {
   };
 
   render() {
-    const { schema } = this.props.navigation.getScreenProps();
+    const { schema, notify } = this.props.navigation.getScreenProps();
     const { showComponents, showOverlay, newConnection } = this.state;
     return (
       <ImageBackground
         blurRadius={this.state.blurEffect}
-        source={require("../images/night-sky-569319_640.jpg")}
+        source={require("../images/saturn-1463606_640.jpg")}
         style={{ width: "100%", height: "100%" }}
       >
         {showComponents && (
           <View style={styles.layout}>
-            <DisplayName schema={schema} />
+            <DisplayName
+              schema={schema}
+              notify={notify}
+              setStateDisplayNameCallback={this.setDisplayName}
+            />
             <Connect
               style={styles.connect}
               callBack={this.blurBackground}
@@ -103,7 +139,7 @@ class HomeScreen extends Component {
           </View>
         )}
         {showOverlay && (
-          <Overlay isVisible height={380} overlayBackgroundColor={"#9498aa"}>
+          <Overlay isVisible height={380} overlayBackgroundColor={"#D0D7D7"}>
             <View style={styles.overlayLayout}>
               <Icon
                 name="times"
@@ -135,7 +171,7 @@ class HomeScreen extends Component {
         )}
 
         {newConnection.show && (
-          <Overlay isVisible height={380} overlayBackgroundColor={"#9498aa"}>
+          <Overlay isVisible height={380} overlayBackgroundColor={"#D0D7D7"}>
             <View style={styles.overlayLayout}>
               <Icon
                 name="times"
@@ -172,6 +208,9 @@ const styles = StyleSheet.create({
   myButton: {},
   xIcon: {
     alignSelf: "flex-end"
+  },
+  menuIcon: {
+    marginLeft: 50
   }
 });
 

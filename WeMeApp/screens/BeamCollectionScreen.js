@@ -1,12 +1,16 @@
 import React, { Component } from "react";
-import { FlatList, Text } from "react-native";
-import Beam from "../components/Beam";
+import { ListItem, Avatar } from "react-native-elements";
+import { ImageBackground, View, FlatList } from "react-native";
 
 class BeamCollectionScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = { beamCollection: undefined };
+    this.state = {
+      beamCollection: []
+    };
   }
+
+  static navigationOptions = {};
 
   componentDidMount = () => {
     const { schema, socket } = this.props.navigation.getScreenProps();
@@ -14,7 +18,11 @@ class BeamCollectionScreen extends Component {
       .then(realm => {
         const entries = realm.objects("ConnectionMessages");
         beamCollection = entries.map(entry => {
-          return entry;
+          return {
+            name: entry.sender.displayName,
+            subtitle: entry.sender.notes[0],
+            beamData: entry
+          };
         });
         this.setState({ beamCollection: beamCollection });
       })
@@ -27,21 +35,38 @@ class BeamCollectionScreen extends Component {
     });
   };
 
+  keyExtractor = (item, index) => index.toString();
+
+  renderItem = ({ item }) => (
+    <ListItem
+      title={item.name}
+      subtitle={item.subtitle}
+      topDivider
+      bottomDivider
+      leftAvatar={
+        <Avatar
+          size="small"
+          rounded
+          title={item.name.substring(0, 2).toUpperCase()}
+          activeOpacity={0.7}
+        />
+      }
+      onPress={() => this.handleNavigateBeamUI(item.beamData)}
+    />
+  );
+
   render() {
     return (
-      <FlatList
-        data={this.state.beamCollection}
-        renderItem={({ item }) => (
-          <Beam
-            text={item.sender.displayName}
-            beamData={item}
-            callBack={this.handleNavigateBeamUI}
-          />
-        )}
-        keyExtractor={({ item }) => {
-          item;
-        }}
-      />
+      <ImageBackground
+        source={require("../images/carina-nebula-647114_640.jpg")}
+        style={{ width: "100%", height: "100%" }}
+      >
+        <FlatList
+          keyExtractor={this.keyExtractor}
+          data={this.state.beamCollection}
+          renderItem={this.renderItem}
+        />
+      </ImageBackground>
     );
   }
 }

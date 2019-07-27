@@ -7,6 +7,8 @@ class InitializeScreen extends Component {
     super(props);
   }
 
+  static navigationOptions = {};
+
   componentDidMount = () => {
     const {
       socket,
@@ -21,7 +23,7 @@ class InitializeScreen extends Component {
       .then(realm => {
         realm.write(() => {
           // for DEV ENV TB
-          realm.deleteAll();
+          // realm.deleteAll();
         });
 
         const user = realm.objects("UserSelf")[0];

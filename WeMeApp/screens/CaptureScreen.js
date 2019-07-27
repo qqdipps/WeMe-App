@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View } from "react-native";
+import { View, ImageBackground } from "react-native";
 import QrReader from "../components/QrReader";
 import { storeConnectionData } from "../functions/realmStore";
 import { createConnection } from "../functions/weMeConnections";
@@ -12,6 +12,8 @@ class CaptureScreen extends Component {
       connectionDisplayName: undefined
     };
   }
+
+  static navigationOptions = {};
 
   getQrData = qrData => {
     this.setState({
@@ -35,10 +37,12 @@ class CaptureScreen extends Component {
   };
 
   componentDidUpdate = () => {
-    const { schema, socket } = this.props.navigation.getScreenProps();
+    const { schema, socket, notify } = this.props.navigation.getScreenProps();
+    console.log(schema);
     createConnection(
       this.state.connectionId,
       this.handleNavigateOnConnect,
+      notify,
       schema,
       socket
     );
@@ -46,9 +50,14 @@ class CaptureScreen extends Component {
 
   render() {
     return (
-      <View>
-        <QrReader qrDataCallback={this.getQrData} />
-      </View>
+      <ImageBackground
+        source={require("../images/carina-nebula-647114_640.jpg")}
+        style={{ width: "100%", height: "100%" }}
+      >
+        <View>
+          <QrReader qrDataCallback={this.getQrData} />
+        </View>
+      </ImageBackground>
     );
   }
 }
