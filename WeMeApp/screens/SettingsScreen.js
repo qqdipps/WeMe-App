@@ -6,6 +6,7 @@ import { Input, Overlay } from "react-native-elements";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import Disconnect from "../components/Disconnect";
 import DeleteHistory from "../components/DeleteHistory";
+import Notes from "../components/Notes";
 
 class SettingsScreen extends Component {
   static navigationOptions = {};
@@ -18,6 +19,10 @@ class SettingsScreen extends Component {
       notes: this.props.navigation.getParam("notes", "")
     };
   }
+
+  componentDidMount = () => {
+    console.log("NOTES:", this.state.notes);
+  };
 
   render() {
     return (
@@ -45,23 +50,7 @@ class SettingsScreen extends Component {
               }}
               onChangeText={text => this.setState({ displayName: text })}
             />
-            {!this.state.isUser && (
-              <Input
-                label="Add User Note:"
-                placeholder={this.props.navigation.getParam("notes", "")}
-                leftIcon={<Icon name="clipboard" size={40} color="black" />}
-                leftIconContainerStyle={{ marginRight: 5 }}
-                containerStyle={{
-                  height: 300,
-                  width: 300
-                }}
-                onChangeText={text => {
-                  const notes = this.state.notes;
-                  notes.push(text);
-                  this.setState({ notes: notes });
-                }}
-              />
-            )}
+            {!this.state.isUser && <Notes notes={this.state.notes} />}
           </View>
           {!this.state.isUser && (
             <View>
