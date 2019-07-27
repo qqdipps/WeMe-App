@@ -29,6 +29,15 @@ const rootStack = createStackNavigator(
         fontWeight: "bold"
       }
     }
+  },
+  {
+    transitionConfig: () => ({
+      transitionSpec: {
+        duration: 500,
+        easing: Easing.out(Easing.poly(4)),
+        timing: Animated.timing
+      }
+    })
   }
 );
 

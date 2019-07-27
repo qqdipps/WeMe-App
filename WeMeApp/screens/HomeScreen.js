@@ -13,12 +13,29 @@ class HomeScreen extends Component {
       showOverlay: false,
       blurEffect: 0,
       showComponents: true,
-      newConnection: { show: false }
+      newConnection: { show: false },
+      displayName: ""
     };
   }
 
-  static navigationOptions = {
-    title: "Home"
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerTitle: "Home",
+      headerRight: (
+        <View style={{ marginRight: 30 }}>
+          <Icon
+            name="bars"
+            size={30}
+            color="white"
+            onPress={() => {
+              navigation.navigate("Settings", {
+                displayName: navigation.getParam("displayName", "garble")
+              });
+            }}
+          />
+        </View>
+      )
+    };
   };
 
   componentDidMount = () => {
@@ -47,6 +64,13 @@ class HomeScreen extends Component {
     }
   };
 
+  componentDidUpdate = () => {
+    if (this.state.displayName) {
+      this.props.navigation.setParams({ displayName: this.state.displayName });
+      this.setState({ displayName: undefined });
+    }
+  };
+
   blurBackground = () => {
     this.setState({
       blurEffect: 5,
@@ -71,6 +95,10 @@ class HomeScreen extends Component {
     });
   };
 
+  setDisplayName = displayName => {
+    this.setState({ displayName: displayName });
+  };
+
   navigateScreen = screen => {
     this.props.navigation.navigate(screen);
     this.setState({
@@ -91,7 +119,11 @@ class HomeScreen extends Component {
       >
         {showComponents && (
           <View style={styles.layout}>
-            <DisplayName schema={schema} notify={notify} />
+            <DisplayName
+              schema={schema}
+              notify={notify}
+              setStateDisplayNameCallback={this.setDisplayName}
+            />
             <Connect
               style={styles.connect}
               callBack={this.blurBackground}
@@ -176,6 +208,9 @@ const styles = StyleSheet.create({
   myButton: {},
   xIcon: {
     alignSelf: "flex-end"
+  },
+  menuIcon: {
+    marginLeft: 50
   }
 });
 

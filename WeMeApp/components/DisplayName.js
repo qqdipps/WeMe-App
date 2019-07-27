@@ -22,9 +22,11 @@ class DisplayName extends Component {
       deleteRealmIfMigrationNeeded: true
     })
       .then(realm => {
+        const displayName = realm.objects("UserSelf")[0].displayName;
         this.setState({
-          displayName: realm.objects("UserSelf")[0].displayName
+          displayName: displayName
         });
+        this.props.setStateDisplayNameCallback(displayName);
       })
       .catch(error => {});
   };
