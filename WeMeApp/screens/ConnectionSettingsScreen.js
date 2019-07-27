@@ -8,6 +8,7 @@ import DeleteHistory from "../components/DeleteHistory";
 import Notes from "../components/Notes";
 import SettingBtn from "../components/SettingBtn";
 import { disconnect } from "../functions/disconnectScript";
+import { deleteMessageHx } from "../functions/realmStore";
 
 class SettingsScreen extends Component {
   static navigationOptions = {};
@@ -64,6 +65,10 @@ class SettingsScreen extends Component {
     );
   };
 
+  deleteAction = () => {
+    deleteMessageHx(this.props.navigation.getParam("connectionId", ""));
+  };
+
   xOverlay = () => {
     this.setState({
       showOverlay: false,
@@ -86,7 +91,8 @@ class SettingsScreen extends Component {
       showComponents,
       showOverlay,
       disconnectWarning,
-      overlayAction
+      overlayAction,
+      deleteWarning
     } = this.state;
     return (
       <ImageBackground
@@ -122,7 +128,11 @@ class SettingsScreen extends Component {
                   this.viewOverlay(disconnectWarning, this.disconnectAction)
                 }
               />
-              <DeleteHistory />
+              <DeleteHistory
+                callBack={() =>
+                  this.viewOverlay(deleteWarning, this.deleteAction)
+                }
+              />
             </View>
           </View>
         )}

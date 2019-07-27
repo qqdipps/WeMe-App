@@ -164,17 +164,19 @@ export function deleteMessageHx(connectionId) {
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
     .then(realm => {
       realm.write(() => {
-        const connectionMessage = realm
-          .objects("ConnectionMessages")
-          .filtered(`connectionId == ${connectionId}`)[0];
-        for (let message of connectionMessage.messages) {
-          realm.delete(message);
-        }
+        const connectionMessages = realm.objectForPrimaryKey(
+          "ConnectionMessages",
+          connectionId
+        );
+        const messages = connectionMessages.messages;
+        realm.delete(messages);
+
         const message = realm.create("Message", {
-          self: `${isSelf}`,
+          self: true,
           contents: `History has been cleared`,
           dateTime: new Date(Date.now()).toString()
         });
+        messages.push(message);
       });
     })
     .catch(error => {
