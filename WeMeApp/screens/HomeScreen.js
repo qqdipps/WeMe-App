@@ -28,7 +28,7 @@ class HomeScreen extends Component {
             size={30}
             color="white"
             onPress={() => {
-              navigation.navigate("Settings", {
+              navigation.navigate("UserSettings", {
                 displayName: navigation.getParam("displayName", "garble")
               });
             }}

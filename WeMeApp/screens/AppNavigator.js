@@ -6,7 +6,8 @@ import SpawnScreen from "./SpawnScreen";
 import CaptureScreen from "./CaptureScreen";
 import BeamCollectionScreen from "./BeamCollectionScreen";
 import BeamUIScreen from "./BeamUIScreen";
-import SettingsScreen from "./SettingsScreen";
+import UserSettingsScreen from "./UserSettingsScreen";
+import ConnectionSettingsScreen from "./ConnectionSettingsScreen";
 
 const rootStack = createStackNavigator(
   {
@@ -17,7 +18,8 @@ const rootStack = createStackNavigator(
     Capture: { screen: CaptureScreen },
     BeamCollection: { screen: BeamCollectionScreen },
     BeamUI: { screen: BeamUIScreen },
-    Settings: { screen: SettingsScreen }
+    UserSettings: { screen: UserSettingsScreen },
+    ConnectionSettings: { screen: ConnectionSettingsScreen }
   },
   {
     defaultNavigationOptions: {

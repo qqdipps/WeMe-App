@@ -29,10 +29,6 @@ class BeamCollectionScreen extends Component {
       .catch(error => console.log("Beam collection Realm error:", error));
   };
 
-  // componentDidUpdate = () => {
-  //   console.log(this.state.beamCollection);
-  // };
-
   handleNavigateBeamUI = beamData => {
     this.props.navigation.navigate("BeamUI", {
       beamData: JSON.stringify(beamData)
@@ -52,7 +48,6 @@ class BeamCollectionScreen extends Component {
           size="small"
           rounded
           title={item.name.substring(0, 2).toUpperCase()}
-          onPress={() => console.log("Works!")}
           activeOpacity={0.7}
         />
       }

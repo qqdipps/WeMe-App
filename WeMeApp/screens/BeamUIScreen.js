@@ -23,7 +23,8 @@ class BeamUIScreen extends Component {
     this.props.navigation.setParams({
       displayName: beamData.sender.displayName,
       isUser: false,
-      notes: beamData.sender.notes
+      notes: beamData.sender.notes,
+      connectionId: beamData.connectionId
     });
   }
 
@@ -37,10 +38,11 @@ class BeamUIScreen extends Component {
             size={30}
             color="white"
             onPress={() => {
-              navigation.navigate("Settings", {
+              navigation.navigate("ConnectionSettings", {
                 displayName: navigation.getParam("displayName", "garble"),
                 isUser: navigation.getParam("isUser", true),
-                notes: navigation.getParam("notes", "")
+                notes: navigation.getParam("notes", ""),
+                connectionId: navigation.getParam("connectionId", "")
               });
             }}
           />

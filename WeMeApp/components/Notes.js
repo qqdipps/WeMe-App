@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { ListItem, Input } from "react-native-elements";
-import { View, FlatList, Text } from "react-native";
+import { View, FlatList, Text, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import AddNote from "./AddNote";
+import SettingBtn from "./SettingBtn";
 
 class Notes extends Component {
   constructor(props) {
@@ -33,10 +33,10 @@ class Notes extends Component {
 
   render() {
     return (
-      <View>
-        <Text>Notes: </Text>
+      <View style={styles.view}>
         <Input
-          placeholder="Add a user note..."
+          label="Add a note"
+          placeholder="..."
           leftIcon={<Icon name="clipboard" size={40} color="black" />}
           leftIconContainerStyle={{ marginRight: 5 }}
           containerStyle={{
@@ -47,8 +47,9 @@ class Notes extends Component {
             this.setState({ newNote: text });
           }}
         />
-        <AddNote />
-        <View style={{ height: 150 }}>
+        <SettingBtn text={"Save"} colors={["white", "#94f5ee"]} />
+        <View style={{ height: 150, width: 300 }}>
+          <Text>Notes: </Text>
           <FlatList
             keyExtractor={this.keyExtractor}
             data={this.state.notes}
@@ -61,3 +62,12 @@ class Notes extends Component {
 }
 
 export default Notes;
+
+const styles = StyleSheet.create({
+  view: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    height: 400
+  }
+});

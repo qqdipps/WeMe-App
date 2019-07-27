@@ -3,20 +3,21 @@ import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const AddNote = ({ callBack }) => {
+const SettingBtn = props => {
   const handleButtonPress = () => {
     this._onPressButton;
-    callBack();
+    props.callBack();
   };
 
   return (
-    <TouchableOpacity onPress={handleButtonPress} style={styles.button}>
+    <TouchableOpacity onPress={handleButtonPress}>
       <LinearGradient
-        colors={["white", "#94f5ee"]}
+        colors={props.colors}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
+        style={styles.button}
       >
-        <Text style={styles.buttonText}>➕ Add Note</Text>
+        <Text style={styles.buttonText}>{props.text}</Text>
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -24,7 +25,7 @@ const AddNote = ({ callBack }) => {
 
 const styles = StyleSheet.create({
   buttonText: {
-    fontSize: 14,
+    fontSize: 20,
     fontFamily: "Gill Sans",
     textAlign: "center",
     padding: 15,
@@ -32,10 +33,11 @@ const styles = StyleSheet.create({
     color: "black"
   },
   button: {
-    // marginBottom: 50,
-    width: 150
-    // height: 300
+    width: 150,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#fff"
   }
 });
 
-export default AddNote;
+export default SettingBtn;

@@ -50,11 +50,18 @@ class SettingsScreen extends Component {
               }}
               onChangeText={text => this.setState({ displayName: text })}
             />
-            {!this.state.isUser && <Notes notes={this.state.notes} />}
+            {!this.state.isUser && (
+              <Notes style={styles.notes} notes={this.state.notes} />
+            )}
           </View>
           {!this.state.isUser && (
-            <View>
-              <Disconnect style={styles.disconnect} />
+            <View style={styles.disconnect}>
+              <Disconnect
+                connectionId={this.props.navigation.getParam(
+                  "connectionId",
+                  ""
+                )}
+              />
               <DeleteHistory />
             </View>
           )}
@@ -70,13 +77,20 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center"
   },
+  notes: {},
   card: {
     backgroundColor: "white",
     opacity: 0.8,
     marginTop: 20,
-    padding: 10
+    padding: 10,
+    height: 450
   },
-  disconnect: {},
+  disconnect: {
+    marginTop: 40,
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center"
+  },
   text: {
     fontSize: RFPercentage(7),
     color: "white",

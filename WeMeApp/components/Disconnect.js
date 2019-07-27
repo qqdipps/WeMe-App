@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     color: "black"
   },
   button: {
-    marginBottom: 50,
+    marginBottom: 0,
     width: 300
     // height: 300
   }
