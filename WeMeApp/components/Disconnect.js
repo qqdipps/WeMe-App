@@ -10,11 +10,12 @@ const Disconnect = ({ callBack, text }) => {
   };
 
   return (
-    <TouchableOpacity onPress={handleButtonPress} style={styles.button}>
+    <TouchableOpacity onPress={handleButtonPress}>
       <LinearGradient
         colors={["#F3ebee", "#A7b4ae"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
+        style={styles.button}
       >
         <Text style={styles.buttonText}>⚠️ Disconnect ⚠️</Text>
       </LinearGradient>
@@ -33,8 +34,10 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 0,
-    width: 300
-    // height: 300
+    width: 300,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#fff"
   }
 });
 

@@ -9,11 +9,12 @@ const MyButton = ({ callBack, text }) => {
   };
 
   return (
-    <TouchableOpacity onPress={handleButtonPress} style={styles.button}>
+    <TouchableOpacity onPress={handleButtonPress}>
       <LinearGradient
         colors={["#Ffa163", "#c10087"]}
         start={{ x: 0, y: 0.5 }}
         end={{ x: 1, y: 0.5 }}
+        style={styles.button}
       >
         <Text style={styles.buttonText}>{text}</Text>
       </LinearGradient>
@@ -31,7 +32,10 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 150,
-    width: 250
+    width: 250,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#fff"
   }
 });
 

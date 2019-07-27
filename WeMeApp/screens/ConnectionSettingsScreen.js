@@ -55,18 +55,26 @@ class SettingsScreen extends Component {
   };
 
   disconnectAction = () => {
-    const { schema, socket } = this.props.navigation.getScreenProps();
-
-    return disconnect(
+    const {
+      schema,
+      socket,
+      notifyDisconnect
+    } = this.props.navigation.getScreenProps();
+    disconnect(
       this.props.navigation.getParam("connectionId", ""),
       this.state.displayName,
       schema,
       socket
     );
+    this.navigateScreen("Home");
+    notifyDisconnect(this.state.displayName);
   };
 
   deleteAction = () => {
+    const { notifyDeleteHx } = this.props.navigation.getScreenProps();
     deleteMessageHx(this.props.navigation.getParam("connectionId", ""));
+    this.navigateScreen("Home");
+    notifyDeleteHx(this.state.displayName);
   };
 
   xOverlay = () => {
@@ -150,7 +158,7 @@ class SettingsScreen extends Component {
               <Text>Would you like to continue? </Text>
               <SettingBtn
                 text={"Yes"}
-                colors={["white", "#94f5ee"]}
+                colors={["gray", "red"]}
                 callBack={overlayAction}
               />
             </View>
@@ -198,38 +206,3 @@ const styles = StyleSheet.create({
 });
 
 export default SettingsScreen;
-
-{
-  /* <View style={styles.view}>
-<Text numberOfLines={1} style={styles.text}>
-  {this.state.displayName}
-</Text>
-</View>
-<Input
-label="Change Display Name:"
-placeholder={this.props.navigation.getParam("displayName", "")}
-leftIcon={<Icon name="user" size={40} color="black" />}
-leftIconContainerStyle={{ marginRight: 5 }}
-containerStyle={{
-  marginTop: 150,
-  backgroundColor: "white",
-  width: 300,
-  height: 200
-}}
-onChangeText={text => this.setState({ displayName: text })}
-/>
-{!this.state.isUser && (
-<Input
-  label="Add User Note:"
-  placeholder={this.props.navigation.getParam("notes", "")}
-  leftIcon={<Icon name="clipboard" size={40} color="black" />}
-  leftIconContainerStyle={{ marginRight: 5 }}
-  containerStyle={{
-    height: 300,
-    backgroundColor: "white",
-    width: 300
-  }}
-  onChangeText={text => this.setState({ notes: text })}
-/>
-)} */
-}

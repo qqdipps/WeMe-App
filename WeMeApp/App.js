@@ -94,6 +94,20 @@ class App extends Component {
     });
   };
 
+  notifyDeleteHx = displayName => {
+    this.props.showNotification({
+      title: "🚀 Beam History Cleared",
+      message: `for ${displayName}.`
+    });
+  };
+
+  notifyDisconnect = displayName => {
+    this.props.showNotification({
+      title: "🚀 Disconnected",
+      message: `GoodBye, ${displayName}!`
+    });
+  };
+
   render() {
     const { schema, socket, channels, userId } = this.state;
     return (
@@ -112,7 +126,9 @@ class App extends Component {
             initializeChannelsState: this.initializeChannelsState,
             addChannelState: this.addChannel,
             setUserId: this.setUserId,
-            notify: this.notify
+            notify: this.notify,
+            notifyDeleteHx: this.notifyDeleteHx,
+            notifyDisconnect: this.notifyDisconnect
           }}
         />
       </Fragment>

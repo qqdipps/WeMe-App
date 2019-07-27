@@ -11,11 +11,12 @@ const Beams = ({ callBack, text }) => {
   };
 
   return (
-    <TouchableOpacity onPress={handleButtonPress} style={styles.button}>
+    <TouchableOpacity onPress={handleButtonPress}>
       <LinearGradient
         colors={["#F3ebee", "#A7b4ae"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
+        style={styles.button}
       >
         <Icon name="envelope" style={styles.buttonText}>
           <Text style={styles.buttonText}> BEAMS</Text>
@@ -36,8 +37,10 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 50,
-    width: 250
-    // height: 300
+    width: 250,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#fff"
   }
 });
 
