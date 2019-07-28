@@ -143,20 +143,24 @@ export function addMessage(connectionId, contents, isSelf) {
     });
 }
 
-export function updateSender(connectionId, displayName, notes) {
+export function updateSender(connectionId, displayName, note) {
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
     .then(realm => {
       realm.write(() => {
-        const connectionMessage = realm
-          .objects("ConnectionMessages")
-          .filtered(`connectionId == ${connectionId}`)[0];
-
-        connectionMessage.sender.notes = notes;
-        connectionMessage.sender.displayName = displayName;
+        const connectionMessages = realm.objectForPrimaryKey(
+          "ConnectionMessages",
+          connectionId
+        );
+        if (displayName) {
+          connectionMessages.sender.displayName = displayName;
+        }
+        if (note) {
+          connectionMessages.sender.notes.push(note);
+        }
       });
     })
     .catch(error => {
-      console.log("****ERROR: ", error);
+      console.log("****ERROR: updating sender notes or displayName", error);
     });
 }
 
@@ -164,17 +168,19 @@ export function deleteMessageHx(connectionId) {
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
     .then(realm => {
       realm.write(() => {
-        const connectionMessage = realm
-          .objects("ConnectionMessages")
-          .filtered(`connectionId == ${connectionId}`)[0];
-        for (let message of connectionMessage.messages) {
-          realm.delete(message);
-        }
+        const connectionMessages = realm.objectForPrimaryKey(
+          "ConnectionMessages",
+          connectionId
+        );
+        const messages = connectionMessages.messages;
+        realm.delete(messages);
+
         const message = realm.create("Message", {
-          self: `${isSelf}`,
+          self: true,
           contents: `History has been cleared`,
           dateTime: new Date(Date.now()).toString()
         });
+        messages.push(message);
       });
     })
     .catch(error => {
@@ -239,4 +245,44 @@ export function setInUseConnection(connectionId) {
     .catch(error => {
       console.log("****ERROR: Setting connection in use to true", error);
     });
+}
+
+export function addNote(connectionId, note) {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
+      realm.write(() => {
+        const connectionMessages = realm.objectForPrimaryKey(
+          "ConnectionMessages",
+          connectionId
+        );
+        connectionMessages.sender.notes.push(note);
+        console.log("note added: ", connectionMessages.sender.notes);
+      });
+    })
+    .catch(error => console.log("error saving note in realm", error));
+}
+
+export function deleteNote(connectionId, noteKey) {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
+    realm => {
+      const sender = realm.objectForPrimaryKey(
+        "ConnectionMessages",
+        connectionId
+      ).sender;
+
+      const notes = Object.keys(sender.notes)
+        .map(key => sender.notes[key])
+        .filter((note, i) => {
+          return i != noteKey;
+        });
+      realm.write(() => {
+        realm.delete(sender.notes);
+        console.log(sender.notes);
+        notes.forEach(note => {
+          sender.notes.push(note);
+        });
+      });
+      console.log(sender.notes);
+    }
+  );
 }

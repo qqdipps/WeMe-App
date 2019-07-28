@@ -30,12 +30,9 @@ export function disconnect(connectionId, displayName, schema, socket) {
     .then(response => console.log("Deleted connection on WeMe Api", response))
     .catch(error => console.log("error deleting connection WeMe api", error));
 
-  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
-    realm => {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
       realm.write(() => {
-        console.log("BEFORE", realm.objects("ConnectAES"));
-        console.log(realm.objects("ConnectionMessages"));
-        console.log(realm.objects("UserSelf"));
         const connectionAES = realm.objectForPrimaryKey(
           "ConnectAES",
           connectionId
@@ -53,6 +50,6 @@ export function disconnect(connectionId, displayName, schema, socket) {
         realm.delete(userSelf.channels);
         channels.forEach(channel => userSelf.channels.push(channel));
       });
-    }
-  );
+    })
+    .catch(error => console.log("Error in disconnect script (Realm)", error));
 }

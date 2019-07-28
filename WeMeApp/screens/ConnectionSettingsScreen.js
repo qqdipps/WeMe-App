@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, ImageBackground, View, Text } from "react-native";
+import { StyleSheet, ImageBackground, View, Text, Button } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Input, Overlay } from "react-native-elements";
 import { RFPercentage } from "react-native-responsive-fontsize";
@@ -8,9 +8,23 @@ import DeleteHistory from "../components/DeleteHistory";
 import Notes from "../components/Notes";
 import SettingBtn from "../components/SettingBtn";
 import { disconnect } from "../functions/disconnectScript";
-
+import { deleteMessageHx } from "../functions/realmStore";
+import { HeaderBackButton } from "react-navigation";
 class SettingsScreen extends Component {
-  static navigationOptions = {};
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerLeft: (
+        <HeaderBackButton
+          tintColor={"white"}
+          onPress={() =>
+            navigation.navigate("BeamUI", {
+              displayName: navigation.getParam("displayName", "")
+            })
+          }
+        />
+      )
+    };
+  };
 
   constructor(props) {
     super(props);
@@ -35,12 +49,28 @@ class SettingsScreen extends Component {
       overlayWarning: undefined,
       overlayAction: () => {},
       blurEffect: 0,
-      showComponents: true
+      showComponents: true,
+      newDisplayName: undefined,
+      update: false
     };
   }
 
   componentDidMount = () => {
     console.log("NOTES:", this.state.notes);
+  };
+
+  componentDidUpdate = () => {
+    if (this.state.newDisplayName && this.state.update) {
+      console.log("updating navigation params");
+      this.props.navigation.setParams({
+        displayName: this.state.newDisplayName
+      });
+      this.setState({ update: false });
+    }
+  };
+
+  updatedDisplayName = () => {
+    this.setState({ update: true });
   };
 
   viewOverlay = (warning, action) => {
@@ -54,14 +84,26 @@ class SettingsScreen extends Component {
   };
 
   disconnectAction = () => {
-    const { schema, socket } = this.props.navigation.getScreenProps();
-
-    return disconnect(
+    const {
+      schema,
+      socket,
+      notifyDisconnect
+    } = this.props.navigation.getScreenProps();
+    disconnect(
       this.props.navigation.getParam("connectionId", ""),
       this.state.displayName,
       schema,
       socket
     );
+    this.navigateScreen("Home");
+    notifyDisconnect(this.state.displayName);
+  };
+
+  deleteAction = () => {
+    const { notifyDeleteHx } = this.props.navigation.getScreenProps();
+    deleteMessageHx(this.props.navigation.getParam("connectionId", ""));
+    this.navigateScreen("Home");
+    notifyDeleteHx(this.state.displayName);
   };
 
   xOverlay = () => {
@@ -86,7 +128,8 @@ class SettingsScreen extends Component {
       showComponents,
       showOverlay,
       disconnectWarning,
-      overlayAction
+      overlayAction,
+      deleteWarning
     } = this.state;
     return (
       <ImageBackground
@@ -97,7 +140,7 @@ class SettingsScreen extends Component {
         {showComponents && (
           <View style={styles.view}>
             <Text numberOfLines={1} style={styles.text}>
-              {this.state.displayName}
+              {this.state.newDisplayName || this.state.displayName}
             </Text>
             <View style={styles.card}>
               <Input
@@ -112,9 +155,18 @@ class SettingsScreen extends Component {
                   alignSelf: "center",
                   fontSize: 18
                 }}
-                onChangeText={text => this.setState({ displayName: text })}
+                onChangeText={text => this.setState({ newDisplayName: text })}
               />
-              <Notes style={styles.notes} notes={this.state.notes} />
+              <Notes
+                style={styles.notes}
+                notes={this.state.notes}
+                displayName={this.state.newDisplayName}
+                connectionId={this.props.navigation.getParam(
+                  "connectionId",
+                  ""
+                )}
+                updateCallBack={this.updatedDisplayName}
+              />
             </View>
             <View style={styles.disconnect}>
               <Disconnect
@@ -122,7 +174,11 @@ class SettingsScreen extends Component {
                   this.viewOverlay(disconnectWarning, this.disconnectAction)
                 }
               />
-              <DeleteHistory />
+              <DeleteHistory
+                callBack={() =>
+                  this.viewOverlay(deleteWarning, this.deleteAction)
+                }
+              />
             </View>
           </View>
         )}
@@ -140,7 +196,7 @@ class SettingsScreen extends Component {
               <Text>Would you like to continue? </Text>
               <SettingBtn
                 text={"Yes"}
-                colors={["white", "#94f5ee"]}
+                colors={["gray", "red"]}
                 callBack={overlayAction}
               />
             </View>
@@ -188,38 +244,3 @@ const styles = StyleSheet.create({
 });
 
 export default SettingsScreen;
-
-{
-  /* <View style={styles.view}>
-<Text numberOfLines={1} style={styles.text}>
-  {this.state.displayName}
-</Text>
-</View>
-<Input
-label="Change Display Name:"
-placeholder={this.props.navigation.getParam("displayName", "")}
-leftIcon={<Icon name="user" size={40} color="black" />}
-leftIconContainerStyle={{ marginRight: 5 }}
-containerStyle={{
-  marginTop: 150,
-  backgroundColor: "white",
-  width: 300,
-  height: 200
-}}
-onChangeText={text => this.setState({ displayName: text })}
-/>
-{!this.state.isUser && (
-<Input
-  label="Add User Note:"
-  placeholder={this.props.navigation.getParam("notes", "")}
-  leftIcon={<Icon name="clipboard" size={40} color="black" />}
-  leftIconContainerStyle={{ marginRight: 5 }}
-  containerStyle={{
-    height: 300,
-    backgroundColor: "white",
-    width: 300
-  }}
-  onChangeText={text => this.setState({ notes: text })}
-/>
-)} */
-}

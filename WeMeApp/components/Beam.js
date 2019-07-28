@@ -36,11 +36,9 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 50,
-    borderStyle: "solid",
-    borderWidth: 2,
-    borderRadius: 2
-    // width:
-    // height: 300
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#fff"
   }
 });
 
