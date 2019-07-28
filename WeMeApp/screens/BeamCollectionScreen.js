@@ -13,15 +13,17 @@ class BeamCollectionScreen extends Component {
   static navigationOptions = {};
 
   componentDidMount = () => {
+    console.log(this.state);
     const { schema, socket } = this.props.navigation.getScreenProps();
     Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
       .then(realm => {
         const entries = realm.objects("ConnectionMessages");
-        beamCollection = entries.map(entry => {
+        beamCollection = entries.map((entry, i) => {
           return {
             name: entry.sender.displayName,
             subtitle: entry.sender.notes[0],
-            beamData: entry
+            beamData: entry,
+            i: i
           };
         });
         this.setState({ beamCollection: beamCollection });
@@ -29,9 +31,10 @@ class BeamCollectionScreen extends Component {
       .catch(error => console.log("Beam collection Realm error:", error));
   };
 
-  handleNavigateBeamUI = beamData => {
+  handleNavigateBeamUI = (beamData, i) => {
     this.props.navigation.navigate("BeamUI", {
-      beamData: JSON.stringify(beamData)
+      beamData: JSON.stringify(beamData),
+      i: i
     });
   };
 
@@ -51,7 +54,7 @@ class BeamCollectionScreen extends Component {
           activeOpacity={0.7}
         />
       }
-      onPress={() => this.handleNavigateBeamUI(item.beamData)}
+      onPress={() => this.handleNavigateBeamUI(item.beamData, item.i)}
     />
   );
 

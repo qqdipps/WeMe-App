@@ -6,6 +6,7 @@ import { GiftedChat, Bubble } from "react-native-gifted-chat";
 import { addMessage } from "../functions/realmStore";
 import { sendMessage, getChannel } from "../functions/weMeConnections";
 import { decryptMessage } from "../functions/AESfunctions";
+import { HeaderBackButton } from "react-navigation";
 
 class BeamUIScreen extends Component {
   constructor(props) {
@@ -30,7 +31,7 @@ class BeamUIScreen extends Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      headerTitle: navigation.getParam("displayName", "garble"),
+      headerTitle: navigation.getParam("displayName", ""),
       headerRight: (
         <View style={{ marginRight: 30 }}>
           <Icon
@@ -39,19 +40,32 @@ class BeamUIScreen extends Component {
             color="white"
             onPress={() => {
               navigation.navigate("ConnectionSettings", {
-                displayName: navigation.getParam("displayName", "garble"),
+                displayName: navigation.getParam("displayName", ""),
                 isUser: navigation.getParam("isUser", true),
                 notes: navigation.getParam("notes", ""),
-                connectionId: navigation.getParam("connectionId", "")
+                connectionId: navigation.getParam("connectionId", ""),
+                beamData: navigation.getParam("beamData", "")
               });
             }}
           />
         </View>
+      ),
+      headerLeft: (
+        <HeaderBackButton
+          tintColor={"white"}
+          onPress={() =>
+            navigation.navigate("BeamCollection", {
+              displayName: navigation.getParam("displayName", ""),
+              i: navigation.getParam("i", -1)
+            })
+          }
+        />
       )
     };
   };
 
   componentDidMount = () => {
+    console.log("I mounted");
     this.loadMessages();
     this.state.channel
       .join()
@@ -68,7 +82,6 @@ class BeamUIScreen extends Component {
     const { userId, notify } = this.props.navigation.getScreenProps();
     this.state.channel.on("shout", msg => {
       if (userId !== msg.userId) {
-        console.log("HERE IS MY NEW MESSAGE=>, ", msg, "YOYOYOYOYOYO");
         Realm.open({
           schema: this.props.navigation.getScreenProps().schema,
           deleteRealmIfMigrationNeeded: true
@@ -88,10 +101,8 @@ class BeamUIScreen extends Component {
 
             decryptMessage(msg.contents, key)
               .then(message => {
-                console.log("Message received in chat UI:", msg, message);
                 addMessage(msg.connectionId, message, false);
                 const messages = [this.readMessage(message)];
-                console.log("HERE IS MY NEW MESSAGE=>, ", messages);
                 this.setState(previousState => ({
                   messages: GiftedChat.append(previousState.messages, messages)
                 }));

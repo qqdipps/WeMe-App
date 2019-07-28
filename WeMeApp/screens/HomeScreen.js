@@ -34,7 +34,8 @@ class HomeScreen extends Component {
             }}
           />
         </View>
-      )
+      ),
+      headerLeft: <Icon name="" />
     };
   };
 

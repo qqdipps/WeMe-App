@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, ImageBackground, View, Text } from "react-native";
+import { StyleSheet, ImageBackground, View, Text, Button } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Input, Overlay } from "react-native-elements";
 import { RFPercentage } from "react-native-responsive-fontsize";
@@ -9,9 +9,22 @@ import Notes from "../components/Notes";
 import SettingBtn from "../components/SettingBtn";
 import { disconnect } from "../functions/disconnectScript";
 import { deleteMessageHx } from "../functions/realmStore";
-
+import { HeaderBackButton } from "react-navigation";
 class SettingsScreen extends Component {
-  static navigationOptions = {};
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerLeft: (
+        <HeaderBackButton
+          tintColor={"white"}
+          onPress={() =>
+            navigation.navigate("BeamUI", {
+              displayName: navigation.getParam("displayName", "")
+            })
+          }
+        />
+      )
+    };
+  };
 
   constructor(props) {
     super(props);
@@ -36,12 +49,28 @@ class SettingsScreen extends Component {
       overlayWarning: undefined,
       overlayAction: () => {},
       blurEffect: 0,
-      showComponents: true
+      showComponents: true,
+      newDisplayName: undefined,
+      update: false
     };
   }
 
   componentDidMount = () => {
     console.log("NOTES:", this.state.notes);
+  };
+
+  componentDidUpdate = () => {
+    if (this.state.newDisplayName && this.state.update) {
+      console.log("updating navigation params");
+      this.props.navigation.setParams({
+        displayName: this.state.newDisplayName
+      });
+      this.setState({ update: false });
+    }
+  };
+
+  updatedDisplayName = () => {
+    this.setState({ update: true });
   };
 
   viewOverlay = (warning, action) => {
@@ -111,7 +140,7 @@ class SettingsScreen extends Component {
         {showComponents && (
           <View style={styles.view}>
             <Text numberOfLines={1} style={styles.text}>
-              {this.state.displayName}
+              {this.state.newDisplayName || this.state.displayName}
             </Text>
             <View style={styles.card}>
               <Input
@@ -126,9 +155,18 @@ class SettingsScreen extends Component {
                   alignSelf: "center",
                   fontSize: 18
                 }}
-                onChangeText={text => this.setState({ displayName: text })}
+                onChangeText={text => this.setState({ newDisplayName: text })}
               />
-              <Notes style={styles.notes} notes={this.state.notes} />
+              <Notes
+                style={styles.notes}
+                notes={this.state.notes}
+                displayName={this.state.newDisplayName}
+                connectionId={this.props.navigation.getParam(
+                  "connectionId",
+                  ""
+                )}
+                updateCallBack={this.updatedDisplayName}
+              />
             </View>
             <View style={styles.disconnect}>
               <Disconnect
