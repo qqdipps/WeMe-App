@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { StyleSheet, ImageBackground, View, Text, Button } from "react-native";
+import {
+  StyleSheet,
+  ImageBackground,
+  View,
+  Text,
+  Button,
+  ScrollView
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Input, Overlay } from "react-native-elements";
 import { RFPercentage } from "react-native-responsive-fontsize";
@@ -10,6 +17,7 @@ import SettingBtn from "../components/SettingBtn";
 import { disconnect } from "../functions/disconnectScript";
 import { deleteMessageHx } from "../functions/realmStore";
 import { HeaderBackButton } from "react-navigation";
+
 class SettingsScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -137,71 +145,76 @@ class SettingsScreen extends Component {
         source={require("../images/carina-nebula-647114_640.jpg")}
         style={{ width: "100%", height: "100%" }}
       >
-        {showComponents && (
-          <View style={styles.view}>
-            <Text numberOfLines={1} style={styles.text}>
-              {this.state.newDisplayName || this.state.displayName}
-            </Text>
-            <View style={styles.card}>
-              <Input
-                label="Change Display Name:"
-                placeholder={this.props.navigation.getParam("displayName", "")}
-                leftIcon={<Icon name="user" size={40} color="black" />}
-                leftIconContainerStyle={{ marginRight: 5 }}
-                containerStyle={{
-                  padding: 10,
-                  width: 300,
-                  height: 100,
-                  alignSelf: "center",
-                  fontSize: 18
-                }}
-                onChangeText={text => this.setState({ newDisplayName: text })}
-              />
-              <Notes
-                style={styles.notes}
-                notes={this.state.notes}
-                displayName={this.state.newDisplayName}
-                connectionId={this.props.navigation.getParam(
-                  "connectionId",
-                  ""
-                )}
-                updateCallBack={this.updatedDisplayName}
-              />
+        <ScrollView nestedScrollEnabled>
+          {showComponents && (
+            <View style={styles.view}>
+              <Text numberOfLines={1} style={styles.text}>
+                {this.state.newDisplayName || this.state.displayName}
+              </Text>
+              <View style={styles.card}>
+                <Input
+                  label="Change Display Name:"
+                  placeholder={this.props.navigation.getParam(
+                    "displayName",
+                    ""
+                  )}
+                  leftIcon={<Icon name="user" size={40} color="black" />}
+                  leftIconContainerStyle={{ marginRight: 5 }}
+                  containerStyle={{
+                    padding: 10,
+                    width: 300,
+                    height: 100,
+                    alignSelf: "center",
+                    fontSize: 18
+                  }}
+                  onChangeText={text => this.setState({ newDisplayName: text })}
+                />
+                <Notes
+                  style={styles.notes}
+                  notes={this.state.notes}
+                  displayName={this.state.newDisplayName}
+                  connectionId={this.props.navigation.getParam(
+                    "connectionId",
+                    ""
+                  )}
+                  updateCallBack={this.updatedDisplayName}
+                />
+              </View>
+              <View style={styles.disconnect}>
+                <Disconnect
+                  callBack={() =>
+                    this.viewOverlay(disconnectWarning, this.disconnectAction)
+                  }
+                />
+                <DeleteHistory
+                  callBack={() =>
+                    this.viewOverlay(deleteWarning, this.deleteAction)
+                  }
+                />
+              </View>
             </View>
-            <View style={styles.disconnect}>
-              <Disconnect
-                callBack={() =>
-                  this.viewOverlay(disconnectWarning, this.disconnectAction)
-                }
-              />
-              <DeleteHistory
-                callBack={() =>
-                  this.viewOverlay(deleteWarning, this.deleteAction)
-                }
-              />
-            </View>
-          </View>
-        )}
-        {showOverlay && (
-          <Overlay isVisible height={380} overlayBackgroundColor={"#D0D7D7"}>
-            <View style={styles.overlayLayout}>
-              <Icon
-                name="times"
-                onPress={this.xOverlay}
-                size={40}
-                style={styles.xIcon}
-              />
-              <Text>Please be advised: </Text>
-              <Text>{this.state.overlayWarning} </Text>
-              <Text>Would you like to continue? </Text>
-              <SettingBtn
-                text={"Yes"}
-                colors={["gray", "red"]}
-                callBack={overlayAction}
-              />
-            </View>
-          </Overlay>
-        )}
+          )}
+          {showOverlay && (
+            <Overlay isVisible height={380} overlayBackgroundColor={"#D0D7D7"}>
+              <View style={styles.overlayLayout}>
+                <Icon
+                  name="times"
+                  onPress={this.xOverlay}
+                  size={40}
+                  style={styles.xIcon}
+                />
+                <Text>Please be advised: </Text>
+                <Text>{this.state.overlayWarning} </Text>
+                <Text>Would you like to continue? </Text>
+                <SettingBtn
+                  text={"Yes"}
+                  colors={["gray", "red"]}
+                  callBack={overlayAction}
+                />
+              </View>
+            </Overlay>
+          )}
+        </ScrollView>
       </ImageBackground>
     );
   }

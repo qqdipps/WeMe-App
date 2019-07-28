@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import QRCode from "react-native-qrcode";
+import QRCode from "react-native-qrcode-svg";
 import { View, StyleSheet } from "react-native";
 import {
   getChannel,
@@ -96,12 +96,7 @@ class QrGenerator extends Component {
       <View style={styles.MainContainer}>
         {console.log("QR code value", this.state.valueForQRCode)}
         {this.state.valueForQRCode !== "" && (
-          <QRCode
-            value={this.state.valueForQRCode}
-            size={400}
-            bgColor="#000"
-            fgColor="#fff"
-          />
+          <QRCode value={this.state.valueForQRCode} size={300} />
         )}
       </View>
     );
@@ -111,10 +106,13 @@ class QrGenerator extends Component {
 const styles = StyleSheet.create({
   MainContainer: {
     flex: 1,
-    margin: 50,
+    // backgroundColor: 'white',
     alignItems: "center",
-    paddingTop: 40
-    // width: 300
+    justifyContent: "center",
+    overflow: "hidden"
+
+    // backgroundColor: "red"
+    // width: 150s
   }
 });
 
