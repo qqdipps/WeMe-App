@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import { ListItem, Input } from "react-native-elements";
-import { View, FlatList, Text, StyleSheet } from "react-native";
+import {
+  View,
+  FlatList,
+  Text,
+  StyleSheet,
+  KeyboardAvoidingView
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import SettingBtn from "./SettingBtn";
 import { updateSender, deleteNote } from "../functions/realmStore";
@@ -71,38 +77,41 @@ class Notes extends Component {
     const notes = JSON.parse(JSON.stringify(this.state.notes));
     console.log("Notes rendered", notes);
     return (
-      <View style={styles.view}>
-        <Input
-          label="Add a Note:"
-          placeholder="text here"
-          leftIcon={<Icon name="clipboard" size={40} color="black" />}
-          leftIconContainerStyle={{ marginRight: 5 }}
-          containerStyle={{
-            height: 100,
-            width: 300
-          }}
-          value={this.state.newNote}
-          onChangeText={text => {
-            this.setState({ newNote: text });
-          }}
-          multiline
-          numberOfLines={3}
-        />
-        <SettingBtn
-          callBack={this.saveChanges}
-          text={"Save"}
-          colors={["white", "#94f5ee"]}
-        />
-        <View style={{ height: 150, width: 300 }}>
-          <Text style={{ fontWeight: "bold", marginLeft: 8 }}>Notes: </Text>
-          <FlatList
-            keyExtractor={this.keyExtractor}
-            data={notes.reverse()}
-            renderItem={this.renderItem}
-            extraDate={this.state.update}
+      <KeyboardAvoidingView>
+        <View style={styles.view}>
+          <Input
+            label="Add a Note:"
+            placeholder="text here"
+            leftIcon={<Icon name="clipboard" size={40} color="black" />}
+            leftIconContainerStyle={{ marginRight: 5 }}
+            containerStyle={{
+              height: 100,
+              width: 300
+            }}
+            value={this.state.newNote}
+            onChangeText={text => {
+              this.setState({ newNote: text });
+            }}
+            multiline
+            numberOfLines={3}
           />
+          <SettingBtn
+            callBack={this.saveChanges}
+            text={"Save"}
+            colors={["white", "#94f5ee"]}
+          />
+          <View style={{ height: 150, width: 300 }}>
+            <Text style={{ fontWeight: "bold", marginLeft: 8 }}>Notes: </Text>
+            <FlatList
+              nestedScrollEnabled
+              keyExtractor={this.keyExtractor}
+              data={notes.reverse()}
+              renderItem={this.renderItem}
+              extraDate={this.state.update}
+            />
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

@@ -6,7 +6,9 @@ class BeamCollectionScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      beamCollection: []
+      beamCollection: [],
+      forceUpdate: true,
+      updated: false
     };
   }
 
@@ -14,7 +16,15 @@ class BeamCollectionScreen extends Component {
 
   componentDidMount = () => {
     console.log(this.state);
+    this.getBeamCollectionData();
+    this.props.navigation.addListener("didFocus", payload => {
+      this.forceUpdate();
+    });
+  };
+
+  getBeamCollectionData = () => {
     const { schema, socket } = this.props.navigation.getScreenProps();
+
     Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
       .then(realm => {
         const entries = realm.objects("ConnectionMessages");
@@ -31,11 +41,26 @@ class BeamCollectionScreen extends Component {
       .catch(error => console.log("Beam collection Realm error:", error));
   };
 
+  componentDidUpdate = () => {
+    if (
+      this.props.navigation.getParam("displayName", false) &&
+      !this.state.updated
+    ) {
+      this.getBeamCollectionData();
+      this.setState({ updated: true });
+    }
+  };
+
+  forceUpdate = () => {
+    this.setState({ forceUpdate: !this.state.forceUpdate });
+  };
+
   handleNavigateBeamUI = (beamData, i) => {
     this.props.navigation.navigate("BeamUI", {
       beamData: JSON.stringify(beamData),
       i: i
     });
+    this.setState({ updated: false });
   };
 
   keyExtractor = (item, index) => index.toString();
