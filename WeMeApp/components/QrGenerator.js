@@ -106,13 +106,9 @@ class QrGenerator extends Component {
 const styles = StyleSheet.create({
   MainContainer: {
     flex: 1,
-    // backgroundColor: 'white',
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden"
-
-    // backgroundColor: "red"
-    // width: 150s
   }
 });
 
