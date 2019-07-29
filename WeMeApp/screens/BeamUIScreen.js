@@ -1,12 +1,17 @@
 import React, { Component } from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View } from "react-native";
 import { Avatar } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
 import { addMessage } from "../functions/realmStore";
-import { sendMessage, getChannel } from "../functions/weMeConnections";
+import {
+  sendMessage,
+  getChannel,
+  listenOnChannel
+} from "../functions/weMeConnections";
 import { decryptMessage } from "../functions/AESfunctions";
 import { HeaderBackButton } from "react-navigation";
+import { resetUnreadMessages } from "../functions/realmStore";
 
 class BeamUIScreen extends Component {
   constructor(props) {
@@ -68,55 +73,30 @@ class BeamUIScreen extends Component {
   };
 
   componentDidMount = () => {
-    console.log("I mounted");
+    const { channel, beamData } = this.state;
     this.loadMessages();
-    this.state.channel
-      .join()
-      .receive("ok", resp => {
-        console.log("Joined successfully channel: ", this.state.channel.topic);
-        this.updateMessages();
-      })
-      .receive("error", resp => {
-        console.log("Unable to join", resp);
-      });
+    this.updateMessages();
+  };
+
+  componentWillUnmount = () => {
+    console.log("UNMOUNTED");
+    const { notify, schema } = this.props.navigation.getScreenProps();
+    resetUnreadMessages(this.state.beamData.connectionId);
   };
 
   updateMessages = alert => {
     const { userId, notify } = this.props.navigation.getScreenProps();
     this.state.channel.on("shout", msg => {
+      //     console.log("Adding message? inBEAMUI");
       if (userId !== msg.userId) {
-        Realm.open({
-          schema: this.props.navigation.getScreenProps().schema,
-          deleteRealmIfMigrationNeeded: true
-        })
-          .then(realm => {
-            const key = realm.objectForPrimaryKey(
-              "ConnectAES",
-              msg.connectionId
-            ).encryptionKey;
-
-            const senderDisplayName = realm.objectForPrimaryKey(
-              "ConnectionMessages",
-              msg.connectionId
-            ).sender.displayName;
-
-            notify(senderDisplayName);
-
-            decryptMessage(msg.contents, key)
-              .then(message => {
-                addMessage(msg.connectionId, message, false);
-                const messages = [this.readMessage(message)];
-                this.setState(previousState => ({
-                  messages: GiftedChat.append(previousState.messages, messages)
-                }));
-              })
-              .catch(error =>
-                console.log("decryption error: in beamUI", error)
-              );
+        decryptMessage(msg.contents, key)
+          .then(message => {
+            const messages = [this.readMessage(message)];
+            this.setState(previousState => ({
+              messages: GiftedChat.append(previousState.messages, messages)
+            }));
           })
-          .catch(error => {
-            console.log("error getting key: ", error);
-          });
+          .catch(error => console.log("Error decrypting in beamUI", error));
       }
     });
   };

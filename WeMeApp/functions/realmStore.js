@@ -36,7 +36,8 @@ const schema = [
     properties: {
       connectionId: "int",
       messages: "Message[]",
-      sender: "Sender"
+      sender: "Sender",
+      unreadMessages: { type: "int", default: 0 }
     }
   }
 ];
@@ -123,7 +124,12 @@ export function storeConnectionMessages(displayName, connectionId) {
     });
 }
 
-export function addMessage(connectionId, contents, isSelf) {
+export function addMessage(
+  connectionId,
+  contents,
+  isSelf,
+  incrementUnread = false
+) {
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
     .then(realm => {
       const connectionMessage = realm
@@ -136,6 +142,10 @@ export function addMessage(connectionId, contents, isSelf) {
           dateTime: new Date(Date.now()).toString()
         });
         connectionMessage.messages.push(message);
+        if (incrementUnread) {
+          connectionMessage.unreadMessages += 1;
+        }
+        console.log(connectionMessage.unreadMessages);
       });
       console.log("success message added:", contents);
     })
@@ -286,4 +296,18 @@ export function deleteNote(connectionId, noteKey) {
       console.log(sender.notes);
     }
   );
+}
+
+export function resetUnreadMessages(connectionId) {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
+      realm.write(() => {
+        const connectionMessages = realm.objectForPrimaryKey(
+          "ConnectionMessages",
+          connectionId
+        );
+        connectionMessages.unreadMessages = 0;
+      });
+    })
+    .catch(error => console.log("Error resetting unread Messages", error));
 }
