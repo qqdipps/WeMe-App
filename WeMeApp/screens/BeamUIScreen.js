@@ -4,9 +4,14 @@ import { Avatar } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
 import { addMessage } from "../functions/realmStore";
-import { sendMessage, getChannel } from "../functions/weMeConnections";
+import {
+  sendMessage,
+  getChannel,
+  listenOnChannel
+} from "../functions/weMeConnections";
 import { decryptMessage } from "../functions/AESfunctions";
 import { HeaderBackButton } from "react-navigation";
+import { resetUnreadMessages, getKey } from "../functions/realmStore";
 
 class BeamUIScreen extends Component {
   constructor(props) {
@@ -19,7 +24,8 @@ class BeamUIScreen extends Component {
         JSON.parse(beamData.connectionId),
         this.props.navigation.getScreenProps().socket
       ),
-      displayName: beamData.sender.displayName
+      displayName: beamData.sender.displayName,
+      key: undefined
     };
     this.props.navigation.setParams({
       displayName: beamData.sender.displayName,
@@ -33,8 +39,11 @@ class BeamUIScreen extends Component {
     return {
       headerTitle: navigation.getParam("displayName", ""),
       headerRight: (
-        <View style={{ marginRight: 30 }}>
-          <Icon
+        <View style={{ marginRight: 10 }}>
+          <Icon.Button
+            activeOpacity={0.1}
+            backgroundColor={"transparent"}
+            underlayColor={"#5d7173"}
             name="bars"
             size={30}
             color="white"
@@ -65,55 +74,35 @@ class BeamUIScreen extends Component {
   };
 
   componentDidMount = () => {
-    console.log("I mounted");
+    const { beamData } = this.state;
     this.loadMessages();
-    this.state.channel
-      .join()
-      .receive("ok", resp => {
-        console.log("Joined successfully channel: ", this.state.channel.topic);
-        this.updateMessages();
-      })
-      .receive("error", resp => {
-        console.log("Unable to join", resp);
-      });
+    this.updateMessages();
+    getKey(this.setKey, beamData.connectionId);
+  };
+
+  setKey = key => {
+    console.log("GETTING SETTING KEY *****,", key);
+    this.setState({ key: key });
+  };
+
+  componentWillUnmount = () => {
+    resetUnreadMessages(this.state.beamData.connectionId);
   };
 
   updateMessages = alert => {
     const { userId, notify } = this.props.navigation.getScreenProps();
     this.state.channel.on("shout", msg => {
+      //     console.log("Adding message? inBEAMUI");
       if (userId !== msg.userId) {
-        Realm.open({
-          schema: this.props.navigation.getScreenProps().schema,
-          deleteRealmIfMigrationNeeded: true
-        })
-          .then(realm => {
-            const key = realm.objectForPrimaryKey(
-              "ConnectAES",
-              msg.connectionId
-            ).encryptionKey;
-
-            const senderDisplayName = realm.objectForPrimaryKey(
-              "ConnectionMessages",
-              msg.connectionId
-            ).sender.displayName;
-
-            notify(senderDisplayName);
-
-            decryptMessage(msg.contents, key)
-              .then(message => {
-                addMessage(msg.connectionId, message, false);
-                const messages = [this.readMessage(message)];
-                this.setState(previousState => ({
-                  messages: GiftedChat.append(previousState.messages, messages)
-                }));
-              })
-              .catch(error =>
-                console.log("decryption error: in beamUI", error)
-              );
+        console.log(this.state.key);
+        decryptMessage(msg.contents, this.state.key)
+          .then(message => {
+            const messages = [this.readMessage(message)];
+            this.setState(previousState => ({
+              messages: GiftedChat.append(previousState.messages, messages)
+            }));
           })
-          .catch(error => {
-            console.log("error getting key: ", error);
-          });
+          .catch(error => console.log("Error decrypting in beamUI", error));
       }
     });
   };

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { ImageBackground, StyleSheet, View, Text } from "react-native";
 import { Overlay } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
+import AntIcon from "react-native-vector-icons/AntDesign";
 import DisplayName from "../components/DisplayName";
 import Connect from "../components/Connect";
 import Beams from "../components/Beams";
@@ -22,8 +23,11 @@ class HomeScreen extends Component {
     return {
       headerTitle: "Home",
       headerRight: (
-        <View style={{ marginRight: 30 }}>
-          <Icon
+        <View style={{ marginRight: 10 }}>
+          <Icon.Button
+            activeOpacity={0.1}
+            backgroundColor={"transparent"}
+            underlayColor={"#5d7173"}
             name="bars"
             size={30}
             color="white"
@@ -129,7 +133,7 @@ class HomeScreen extends Component {
               style={styles.connect}
               callBack={this.blurBackground}
               text={" Connect"}
-              icon={"account-plus"}
+              icon={"adduser"}
             />
             <Beams
               style={styles.beams}
@@ -165,7 +169,7 @@ class HomeScreen extends Component {
                   });
                 }}
                 text={" CAPTURE"}
-                icon={"qr-scan"}
+                icon={"scan1"}
               />
             </View>
           </Overlay>

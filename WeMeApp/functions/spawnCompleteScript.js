@@ -13,14 +13,15 @@ export function spawnComplete(
   schema,
   connectionId,
   connectionDisplayName,
-  navigateHome
+  navigateHome,
+  receiveAlert
 ) {
   setInUseConnection(connectionId);
   storeConnectionMessages(connectionDisplayName, connectionId);
-  prepNewConnection(socket, schema, navigateHome);
+  prepNewConnection(socket, schema, navigateHome, receiveAlert);
 }
 
-const prepNewConnection = (socket, schema, navigateHome) => {
+const prepNewConnection = (socket, schema, navigateHome, receiveAlert) => {
   console.log("Prepping New Connection");
   Realm.open({
     schema: schema,
@@ -50,7 +51,14 @@ const prepNewConnection = (socket, schema, navigateHome) => {
           .then(response => {
             const linkId = response.data.data.id;
             console.log("New Link and Connection on board");
-            initializeChannel(socket, connectionId, userId, linkId);
+            initializeChannel(
+              socket,
+              schema,
+              connectionId,
+              userId,
+              linkId,
+              receiveAlert
+            );
             addChannelToSelf(connectionId);
             generateKey()
               .then(key => {

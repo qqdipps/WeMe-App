@@ -88,7 +88,7 @@ const registerChannel = (
         channel.params().connection_id
       );
       register(channel, connectionId, displayName);
-      listenOnChannel(channel, receiveAlert, schema);
+      listenOnChannel(channel, receiveAlert, schema, userId);
       listenForRegisteringChannel(channel, navigationAction);
     })
     .receive("error", resp => {
@@ -105,8 +105,9 @@ const createChannel = (connectionId, socket, linkId, userId) => {
 };
 
 export function getChannel(connectionId, socket) {
-  const channel = socket.channel(`beam:${connectionId}`);
-  return channel;
+  return socket.channels.find(
+    channel => channel.topic === `beam:${connectionId}`
+  );
 }
 
 const register = (channel, connectionId, displayName) => {
@@ -117,43 +118,48 @@ const register = (channel, connectionId, displayName) => {
   channel.push("register", params);
 };
 
-const listenOnChannel = (channel, receiveAlert, schema) => {
+export function listenOnChannel(channel, receiveAlert, schema, userId) {
   console.log("listening on channel", channel.topic);
   channel.on("shout", msg => {
-    Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
-      .then(realm => {
-        const key = realm.objectForPrimaryKey("ConnectAES", msg.connectionId)
-          .encryptionKey;
-        const senderDisplayName = realm.objectForPrimaryKey(
-          "ConnectionMessages",
-          msg.connectionId
-        ).sender.displayName;
-        receiveAlert(senderDisplayName);
-        decryptMessage(msg.contents, key)
-          .then(message => {
-            console.log("Message received:", msg, message);
-            addMessage(msg.connectionId, message, false);
-          })
-          .catch(error => console.log("decryption error: ", error));
-      })
-      .catch(error => {
-        console.log("error getting key: ", error);
-      });
+    console.log("adding message in connections");
+    if (userId != msg.userId)
+      Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+        .then(realm => {
+          const key = realm.objectForPrimaryKey("ConnectAES", msg.connectionId)
+            .encryptionKey;
+          const senderDisplayName = realm.objectForPrimaryKey(
+            "ConnectionMessages",
+            msg.connectionId
+          ).sender.displayName;
+          receiveAlert(senderDisplayName);
+          decryptMessage(msg.contents, key)
+            .then(message => {
+              console.log("Message received:", msg, message);
+              addMessage(msg.connectionId, message, false, true);
+            })
+            .catch(error => console.log("decryption error: ", error));
+        })
+        .catch(error => {
+          console.log("error getting key: ", error);
+        });
   });
-};
+}
 
 export function listenForRegisteringChannel(
   channel,
   navigationAction,
-  spawnAction
+  spawnAction,
+  spawnStatus
 ) {
   channel.on("register", msg => {
     console.log("Register response: ", msg);
-    if (spawnAction) {
-      spawnAction(msg.connectionId, msg.displayName);
-    }
-    if (navigationAction) {
-      navigationAction();
+    if (!spawnStatus) {
+      if (spawnAction) {
+        spawnAction(msg.connectionId, msg.displayName);
+      }
+      if (navigationAction) {
+        navigationAction();
+      }
     }
   });
 }
@@ -162,7 +168,8 @@ export function reConnectChannels(
   receiveAlert,
   socket,
   schema,
-  setStateChannels
+  setStateChannels,
+  userId
 ) {
   let stateChannels = [];
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
@@ -175,7 +182,7 @@ export function reConnectChannels(
           .join()
           .receive("ok", resp => {
             console.log("Joined successfully channel: ", channel.topic);
-            listenOnChannel(channel, receiveAlert, schema);
+            listenOnChannel(channel, receiveAlert, schema, userId);
             stateChannels.push(channel);
             if (i === unconnectedChannels.length - 1) {
               setStateChannels(stateChannels);
@@ -189,12 +196,20 @@ export function reConnectChannels(
     .catch(error => {});
 }
 
-export function initializeChannel(socket, connectionId, userId, linkId) {
+export function initializeChannel(
+  socket,
+  schema,
+  connectionId,
+  userId,
+  linkId,
+  receiveAlert
+) {
   const channel = createChannel(connectionId, socket, linkId, userId);
   channel
     .join()
     .receive("ok", resp => {
       console.log("Joined successfully channel: ", channel.topic);
+      listenOnChannel(channel, receiveAlert, schema, userId);
     })
     .receive("error", resp => {
       console.log("Unable to join", resp);

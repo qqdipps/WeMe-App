@@ -9,7 +9,9 @@ class SpawnScreen extends Component {
     this.state = {
       connectionId: undefined,
       connectionDisplayName: undefined,
-      isSpawnComplete: false
+      isSpawnComplete: false,
+      isUpdated: false,
+      counter: 0
     };
   }
 
@@ -26,24 +28,33 @@ class SpawnScreen extends Component {
   getNewConnectionInfo = (connectionId, connectionDisplayName) => {
     this.setState({
       connectionId: connectionId,
-      connectionDisplayName: connectionDisplayName
+      connectionDisplayName: connectionDisplayName,
+      counter: this.state.counter + 1
     });
+    this.setState({ isUpdated: true });
   };
 
   componentDidUpdate = () => {
-    const { schema, socket } = this.props.navigation.getScreenProps();
-    const { connectionId, connectionDisplayName, isSpawnComplete } = this.state;
-    if (!isSpawnComplete) {
+    const { schema, socket, notify } = this.props.navigation.getScreenProps();
+    const {
+      connectionId,
+      connectionDisplayName,
+      isSpawnComplete,
+      isUpdated
+    } = this.state;
+
+    if (!isSpawnComplete && !isUpdated) {
       spawnComplete(
         socket,
         schema,
         connectionId,
         connectionDisplayName,
-        this.handleNavigateOnConnect
+        this.handleNavigateOnConnect,
+        notify
       );
       this.setState({ isSpawnComplete: true });
     } else {
-      console.log("trying to update again");
+      console.log(" error trying to update again", this.state);
     }
   };
 
@@ -61,6 +72,7 @@ class SpawnScreen extends Component {
           handleNavigateOnConnect={undefined}
           getNewConnectionInfoCallback={this.getNewConnectionInfo}
           channels={channels}
+          spawnUpdateStatus={this.state.isUpdated}
         />
       </ImageBackground>
     );

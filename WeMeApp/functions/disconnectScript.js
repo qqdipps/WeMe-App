@@ -5,6 +5,7 @@ export function disconnect(connectionId, displayName, schema, socket) {
   const channel = socket.channels.find(
     channel => channel.topic === `beam:${connectionId}`
   );
+
   channel.push("disconnect", {
     connectionId: connectionId,
     displayName: displayName

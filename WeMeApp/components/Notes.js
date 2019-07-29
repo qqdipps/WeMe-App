@@ -22,8 +22,11 @@ class Notes extends Component {
     };
   }
 
+  componentDidMount = () => {
+    this.props.saveChanges(this.saveChanges);
+  };
+
   mapNotes = notes => {
-    console.log(notes);
     return Object.keys(notes).map((key, i) => {
       return { note: notes[key], key: i };
     });
@@ -31,13 +34,11 @@ class Notes extends Component {
 
   deleteNoteEntry = item => {
     let notes = this.state.notes;
-    console.log("BEFORE RE_index", notes);
     notes = notes
       .filter(entry => entry.key != item.key)
       .map((entry, i) => {
         return { note: entry.note, key: i };
       });
-    console.log("AFTER", notes);
     this.setState({ notes: notes, update: !this.state.update });
     deleteNote(this.props.connectionId, item.key);
   };
@@ -51,8 +52,12 @@ class Notes extends Component {
         topDivider
         bottomDivider
         rightIcon={
-          <Icon
+          <Icon.Button
+            activeOpacity={0.1}
+            backgroundColor={"transparent"}
+            underlayColor={"transparent"}
             name="trash"
+            color={"black"}
             size={40}
             onPress={() => this.deleteNoteEntry(item)}
           />
@@ -95,13 +100,12 @@ class Notes extends Component {
             multiline
             numberOfLines={3}
           />
-          <SettingBtn
-            callBack={this.saveChanges}
-            text={"Save"}
-            colors={["white", "#94f5ee"]}
-          />
-          <View style={{ height: 150, width: 300 }}>
-            <Text style={{ fontWeight: "bold", marginLeft: 8 }}>Notes: </Text>
+          <View style={{ height: 200, width: 285, marginTop: 25 }}>
+            <Text
+              style={{ fontWeight: "bold", marginLeft: 2, marginBottom: 3 }}
+            >
+              Notes:{" "}
+            </Text>
             <FlatList
               nestedScrollEnabled
               keyExtractor={this.keyExtractor}

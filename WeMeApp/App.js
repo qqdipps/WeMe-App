@@ -38,7 +38,8 @@ class App extends Component {
           name: "Sender",
           properties: {
             displayName: "string",
-            notes: "string?[]"
+            notes: "string?[]",
+            connected: { type: "bool", default: true }
           }
         },
         {
@@ -47,7 +48,8 @@ class App extends Component {
           properties: {
             connectionId: "int",
             messages: "Message[]",
-            sender: "Sender"
+            sender: "Sender",
+            unreadMessages: { type: "int", default: 0 }
           }
         }
       ]
@@ -59,13 +61,14 @@ class App extends Component {
   };
 
   componentDidUpdate() {
-    const { socket, schema } = this.state;
-    if (!this.state.channelsSet) {
+    const { socket, schema, userId } = this.state;
+    if (!this.state.channelsSet && userId) {
       reConnectChannels(
         this.notify,
         socket,
         schema,
-        this.initializeChannelsState
+        this.initializeChannelsState,
+        userId
       );
       this.setState({ channelsSet: true });
     }

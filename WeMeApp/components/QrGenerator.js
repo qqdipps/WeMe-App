@@ -5,7 +5,6 @@ import {
   getChannel,
   listenForRegisteringChannel
 } from "../functions/weMeConnections";
-import { spawnComplete } from "../functions/spawnCompleteScript";
 
 class QrGenerator extends Component {
   constructor(props) {
@@ -20,29 +19,19 @@ class QrGenerator extends Component {
 
   componentDidMount = () => {
     this.prepQr();
-    // console.log(
-    //   "testing channels, comp did mount",
-    //   this.props.channels[0].bindings
-    // );
   };
 
   componentDidUpdate = () => {
     if (this.state.valueForQRCode) {
-      const { socket } = this.props;
+      const { socket, spawnUpdateStatus } = this.props;
       const channel = getChannel(this.state.connectionId, socket);
-      channel
-        .join()
-        .receive("ok", resp => {
-          console.log("Joined successfully channel: ", this.state.connectionId);
-          listenForRegisteringChannel(
-            channel,
-            this.props.handleNavigateOnConnect,
-            this.props.getNewConnectionInfoCallback
-          );
-        })
-        .receive("error", resp => {
-          console.log("Unable to join", resp);
-        });
+
+      listenForRegisteringChannel(
+        channel,
+        this.props.handleNavigateOnConnect,
+        this.props.getNewConnectionInfoCallback,
+        spawnUpdateStatus
+      );
     }
   };
 
@@ -106,13 +95,9 @@ class QrGenerator extends Component {
 const styles = StyleSheet.create({
   MainContainer: {
     flex: 1,
-    // backgroundColor: 'white',
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden"
-
-    // backgroundColor: "red"
-    // width: 150s
   }
 });
 
