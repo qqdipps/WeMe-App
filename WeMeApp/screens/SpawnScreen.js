@@ -35,7 +35,7 @@ class SpawnScreen extends Component {
   };
 
   componentDidUpdate = () => {
-    const { schema, socket } = this.props.navigation.getScreenProps();
+    const { schema, socket, notify } = this.props.navigation.getScreenProps();
     const {
       connectionId,
       connectionDisplayName,
@@ -49,7 +49,8 @@ class SpawnScreen extends Component {
         schema,
         connectionId,
         connectionDisplayName,
-        this.handleNavigateOnConnect
+        this.handleNavigateOnConnect,
+        notify
       );
       this.setState({ isSpawnComplete: true });
     } else {

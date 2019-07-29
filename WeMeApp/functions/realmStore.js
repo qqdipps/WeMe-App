@@ -310,11 +310,12 @@ export function resetUnreadMessages(connectionId) {
     .catch(error => console.log("Error resetting unread Messages", error));
 }
 
-export function getKey(setKey) {
+export function getKey(setKey, connectionId) {
   Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
     realm => {
-      const key = realm.objectForPrimaryKey("ConnectionMessages", connectionId)
+      const key = realm.objectForPrimaryKey("ConnectAES", connectionId)
         .encryptionKey;
+      console.log("KEY IN GET KEY", key);
       setKey(key);
     }
   );

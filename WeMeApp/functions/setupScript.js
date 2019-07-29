@@ -8,7 +8,8 @@ export function setupScript(
   schema,
   displayName,
   navigateHome,
-  setUserIdCallback
+  setUserIdCallback,
+  receiveAlert
 ) {
   const params = { user: { setup: true } };
   axios
@@ -23,7 +24,14 @@ export function setupScript(
       const linkId = response.data.data.link_id;
       setUserIdCallback(userId);
       storeUser(schema, connectionId, userId, displayName);
-      initializeChannel(socket, connectionId, userId, linkId);
+      initializeChannel(
+        socket,
+        schema,
+        connectionId,
+        userId,
+        linkId,
+        receiveAlert
+      );
       navigateHome();
       generateKey()
         .then(key => {

@@ -5,7 +5,6 @@ import {
   getChannel,
   listenForRegisteringChannel
 } from "../functions/weMeConnections";
-import { spawnComplete } from "../functions/spawnCompleteScript";
 
 class QrGenerator extends Component {
   constructor(props) {

@@ -11,7 +11,7 @@ import {
 } from "../functions/weMeConnections";
 import { decryptMessage } from "../functions/AESfunctions";
 import { HeaderBackButton } from "react-navigation";
-import { resetUnreadMessages } from "../functions/realmStore";
+import { resetUnreadMessages, getKey } from "../functions/realmStore";
 
 class BeamUIScreen extends Component {
   constructor(props) {
@@ -81,11 +81,11 @@ class BeamUIScreen extends Component {
   };
 
   setKey = key => {
+    console.log("GETTING SETTING KEY *****,", key);
     this.setState({ key: key });
   };
 
   componentWillUnmount = () => {
-    const { notify, schema } = this.props.navigation.getScreenProps();
     resetUnreadMessages(this.state.beamData.connectionId);
   };
 
@@ -94,7 +94,8 @@ class BeamUIScreen extends Component {
     this.state.channel.on("shout", msg => {
       //     console.log("Adding message? inBEAMUI");
       if (userId !== msg.userId) {
-        decryptMessage(msg.contents, key)
+        console.log(this.state.key);
+        decryptMessage(msg.contents, this.state.key)
           .then(message => {
             const messages = [this.readMessage(message)];
             this.setState(previousState => ({

@@ -196,12 +196,20 @@ export function reConnectChannels(
     .catch(error => {});
 }
 
-export function initializeChannel(socket, connectionId, userId, linkId) {
+export function initializeChannel(
+  socket,
+  schema,
+  connectionId,
+  userId,
+  linkId,
+  receiveAlert
+) {
   const channel = createChannel(connectionId, socket, linkId, userId);
   channel
     .join()
     .receive("ok", resp => {
       console.log("Joined successfully channel: ", channel.topic);
+      listenOnChannel(channel, receiveAlert, schema, userId);
     })
     .receive("error", resp => {
       console.log("Unable to join", resp);

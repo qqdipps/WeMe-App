@@ -58,7 +58,8 @@ class SetupScreen extends Component {
     const {
       socket,
       schema,
-      setUserId
+      setUserId,
+      notify
     } = this.props.navigation.getScreenProps();
 
     return (
@@ -108,7 +109,8 @@ class SetupScreen extends Component {
               schema,
               displayName,
               this.navigateHome,
-              setUserId
+              setUserId,
+              notify
             )}
         </View>
       </ImageBackground>
