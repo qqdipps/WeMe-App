@@ -15,7 +15,6 @@ class BeamCollectionScreen extends Component {
   static navigationOptions = {};
 
   componentDidMount = () => {
-    console.log(this.state);
     this.getBeamCollectionData();
     this.props.navigation.addListener("didFocus", payload => {
       this.forceUpdate();

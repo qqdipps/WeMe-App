@@ -288,12 +288,10 @@ export function deleteNote(connectionId, noteKey) {
         });
       realm.write(() => {
         realm.delete(sender.notes);
-        console.log(sender.notes);
         notes.forEach(note => {
           sender.notes.push(note);
         });
       });
-      console.log(sender.notes);
     }
   );
 }
@@ -310,4 +308,14 @@ export function resetUnreadMessages(connectionId) {
       });
     })
     .catch(error => console.log("Error resetting unread Messages", error));
+}
+
+export function getKey(setKey) {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true }).then(
+    realm => {
+      const key = realm.objectForPrimaryKey("ConnectionMessages", connectionId)
+        .encryptionKey;
+      setKey(key);
+    }
+  );
 }

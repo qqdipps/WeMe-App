@@ -20,29 +20,19 @@ class QrGenerator extends Component {
 
   componentDidMount = () => {
     this.prepQr();
-    // console.log(
-    //   "testing channels, comp did mount",
-    //   this.props.channels[0].bindings
-    // );
   };
 
   componentDidUpdate = () => {
     if (this.state.valueForQRCode) {
-      const { socket } = this.props;
+      const { socket, spawnUpdateStatus } = this.props;
       const channel = getChannel(this.state.connectionId, socket);
-      channel
-        .join()
-        .receive("ok", resp => {
-          console.log("Joined successfully channel: ", this.state.connectionId);
-          listenForRegisteringChannel(
-            channel,
-            this.props.handleNavigateOnConnect,
-            this.props.getNewConnectionInfoCallback
-          );
-        })
-        .receive("error", resp => {
-          console.log("Unable to join", resp);
-        });
+
+      listenForRegisteringChannel(
+        channel,
+        this.props.handleNavigateOnConnect,
+        this.props.getNewConnectionInfoCallback,
+        spawnUpdateStatus
+      );
     }
   };
 

@@ -148,15 +148,18 @@ export function listenOnChannel(channel, receiveAlert, schema, userId) {
 export function listenForRegisteringChannel(
   channel,
   navigationAction,
-  spawnAction
+  spawnAction,
+  spawnStatus
 ) {
   channel.on("register", msg => {
     console.log("Register response: ", msg);
-    if (spawnAction) {
-      spawnAction(msg.connectionId, msg.displayName);
-    }
-    if (navigationAction) {
-      navigationAction();
+    if (!spawnStatus) {
+      if (spawnAction) {
+        spawnAction(msg.connectionId, msg.displayName);
+      }
+      if (navigationAction) {
+        navigationAction();
+      }
     }
   });
 }

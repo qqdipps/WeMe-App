@@ -24,7 +24,8 @@ class BeamUIScreen extends Component {
         JSON.parse(beamData.connectionId),
         this.props.navigation.getScreenProps().socket
       ),
-      displayName: beamData.sender.displayName
+      displayName: beamData.sender.displayName,
+      key: undefined
     };
     this.props.navigation.setParams({
       displayName: beamData.sender.displayName,
@@ -73,13 +74,17 @@ class BeamUIScreen extends Component {
   };
 
   componentDidMount = () => {
-    const { channel, beamData } = this.state;
+    const { beamData } = this.state;
     this.loadMessages();
     this.updateMessages();
+    getKey(this.setKey, beamData.connectionId);
+  };
+
+  setKey = key => {
+    this.setState({ key: key });
   };
 
   componentWillUnmount = () => {
-    console.log("UNMOUNTED");
     const { notify, schema } = this.props.navigation.getScreenProps();
     resetUnreadMessages(this.state.beamData.connectionId);
   };

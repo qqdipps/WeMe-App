@@ -8,7 +8,6 @@ const TestAES = () => {
 
   const encrypt = (text, keyBase64) => {
     return Aes.randomKey(16).then(iv => {
-      console.log("IV: ", iv);
       return Aes.encrypt(text, keyBase64, iv).then(cipher => ({
         cipher,
         iv

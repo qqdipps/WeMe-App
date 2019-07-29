@@ -13,7 +13,8 @@ class SetupScreen extends Component {
       showSetup: true,
       showOverlay: false,
       displayName: "DefaultUser",
-      runScript: false
+      runScript: false,
+      scriptRan: false
     };
   }
 
@@ -41,13 +42,25 @@ class SetupScreen extends Component {
     });
   };
 
+  setScriptRan = () => {
+    this.setState({ scriptRan: true });
+    return true;
+  };
+
   render() {
-    const { showSetup, showOverlay, runScript, displayName } = this.state;
+    const {
+      showSetup,
+      showOverlay,
+      runScript,
+      displayName,
+      scriptRan
+    } = this.state;
     const {
       socket,
       schema,
       setUserId
     } = this.props.navigation.getScreenProps();
+
     return (
       <ImageBackground
         blurRadius={this.state.blurEffect}
@@ -88,7 +101,15 @@ class SetupScreen extends Component {
             </Overlay>
           )}
           {runScript &&
-            setupScript(schema, displayName, this.navigateHome, setUserId)}
+            !scriptRan &&
+            this.setScriptRan() &&
+            setupScript(
+              socket,
+              schema,
+              displayName,
+              this.navigateHome,
+              setUserId
+            )}
         </View>
       </ImageBackground>
     );
