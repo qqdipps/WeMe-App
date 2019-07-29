@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Avatar } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
@@ -33,8 +33,11 @@ class BeamUIScreen extends Component {
     return {
       headerTitle: navigation.getParam("displayName", ""),
       headerRight: (
-        <View style={{ marginRight: 30 }}>
-          <Icon
+        <View style={{ marginRight: 10 }}>
+          <Icon.Button
+            activeOpacity={0.1}
+            backgroundColor={"transparent"}
+            underlayColor={"#5d7173"}
             name="bars"
             size={30}
             color="white"

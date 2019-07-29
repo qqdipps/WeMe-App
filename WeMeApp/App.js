@@ -38,7 +38,8 @@ class App extends Component {
           name: "Sender",
           properties: {
             displayName: "string",
-            notes: "string?[]"
+            notes: "string?[]",
+            connected: { type: "bool", default: true }
           }
         },
         {

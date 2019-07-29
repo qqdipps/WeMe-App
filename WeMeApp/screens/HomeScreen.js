@@ -23,8 +23,11 @@ class HomeScreen extends Component {
     return {
       headerTitle: "Home",
       headerRight: (
-        <View style={{ marginRight: 30 }}>
-          <Icon
+        <View style={{ marginRight: 10 }}>
+          <Icon.Button
+            activeOpacity={0.1}
+            backgroundColor={"transparent"}
+            underlayColor={"#5d7173"}
             name="bars"
             size={30}
             color="white"

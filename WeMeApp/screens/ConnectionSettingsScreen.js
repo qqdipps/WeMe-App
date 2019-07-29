@@ -5,7 +5,8 @@ import {
   View,
   Text,
   Button,
-  ScrollView
+  ScrollView,
+  TouchableOpacity
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Input, Overlay } from "react-native-elements";
@@ -30,6 +31,18 @@ class SettingsScreen extends Component {
             })
           }
         />
+      ),
+      headerRight: (
+        <TouchableOpacity
+          onPress={() => {
+            this._onPressButton;
+            navigation.state.params.saveFunction();
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 24, marginRight: 25 }}>
+            Save
+          </Text>
+        </TouchableOpacity>
       )
     };
   };
@@ -59,7 +72,8 @@ class SettingsScreen extends Component {
       blurEffect: 0,
       showComponents: true,
       newDisplayName: undefined,
-      update: false
+      update: false,
+      isSave: true
     };
   }
 
@@ -75,6 +89,17 @@ class SettingsScreen extends Component {
       });
       this.setState({ update: false });
     }
+
+    if (this.state.saveAction && this.state.isSave) {
+      this.props.navigation.setParams({
+        saveFunction: this.state.saveAction
+      });
+      this.setState({ isSave: false });
+    }
+  };
+
+  saveChanges = saveAction => {
+    this.setState({ saveAction: saveAction });
   };
 
   updatedDisplayName = () => {
@@ -178,6 +203,7 @@ class SettingsScreen extends Component {
                     ""
                   )}
                   updateCallBack={this.updatedDisplayName}
+                  saveChanges={this.saveChanges}
                 />
               </View>
               <View style={styles.disconnect}>
@@ -185,6 +211,7 @@ class SettingsScreen extends Component {
                   callBack={() =>
                     this.viewOverlay(disconnectWarning, this.disconnectAction)
                   }
+                  styles={{ marginBottom: 20 }}
                 />
                 <DeleteHistory
                   callBack={() =>
@@ -246,7 +273,9 @@ const styles = StyleSheet.create({
     marginTop: 40,
     flex: 1,
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
+    height: 300,
+    alignContent: "space-around"
   },
   text: {
     fontSize: RFPercentage(7),
