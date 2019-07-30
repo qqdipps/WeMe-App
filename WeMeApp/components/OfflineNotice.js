@@ -17,13 +17,10 @@ class OfflineNotice extends Component {
   }
 
   componentDidMount() {
-    // Subscribe
     const unsubscribe = NetInfo.addEventListener(state => {
       console.log("Is connected?", state.isConnected);
       this.handleConnectivityChange(state.isConnected);
     });
-
-    // Unsubscribe
   }
 
   componentWillUnmount() {
