@@ -120,9 +120,29 @@ const register = (channel, connectionId, displayName) => {
 
 export function listenOnChannel(channel, receiveAlert, schema, userId) {
   console.log("listening on channel", channel.topic);
+  channel.on("disconnect", msg => {
+    console.log("Disconnecting", msg);
+    if (userId != msg.userId) {
+      Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+        .then(realm => {
+          realm.write(() => {
+            sender = realm.objectForPrimaryKey(
+              "ConnectionMessages",
+              msg.connectionId
+            );
+            sender.connected = false;
+            addMessage(msg.connectionId, "Beam has been disconnected 🚀", true);
+          });
+        })
+        .catch(error =>
+          console.log("Error updating sender status during disconnect", error)
+        );
+    }
+  });
+
   channel.on("shout", msg => {
     console.log("adding message in connections");
-    if (userId != msg.userId)
+    if (userId != msg.userId) {
       Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
         .then(realm => {
           const key = realm.objectForPrimaryKey("ConnectAES", msg.connectionId)
@@ -142,6 +162,7 @@ export function listenOnChannel(channel, receiveAlert, schema, userId) {
         .catch(error => {
           console.log("error getting key: ", error);
         });
+    }
   });
 }
 

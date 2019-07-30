@@ -18,7 +18,9 @@ class SetupScreen extends Component {
     };
   }
 
-  static navigationOptions = {};
+  static navigationOptions = {
+    headerTitle: "Welcome!"
+  };
 
   blurBackground = () => {
     this.setState({ blurEffect: 25, showSetup: false, showOverlay: true });

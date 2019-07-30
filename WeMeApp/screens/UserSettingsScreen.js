@@ -15,6 +15,7 @@ import { updateUserDisplayName } from "../functions/realmStore";
 class SettingsScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
+      headerTitle: "User Settings & About",
       headerRight: (
         <TouchableOpacity
           onPress={() => {

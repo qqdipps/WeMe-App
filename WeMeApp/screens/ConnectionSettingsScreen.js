@@ -23,6 +23,7 @@ import AwesomeAlert from "react-native-awesome-alerts";
 class SettingsScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
+      headerTitle: "Connection Settings",
       headerLeft: (
         <HeaderBackButton
           tintColor={"white"}

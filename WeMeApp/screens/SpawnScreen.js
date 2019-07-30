@@ -23,7 +23,9 @@ class SpawnScreen extends Component {
     });
   };
 
-  static navigationOptions = {};
+  static navigationOptions = {
+    headerTitle: "Spawn"
+  };
 
   getNewConnectionInfo = (connectionId, connectionDisplayName) => {
     this.setState({

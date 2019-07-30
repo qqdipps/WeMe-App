@@ -13,7 +13,9 @@ class CaptureScreen extends Component {
     };
   }
 
-  static navigationOptions = {};
+  static navigationOptions = {
+    headerTitle: "Capture"
+  };
 
   getQrData = qrData => {
     this.setState({

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { ListItem, Avatar, Badge } from "react-native-elements";
-import { ImageBackground, View, FlatList } from "react-native";
+import { ImageBackground, View, FlatList, Text } from "react-native";
 
 class BeamCollectionScreen extends Component {
   constructor(props) {
@@ -12,7 +12,9 @@ class BeamCollectionScreen extends Component {
     };
   }
 
-  static navigationOptions = {};
+  static navigationOptions = {
+    headerTitle: "Beams"
+  };
 
   componentDidMount = () => {
     this.getBeamCollectionData();
@@ -27,13 +29,19 @@ class BeamCollectionScreen extends Component {
     Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
       .then(realm => {
         const entries = realm.objects("ConnectionMessages");
-        beamCollection = entries.map((entry, i) => {
+        let beamCollection = entries.map((entry, i) => {
           return {
             beamData: entry,
             i: i,
-            connected: entry.sender.connected
+            connected: entry.sender.connected,
+            epochLastMessage: new Date(
+              entry.messages[entry.messages.length - 1].dateTime
+            ).getTime()
           };
         });
+        beamCollection = beamCollection.sort(
+          (a, b) => b.epochLastMessage - a.epochLastMessage
+        );
         this.setState({ beamCollection: beamCollection });
       })
       .catch(error => console.log("Beam collection Realm error:", error));
@@ -84,11 +92,16 @@ class BeamCollectionScreen extends Component {
           )}
         </View>
       }
-      badge={
-        item.beamData.unreadMessages > 0 && {
-          status: "error",
-          value: item.beamData.unreadMessages.toString()
-        }
+      rightElement={
+        <View style={{ width: 25 }}>
+          {item.beamData.unreadMessages > 0 && (
+            <Badge
+              status="primary"
+              value={item.beamData.unreadMessages.toString()}
+              badgeStyle={{ scaleX: 2.0, scaleY: 2.0 }}
+            />
+          )}
+        </View>
       }
       onPress={() => this.handleNavigateBeamUI(item.beamData, item.i)}
     />
