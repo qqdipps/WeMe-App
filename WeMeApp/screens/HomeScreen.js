@@ -5,6 +5,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import DisplayName from "../components/DisplayName";
 import Connect from "../components/Connect";
 import Beams from "../components/Beams";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 class HomeScreen extends Component {
   constructor(props) {
@@ -133,13 +134,22 @@ class HomeScreen extends Component {
       >
         {showComponents && (
           <View style={styles.layout}>
-            <DisplayName
-              schema={schema}
-              notify={notify}
-              setStateDisplayNameCallback={this.setDisplayName}
-              updatedDisplayName={this.state.displayName}
-              update={this.state.update}
-            />
+            {!this.state.updated && (
+              <DisplayName
+                schema={schema}
+                notify={notify}
+                setStateDisplayNameCallback={this.setDisplayName}
+                updatedDisplayName={this.state.displayName}
+                // update={this.state.updated}
+              />
+            )}
+            {this.state.updated && (
+              <View style={styles.view}>
+                <Text numberOfLines={1} style={styles.text}>
+                  {this.state.displayName}
+                </Text>
+              </View>
+            )}
             <Connect
               style={styles.connect}
               callBack={this.blurBackground}
@@ -227,6 +237,12 @@ const styles = StyleSheet.create({
   },
   menuIcon: {
     marginLeft: 50
+  },
+  text: {
+    fontSize: RFPercentage(7),
+    color: "white",
+    fontFamily: "Gill Sans",
+    textAlign: "center"
   }
 });
 

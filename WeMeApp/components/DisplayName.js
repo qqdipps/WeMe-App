@@ -14,7 +14,6 @@ class DisplayName extends Component {
 
   componentDidMount = () => {
     this.getDisplayName();
-    console.log("Updating User Display?");
   };
 
   componentDidUpdate = () => {
