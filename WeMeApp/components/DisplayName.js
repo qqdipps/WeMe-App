@@ -7,12 +7,23 @@ class DisplayName extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayName: undefined
+      displayName: undefined,
+      updated: this.props.update
     };
   }
 
   componentDidMount = () => {
     this.getDisplayName();
+  };
+
+  componentDidUpdate = () => {
+    if (this.state.updated) {
+      console.log("Updating User Display?");
+      this.setState({
+        displayName: this.props.updatedDisplayName,
+        updated: false
+      });
+    }
   };
 
   getDisplayName = () => {
@@ -22,6 +33,7 @@ class DisplayName extends Component {
     })
       .then(realm => {
         const displayName = realm.objects("UserSelf")[0].displayName;
+        console.log("GETTING DISPLAY NAME IN REALM: ", displayName);
         this.setState({
           displayName: displayName
         });
@@ -33,7 +45,11 @@ class DisplayName extends Component {
   render() {
     return (
       <View style={styles.view}>
-        <Text numberOfLines={1} style={styles.text} onPress={this.props.notify}>
+        <Text
+          numberOfLines={1}
+          style={styles.text}
+          onPress={() => this.props.notify(this.state.displayName)}
+        >
           {this.state.displayName}
         </Text>
       </View>

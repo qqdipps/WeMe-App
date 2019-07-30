@@ -111,7 +111,7 @@ class Notes extends Component {
               keyExtractor={this.keyExtractor}
               data={notes.reverse()}
               renderItem={this.renderItem}
-              extraDate={this.state.update}
+              extraData={this.state.update}
             />
           </View>
         </View>

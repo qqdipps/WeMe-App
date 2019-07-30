@@ -1,30 +1,55 @@
 import React, { Component } from "react";
-import { StyleSheet, ImageBackground, View, Text } from "react-native";
-import MyButton from "../components/MyButton";
+import {
+  StyleSheet,
+  ImageBackground,
+  View,
+  Text,
+  TouchableOpacity
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { Input, Overlay } from "react-native-elements";
+import { Input } from "react-native-elements";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import Disconnect from "../components/Disconnect";
-import DeleteHistory from "../components/DeleteHistory";
-import Notes from "../components/Notes";
+import ResetApp from "../components/ResetApp";
+import { updateUserDisplayName } from "../functions/realmStore";
 
 class SettingsScreen extends Component {
-  static navigationOptions = {};
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerRight: (
+        <TouchableOpacity
+          onPress={() => {
+            this._onPressButton;
+            navigation.state.params.setDisplayName(
+              navigation.state.params.displayName,
+              true
+            );
+            navigation.state.params.updateUserDisplayName(
+              navigation.state.params.displayName
+            );
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 24, marginRight: 25 }}>
+            Save
+          </Text>
+        </TouchableOpacity>
+      )
+    };
+  };
 
   constructor(props) {
     super(props);
     this.state = {
-      displayName: this.props.navigation.getParam("displayName", ""),
-      isUser: this.props.navigation.getParam("isUser", true),
-      notes: this.props.navigation.getParam("notes", "")
+      displayName: ""
     };
+
+    this.props.navigation.setParams({
+      updateUserDisplayName: updateUserDisplayName
+    });
+    console.log(this.props.navigation.state.params);
   }
 
-  componentDidMount = () => {
-    console.log("NOTES:", this.state.notes);
-  };
-
   render() {
+    console.log("I Am re-rendering?");
     return (
       <ImageBackground
         // blurRadius={this.state.blurEffect}
@@ -33,7 +58,8 @@ class SettingsScreen extends Component {
       >
         <View style={styles.view}>
           <Text numberOfLines={1} style={styles.text}>
-            {this.state.displayName}
+            {this.state.displayName ||
+              this.props.navigation.state.params.displayName}
           </Text>
           <View style={styles.card}>
             <Input
@@ -48,23 +74,36 @@ class SettingsScreen extends Component {
                 alignSelf: "center",
                 fontSize: 18
               }}
-              onChangeText={text => this.setState({ displayName: text })}
+              value={this.state.displayName}
+              onChangeText={text => {
+                this.setState({ displayName: text });
+                this.props.navigation.setParams({ displayName: text });
+              }}
             />
-            {!this.state.isUser && (
-              <Notes style={styles.notes} notes={this.state.notes} />
-            )}
           </View>
-          {!this.state.isUser && (
-            <View style={styles.disconnect}>
-              <Disconnect
-                connectionId={this.props.navigation.getParam(
-                  "connectionId",
-                  ""
-                )}
-              />
-              <DeleteHistory />
-            </View>
-          )}
+          <View style={styles.textCard}>
+            <Text
+              style={{ fontWeight: "bold", fontSize: 18, marginBottom: 10 }}
+            >
+              About WeMe:
+            </Text>
+            <Text style={{ fontSize: 14 }}>
+              We believe in the personal ownership of data. It is not ours to
+              collect. No messages are stored on our servers nor read as they
+              are routed. In fact even if we or another entity wanted to read
+              them, we can not. All messages are encrypted using 256 bit AES
+              symmetrical encryption. To ensure that only you and the intended
+              recipient can read the messages a super secret key is generated
+              and stored locally on your phone. The super secret key is shared
+              through the camera via the QR code. To maintain privacy do not
+              share screenshots of your QR codes.{" "}
+            </Text>
+            <Text style={{ fontWeight: "bold", fontSize: 14, marginTop: 10 }}>
+              Please beam responsibly.
+            </Text>
+            <Text style={{ marginLeft: 10 }}>- WeMe family</Text>
+          </View>
+          <ResetApp />
         </View>
       </ImageBackground>
     );
@@ -77,19 +116,20 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center"
   },
-  notes: {},
   card: {
     backgroundColor: "white",
     opacity: 0.8,
     marginTop: 20,
     padding: 10,
-    height: 450
+    height: 122
   },
-  disconnect: {
-    marginTop: 40,
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "center"
+  textCard: {
+    backgroundColor: "white",
+    opacity: 0.8,
+    marginTop: 20,
+    padding: 10,
+    height: 400,
+    width: 320
   },
   text: {
     fontSize: RFPercentage(7),
@@ -100,38 +140,3 @@ const styles = StyleSheet.create({
 });
 
 export default SettingsScreen;
-
-{
-  /* <View style={styles.view}>
-<Text numberOfLines={1} style={styles.text}>
-  {this.state.displayName}
-</Text>
-</View>
-<Input
-label="Change Display Name:"
-placeholder={this.props.navigation.getParam("displayName", "")}
-leftIcon={<Icon name="user" size={40} color="black" />}
-leftIconContainerStyle={{ marginRight: 5 }}
-containerStyle={{
-  marginTop: 150,
-  backgroundColor: "white",
-  width: 300,
-  height: 200
-}}
-onChangeText={text => this.setState({ displayName: text })}
-/>
-{!this.state.isUser && (
-<Input
-  label="Add User Note:"
-  placeholder={this.props.navigation.getParam("notes", "")}
-  leftIcon={<Icon name="clipboard" size={40} color="black" />}
-  leftIconContainerStyle={{ marginRight: 5 }}
-  containerStyle={{
-    height: 300,
-    backgroundColor: "white",
-    width: 300
-  }}
-  onChangeText={text => this.setState({ notes: text })}
-/>
-)} */
-}

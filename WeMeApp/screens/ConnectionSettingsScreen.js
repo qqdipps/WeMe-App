@@ -18,6 +18,7 @@ import SettingBtn from "../components/SettingBtn";
 import { disconnect } from "../functions/disconnectScript";
 import { deleteMessageHx } from "../functions/realmStore";
 import { HeaderBackButton } from "react-navigation";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 class SettingsScreen extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -52,28 +53,27 @@ class SettingsScreen extends Component {
     this.state = {
       displayName: this.props.navigation.getParam("displayName", ""),
       notes: this.props.navigation.getParam("notes", ""),
-      showOverlay: false,
+      showAlert: false,
       disconnectWarning: `You will no longer be able to review notes, beam history, or send beams to ${this.props.navigation.getParam(
         "displayName",
         ""
-      )} however this does not delete  ${this.props.navigation.getParam(
+      )}, however this does not delete ${this.props.navigation.getParam(
         "displayName",
         ""
       )}'s local beam history.`,
       deleteWarning: `You will no longer be able to review beam history for ${this.props.navigation.getParam(
         "displayName",
         ""
-      )}, however this does not delete  ${this.props.navigation.getParam(
+      )}, however this does not delete ${this.props.navigation.getParam(
         "displayName",
         ""
       )}'s local beam history.`,
-      overlayWarning: undefined,
-      overlayAction: () => {},
-      blurEffect: 0,
-      showComponents: true,
+      alertWarning: undefined,
+      alertAction: () => {},
       newDisplayName: undefined,
       update: false,
-      isSave: true
+      isSave: true,
+      yesAlertText: undefined
     };
   }
 
@@ -98,6 +98,12 @@ class SettingsScreen extends Component {
     }
   };
 
+  hideAlert = () => {
+    this.setState({
+      showAlert: false
+    });
+  };
+
   saveChanges = saveAction => {
     this.setState({ saveAction: saveAction });
   };
@@ -106,13 +112,12 @@ class SettingsScreen extends Component {
     this.setState({ update: true });
   };
 
-  viewOverlay = (warning, action) => {
+  viewAlert = (warning, action, yesText) => {
     this.setState({
-      blurEffect: 5,
-      showOverlay: true,
-      showComponents: false,
-      overlayWarning: warning,
-      overlayAction: action
+      showAlert: true,
+      alertWarning: warning,
+      alertAction: action,
+      yesAlertText: yesText
     });
   };
 
@@ -139,30 +144,17 @@ class SettingsScreen extends Component {
     notifyDeleteHx(this.state.displayName);
   };
 
-  xOverlay = () => {
-    this.setState({
-      showOverlay: false,
-      blurEffect: 0,
-      showComponents: true
-    });
-  };
-
   navigateScreen = screen => {
     this.props.navigation.navigate(screen);
-    this.setState({
-      showOverlay: false,
-      blurEffect: 0,
-      showComponents: true
-    });
   };
 
   render() {
     const {
-      showComponents,
-      showOverlay,
       disconnectWarning,
-      overlayAction,
-      deleteWarning
+      alertAction,
+      deleteWarning,
+      showAlert,
+      yesAlertText
     } = this.state;
     return (
       <ImageBackground
@@ -171,77 +163,76 @@ class SettingsScreen extends Component {
         style={{ width: "100%", height: "100%" }}
       >
         <ScrollView nestedScrollEnabled>
-          {showComponents && (
-            <View style={styles.view}>
-              <Text numberOfLines={1} style={styles.text}>
-                {this.state.newDisplayName || this.state.displayName}
-              </Text>
-              <View style={styles.card}>
-                <Input
-                  label="Change Display Name:"
-                  placeholder={this.props.navigation.getParam(
-                    "displayName",
-                    ""
-                  )}
-                  leftIcon={<Icon name="user" size={40} color="black" />}
-                  leftIconContainerStyle={{ marginRight: 5 }}
-                  containerStyle={{
-                    padding: 10,
-                    width: 300,
-                    height: 100,
-                    alignSelf: "center",
-                    fontSize: 18
-                  }}
-                  onChangeText={text => this.setState({ newDisplayName: text })}
-                />
-                <Notes
-                  style={styles.notes}
-                  notes={this.state.notes}
-                  displayName={this.state.newDisplayName}
-                  connectionId={this.props.navigation.getParam(
-                    "connectionId",
-                    ""
-                  )}
-                  updateCallBack={this.updatedDisplayName}
-                  saveChanges={this.saveChanges}
-                />
-              </View>
-              <View style={styles.disconnect}>
-                <Disconnect
-                  callBack={() =>
-                    this.viewOverlay(disconnectWarning, this.disconnectAction)
-                  }
-                  styles={{ marginBottom: 20 }}
-                />
-                <DeleteHistory
-                  callBack={() =>
-                    this.viewOverlay(deleteWarning, this.deleteAction)
-                  }
-                />
-              </View>
+          <View style={styles.view}>
+            <Text numberOfLines={1} style={styles.text}>
+              {this.state.newDisplayName || this.state.displayName}
+            </Text>
+            <View style={styles.card}>
+              <Input
+                label="Change Display Name:"
+                placeholder={this.props.navigation.getParam("displayName", "")}
+                leftIcon={<Icon name="user" size={40} color="black" />}
+                leftIconContainerStyle={{ marginRight: 5 }}
+                containerStyle={{
+                  padding: 10,
+                  width: 300,
+                  height: 100,
+                  alignSelf: "center",
+                  fontSize: 18
+                }}
+                onChangeText={text => this.setState({ newDisplayName: text })}
+              />
+              <Notes
+                style={styles.notes}
+                notes={this.state.notes}
+                displayName={this.state.newDisplayName}
+                connectionId={this.props.navigation.getParam(
+                  "connectionId",
+                  ""
+                )}
+                updateCallBack={this.updatedDisplayName}
+                saveChanges={this.saveChanges}
+              />
             </View>
-          )}
-          {showOverlay && (
-            <Overlay isVisible height={380} overlayBackgroundColor={"#D0D7D7"}>
-              <View style={styles.overlayLayout}>
-                <Icon
-                  name="times"
-                  onPress={this.xOverlay}
-                  size={40}
-                  style={styles.xIcon}
-                />
-                <Text>Please be advised: </Text>
-                <Text>{this.state.overlayWarning} </Text>
-                <Text>Would you like to continue? </Text>
-                <SettingBtn
-                  text={"Yes"}
-                  colors={["gray", "red"]}
-                  callBack={overlayAction}
-                />
-              </View>
-            </Overlay>
-          )}
+            <View style={styles.disconnect}>
+              <Disconnect
+                callBack={() =>
+                  this.viewAlert(
+                    disconnectWarning,
+                    this.disconnectAction,
+                    "Disconnect"
+                  )
+                }
+                styles={{ marginBottom: 20 }}
+              />
+              <DeleteHistory
+                callBack={() =>
+                  this.viewAlert(deleteWarning, this.deleteAction, "Delete")
+                }
+              />
+            </View>
+          </View>
         </ScrollView>
+        <AwesomeAlert
+          show={showAlert}
+          showProgress={false}
+          title="Please be advised:"
+          message={this.state.alertWarning}
+          closeOnTouchOutside={true}
+          closeOnHardwareBackPress={false}
+          showCancelButton={true}
+          showConfirmButton={true}
+          cancelText="No, Cancel"
+          confirmText={`Yes, ${yesAlertText}`}
+          confirmButtonColor="#DD6B55"
+          onCancelPressed={() => {
+            this.hideAlert();
+          }}
+          onConfirmPressed={() => {
+            this.hideAlert();
+            alertAction();
+          }}
+        />
       </ImageBackground>
     );
   }
@@ -274,7 +265,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: "center",
-    height: 300,
+    // height: 300,
     alignContent: "space-around"
   },
   text: {
