@@ -25,7 +25,8 @@ class BeamUIScreen extends Component {
         this.props.navigation.getScreenProps().socket
       ),
       displayName: beamData.sender.displayName,
-      key: undefined
+      key: undefined,
+      listenerRef: undefined
     };
     this.props.navigation.setParams({
       displayName: beamData.sender.displayName,
@@ -78,20 +79,33 @@ class BeamUIScreen extends Component {
     this.loadMessages();
     this.updateMessages();
     getKey(this.setKey, beamData.connectionId);
+    resetUnreadMessages(beamData.connectionId);
+  };
+
+  componentDidUpdate = () => {
+    resetUnreadMessages(this.state.beamData.connectionId);
+    console.log(
+      "number of unread mEssages:, ",
+      this.state.beamData.unreadMessages
+    );
   };
 
   setKey = key => {
-    console.log("GETTING SETTING KEY *****,", key);
     this.setState({ key: key });
   };
 
   componentWillUnmount = () => {
-    resetUnreadMessages(this.state.beamData.connectionId);
+    this.state.channel.off("shout", this.state.listenerRef);
+  };
+
+  reset = () => {
+    setTimeout(resetUnreadMessages, 1000, this.state.beamData.connectionId);
+    setTimeout(console.log, 300, "hereere");
   };
 
   updateMessages = alert => {
-    const { userId, notify } = this.props.navigation.getScreenProps();
-    this.state.channel.on("shout", msg => {
+    const { userId } = this.props.navigation.getScreenProps();
+    const listenRef = this.state.channel.on("shout", msg => {
       //     console.log("Adding message? inBEAMUI");
       if (userId !== msg.userId) {
         console.log(this.state.key);
@@ -104,11 +118,14 @@ class BeamUIScreen extends Component {
           })
           .catch(error => console.log("Error decrypting in beamUI", error));
       }
+      this.reset();
     });
+
+    this.setState({ listenerRef: listenRef });
   };
 
   readMessage = msg => {
-    const { beamData, messages } = this.state;
+    const { beamData } = this.state;
     return {
       _id: Date.now(),
       text: msg,

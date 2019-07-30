@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { ListItem, Avatar } from "react-native-elements";
+import { ListItem, Avatar, Badge } from "react-native-elements";
 import { ImageBackground, View, FlatList } from "react-native";
 
 class BeamCollectionScreen extends Component {
@@ -22,17 +22,16 @@ class BeamCollectionScreen extends Component {
   };
 
   getBeamCollectionData = () => {
-    const { schema, socket } = this.props.navigation.getScreenProps();
+    const { schema } = this.props.navigation.getScreenProps();
 
     Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
       .then(realm => {
         const entries = realm.objects("ConnectionMessages");
         beamCollection = entries.map((entry, i) => {
           return {
-            name: entry.sender.displayName,
-            subtitle: entry.sender.notes[0],
             beamData: entry,
-            i: i
+            i: i,
+            connected: entry.sender.connected
           };
         });
         this.setState({ beamCollection: beamCollection });
@@ -41,17 +40,16 @@ class BeamCollectionScreen extends Component {
   };
 
   componentDidUpdate = () => {
-    if (
-      this.props.navigation.getParam("displayName", false) &&
-      !this.state.updated
-    ) {
+    if (!this.state.updated) {
       this.getBeamCollectionData();
       this.setState({ updated: true });
     }
+    console.log("COMPENET REREDNDERERE *******");
   };
 
   forceUpdate = () => {
     this.setState({ forceUpdate: !this.state.forceUpdate });
+    console.log("Force re-render?");
   };
 
   handleNavigateBeamUI = (beamData, i) => {
@@ -66,23 +64,40 @@ class BeamCollectionScreen extends Component {
 
   renderItem = ({ item }) => (
     <ListItem
-      title={item.name}
-      subtitle={item.subtitle}
+      title={item.beamData.sender.displayName}
+      subtitle={item.beamData.sender.notes[0]}
       topDivider
       bottomDivider
       leftAvatar={
-        <Avatar
-          size="small"
-          rounded
-          title={item.name.substring(0, 2).toUpperCase()}
-          activeOpacity={0.7}
-        />
+        <View>
+          <Avatar
+            size="small"
+            rounded
+            title={item.beamData.sender.displayName
+              .substring(0, 2)
+              .toUpperCase()}
+            activeOpacity={0.7}
+          />
+          {item.connected && (
+            <Badge
+              status="success"
+              containerStyle={{ position: "absolute", top: 0, right: 0 }}
+            />
+          )}
+        </View>
+      }
+      badge={
+        item.beamData.unreadMessages > 0 && {
+          status: "error",
+          value: item.beamData.unreadMessages.toString()
+        }
       }
       onPress={() => this.handleNavigateBeamUI(item.beamData, item.i)}
     />
   );
 
   render() {
+    console.log(this.state);
     return (
       <ImageBackground
         source={require("../images/carina-nebula-647114_640.jpg")}
@@ -92,6 +107,7 @@ class BeamCollectionScreen extends Component {
           keyExtractor={this.keyExtractor}
           data={this.state.beamCollection}
           renderItem={this.renderItem}
+          extraData={this.state}
         />
       </ImageBackground>
     );
