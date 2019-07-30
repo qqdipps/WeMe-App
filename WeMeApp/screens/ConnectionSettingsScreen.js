@@ -57,14 +57,14 @@ class SettingsScreen extends Component {
       disconnectWarning: `You will no longer be able to review notes, beam history, or send beams to ${this.props.navigation.getParam(
         "displayName",
         ""
-      )}, however this does not delete  ${this.props.navigation.getParam(
+      )}, however this does not delete ${this.props.navigation.getParam(
         "displayName",
         ""
       )}'s local beam history.`,
       deleteWarning: `You will no longer be able to review beam history for ${this.props.navigation.getParam(
         "displayName",
         ""
-      )}, however this does not delete  ${this.props.navigation.getParam(
+      )}, however this does not delete ${this.props.navigation.getParam(
         "displayName",
         ""
       )}'s local beam history.`,

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { ImageBackground, StyleSheet, View, Text } from "react-native";
 import { Overlay } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
-import AntIcon from "react-native-vector-icons/AntDesign";
 import DisplayName from "../components/DisplayName";
 import Connect from "../components/Connect";
 import Beams from "../components/Beams";
@@ -15,7 +14,8 @@ class HomeScreen extends Component {
       blurEffect: 0,
       showComponents: true,
       newConnection: { show: false },
-      displayName: ""
+      displayName: "",
+      addedToParams: false
     };
   }
 
@@ -33,7 +33,8 @@ class HomeScreen extends Component {
             color="white"
             onPress={() => {
               navigation.navigate("UserSettings", {
-                displayName: navigation.getParam("displayName", "garble")
+                displayName: navigation.getParam("displayName", ""),
+                setDisplayName: navigation.state.params.setDisplayName
               });
             }}
           />
@@ -70,10 +71,14 @@ class HomeScreen extends Component {
   };
 
   componentDidUpdate = () => {
-    if (this.state.displayName) {
-      this.props.navigation.setParams({ displayName: this.state.displayName });
-      this.setState({ displayName: undefined });
+    if (!this.state.addedToParams) {
+      this.props.navigation.setParams({
+        displayName: this.state.displayName,
+        setDisplayName: this.setDisplayName
+      });
+      this.setState({ addedToParams: true });
     }
+    console.log("Updating after new DisplayName?", this.state);
   };
 
   blurBackground = () => {
@@ -100,8 +105,11 @@ class HomeScreen extends Component {
     });
   };
 
-  setDisplayName = displayName => {
+  setDisplayName = (displayName, updated) => {
     this.setState({ displayName: displayName });
+    if (updated) {
+      this.setState({ updated: updated });
+    }
   };
 
   navigateScreen = screen => {
@@ -116,6 +124,7 @@ class HomeScreen extends Component {
   render() {
     const { schema, notify } = this.props.navigation.getScreenProps();
     const { showComponents, showOverlay, newConnection } = this.state;
+    console.log(this.state);
     return (
       <ImageBackground
         blurRadius={this.state.blurEffect}
@@ -128,6 +137,8 @@ class HomeScreen extends Component {
               schema={schema}
               notify={notify}
               setStateDisplayNameCallback={this.setDisplayName}
+              updatedDisplayName={this.state.displayName}
+              update={this.state.update}
             />
             <Connect
               style={styles.connect}

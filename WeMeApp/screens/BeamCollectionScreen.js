@@ -44,12 +44,10 @@ class BeamCollectionScreen extends Component {
       this.getBeamCollectionData();
       this.setState({ updated: true });
     }
-    console.log("COMPENET REREDNDERERE *******");
   };
 
   forceUpdate = () => {
     this.setState({ forceUpdate: !this.state.forceUpdate });
-    console.log("Force re-render?");
   };
 
   handleNavigateBeamUI = (beamData, i) => {

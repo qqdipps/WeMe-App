@@ -320,3 +320,14 @@ export function getKey(setKey, connectionId) {
     }
   );
 }
+
+export function updateUserDisplayName(displayName) {
+  Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
+    .then(realm => {
+      realm.write(() => {
+        const userSelf = realm.objects("UserSelf")[0];
+        userSelf.displayName = displayName;
+      });
+    })
+    .catch(error => console.log("Unable to update user display, realm", error));
+}
