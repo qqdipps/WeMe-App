@@ -3,6 +3,7 @@ import { StyleSheet, StatusBar } from "react-native";
 import AppNavigator from "./screens/AppNavigator";
 import { reConnectChannels } from "./functions/weMeConnections";
 import { withInAppNotification } from "react-native-in-app-notification";
+import OfflineNotice from "./components/OfflineNotice";
 
 class App extends Component {
   constructor() {
@@ -116,6 +117,7 @@ class App extends Component {
     return (
       <Fragment>
         <StatusBar barStyle="dark-content" />
+        <OfflineNotice />
         {/* <TestRealm schema={schema} /> */}
         {/* <TestAES /> */}
 
