@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { ImageBackground, StyleSheet, View, Text } from "react-native";
-import { Overlay } from "react-native-elements";
+import { ImageBackground, StyleSheet, View, Text, Image } from "react-native";
+import { Overlay, Avatar } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import DisplayName from "../components/DisplayName";
 import Connect from "../components/Connect";
@@ -206,7 +206,32 @@ class HomeScreen extends Component {
                 size={40}
                 style={styles.xIcon}
               />
-              <Text>New Connection: {newConnection.name} </Text>
+              <View
+                style={{
+                  flex: 1,
+                  height: 200
+                }}
+              >
+                <Text
+                  style={{ fontSize: 24, textAlign: "center", marginTop: 50 }}
+                >
+                  🚀 New Connection 🚀
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 28,
+                    textAlign: "center",
+                    fontWeight: "bold"
+                  }}
+                >
+                  {"\n"}
+                  {newConnection.name}
+                </Text>
+                <Text style={{ fontSize: 16, textAlign: "center" }}>
+                  {"\n"}
+                  {new Date(Date.now()).toLocaleString()}
+                </Text>
+              </View>
             </View>
           </Overlay>
         )}

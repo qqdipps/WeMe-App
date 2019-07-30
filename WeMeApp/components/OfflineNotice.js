@@ -24,7 +24,7 @@ class OfflineNotice extends Component {
   }
 
   componentWillUnmount() {
-    unsubscribe();
+    //  should add     unsubscribe(); to prevent memory leakage
   }
 
   handleConnectivityChange = connectedStatus => {
