@@ -111,6 +111,7 @@ class HomeScreen extends Component {
     if (updated) {
       this.setState({ updated: updated });
     }
+    this.setState({ addedToParams: false });
   };
 
   navigateScreen = screen => {
