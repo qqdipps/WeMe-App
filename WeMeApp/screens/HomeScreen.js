@@ -78,6 +78,7 @@ class HomeScreen extends Component {
         setDisplayName: this.setDisplayName
       });
       this.setState({ addedToParams: true });
+      setTimeout(() => {}, 1000);
     }
     console.log("Updating after new DisplayName?", this.state);
   };
@@ -151,18 +152,27 @@ class HomeScreen extends Component {
                 </Text>
               </View>
             )}
-            <Connect
-              style={styles.connect}
-              callBack={this.blurBackground}
-              text={" Connect"}
-              icon={"adduser"}
-            />
-            <Beams
-              style={styles.beams}
-              callBack={() => {
-                this.navigateScreen("BeamCollection");
+            <View
+              style={{
+                flex: 0.5,
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-around"
               }}
-            />
+            >
+              <Connect
+                style={styles.connect}
+                callBack={this.blurBackground}
+                text={" Connect"}
+                icon={"adduser"}
+              />
+              <Beams
+                style={styles.beams}
+                callBack={() => {
+                  this.navigateScreen("BeamCollection");
+                }}
+              />
+            </View>
           </View>
         )}
         {showOverlay && (
@@ -174,25 +184,34 @@ class HomeScreen extends Component {
                 size={40}
                 style={styles.xIcon}
               />
-              <Connect
-                style={styles.myButton}
-                callBack={() => {
-                  this.navigateScreen("Spawn");
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "space-around"
                 }}
-                text={" SPAWN"}
-                icon={"qrcode"}
-              />
+              >
+                <Connect
+                  style={{}}
+                  callBack={() => {
+                    this.navigateScreen("Spawn");
+                  }}
+                  text={" SPAWN"}
+                  icon={"qrcode"}
+                />
 
-              <Connect
-                style={styles.myButton}
-                callBack={() => {
-                  this.navigateScreen("Capture", {
-                    newProp: "NEW PROP"
-                  });
-                }}
-                text={" CAPTURE"}
-                icon={"scan1"}
-              />
+                <Connect
+                  style={styles.myButton}
+                  callBack={() => {
+                    this.navigateScreen("Capture", {
+                      newProp: "NEW PROP"
+                    });
+                  }}
+                  text={" CAPTURE"}
+                  icon={"scan1"}
+                />
+              </View>
             </View>
           </Overlay>
         )}
@@ -251,15 +270,21 @@ const styles = StyleSheet.create({
   beams: {
     marginBottom: -100
   },
-  connect: {},
+  connect: {
+    marginTop: -40
+  },
   overlayLayout: {
     flex: 1,
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
+    justifyContent: "space-between"
   },
-  myButton: {},
+  spawn: {
+    // marginBottom: 25
+  },
   xIcon: {
     alignSelf: "flex-end"
+    // marginBottom: -25
   },
   menuIcon: {
     marginLeft: 50

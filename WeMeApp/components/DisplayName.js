@@ -33,7 +33,6 @@ class DisplayName extends Component {
     })
       .then(realm => {
         const displayName = realm.objects("UserSelf")[0].displayName;
-        console.log("GETTING DISPLAY NAME IN REALM: ", displayName);
         this.setState({
           displayName: displayName
         });

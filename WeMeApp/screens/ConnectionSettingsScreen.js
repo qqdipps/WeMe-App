@@ -78,10 +78,6 @@ class SettingsScreen extends Component {
     };
   }
 
-  componentDidMount = () => {
-    console.log("NOTES:", this.state.notes);
-  };
-
   componentDidUpdate = () => {
     if (this.state.newDisplayName && this.state.update) {
       console.log("updating navigation params");
@@ -89,6 +85,7 @@ class SettingsScreen extends Component {
         displayName: this.state.newDisplayName
       });
       this.setState({ update: false });
+      setTimeout(() => {}, 1000);
     }
 
     if (this.state.saveAction && this.state.isSave) {

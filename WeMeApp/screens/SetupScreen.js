@@ -79,7 +79,7 @@ class SetupScreen extends Component {
             />
           )}
           {showOverlay && (
-            <Overlay isVisible height={380} overlayBackgroundColor={"#FFf0e6"}>
+            <Overlay isVisible height={380} overlayBackgroundColor={"#D0D7D7"}>
               <View style={styles.layout}>
                 <MyButton
                   style={styles.myButton}

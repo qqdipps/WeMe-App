@@ -19,7 +19,7 @@ const Beams = ({ callBack, text }) => {
         style={styles.button}
       >
         <Icon name="envelope" style={styles.buttonText}>
-          <Text style={styles.buttonText}> BEAMS</Text>
+          <Text style={styles.buttonText}>{"  "}Beams</Text>
         </Icon>
       </LinearGradient>
     </TouchableOpacity>
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     color: "black"
   },
   button: {
-    marginBottom: 50,
+    // marginBottom: 50,
     width: 250,
     borderRadius: 10,
     borderWidth: 1,

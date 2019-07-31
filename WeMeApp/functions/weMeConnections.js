@@ -120,7 +120,7 @@ const register = (channel, connectionId, displayName) => {
 
 export function listenOnChannel(channel, receiveAlert, schema, userId) {
   console.log("listening on channel", channel.topic);
-  channel.on("disconnect", msg => {
+  const disconnectRef = channel.on("disconnect", msg => {
     console.log("Disconnecting", msg);
     if (userId != msg.userId) {
       Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
@@ -129,8 +129,10 @@ export function listenOnChannel(channel, receiveAlert, schema, userId) {
             sender = realm.objectForPrimaryKey(
               "ConnectionMessages",
               msg.connectionId
-            );
+            ).sender;
+
             sender.connected = false;
+            console.log("Disconnection by sender", sender);
             addMessage(msg.connectionId, "Beam has been disconnected 🚀", true);
           });
         })
@@ -140,7 +142,7 @@ export function listenOnChannel(channel, receiveAlert, schema, userId) {
     }
   });
 
-  channel.on("shout", msg => {
+  const shoutRef = channel.on("shout", msg => {
     console.log("adding message in connections");
     if (userId != msg.userId) {
       Realm.open({ schema: schema, deleteRealmIfMigrationNeeded: true })
@@ -164,6 +166,12 @@ export function listenOnChannel(channel, receiveAlert, schema, userId) {
         });
     }
   });
+  channel.onError(() => {
+    console.log("Connection Lost *****");
+    channel.off("shout", shoutRef);
+    channel.off("disconnect", disconnectRef);
+  });
+  channel.onClose(() => console.log("the channel has gone away gracefully"));
 }
 
 export function listenForRegisteringChannel(

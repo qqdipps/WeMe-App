@@ -72,6 +72,7 @@ class App extends Component {
         userId
       );
       this.setState({ channelsSet: true });
+      setTimeout(() => {}, 1000);
     }
   }
 

@@ -100,15 +100,12 @@ class BeamUIScreen extends Component {
 
   reset = () => {
     setTimeout(resetUnreadMessages, 1000, this.state.beamData.connectionId);
-    setTimeout(console.log, 300, "hereere");
   };
 
   updateMessages = alert => {
     const { userId } = this.props.navigation.getScreenProps();
     const listenRef = this.state.channel.on("shout", msg => {
-      //     console.log("Adding message? inBEAMUI");
       if (userId !== msg.userId) {
-        console.log(this.state.key);
         decryptMessage(msg.contents, this.state.key)
           .then(message => {
             const messages = [this.readMessage(message)];

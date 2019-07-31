@@ -55,6 +55,7 @@ class SpawnScreen extends Component {
         notify
       );
       this.setState({ isSpawnComplete: true });
+      setTimeout(() => {}, 1000);
     } else {
       console.log(" error trying to update again", this.state);
     }

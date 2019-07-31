@@ -108,7 +108,6 @@ class BeamCollectionScreen extends Component {
   );
 
   render() {
-    console.log(this.state);
     return (
       <ImageBackground
         source={require("../images/carina-nebula-647114_640.jpg")}
