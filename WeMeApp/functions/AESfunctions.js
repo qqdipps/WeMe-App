@@ -10,7 +10,7 @@ export function generateKey() {
     .toString(32)
     .substring(2);
   const cost = 5000;
-  const length = 128; // 128 || 192 || 256, 256 increase ~40% runtime for generation.
+  const length = 256; // 128 || 192 || 256, 256 increase ~40% runtime for generation.
   return Aes.pbkdf2(password, salt, cost, length);
 }
 

@@ -101,8 +101,8 @@ class App extends Component {
 
   notifyDeleteHx = displayName => {
     this.props.showNotification({
-      title: "🚀 Beam History Cleared",
-      message: `for ${displayName}.`
+      title: `🚀 Beam history cleared for ${displayName}.`,
+      message: ``
     });
   };
 
@@ -113,15 +113,19 @@ class App extends Component {
     });
   };
 
+  notifyUpdate = () => {
+    this.props.showNotification({
+      title: "🚀 Settings successfully updated.",
+      message: ""
+    });
+  };
+
   render() {
     const { schema, socket, channels, userId } = this.state;
     return (
       <Fragment>
         <StatusBar barStyle="dark-content" />
         <OfflineNotice />
-        {/* <TestRealm schema={schema} /> */}
-        {/* <TestAES /> */}
-
         <AppNavigator
           screenProps={{
             schema,
@@ -134,7 +138,8 @@ class App extends Component {
             setUserId: this.setUserId,
             notify: this.notify,
             notifyDeleteHx: this.notifyDeleteHx,
-            notifyDisconnect: this.notifyDisconnect
+            notifyDisconnect: this.notifyDisconnect,
+            notifyUpdate: this.notifyUpdate
           }}
         />
       </Fragment>

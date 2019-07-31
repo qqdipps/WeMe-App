@@ -21,6 +21,7 @@ class SettingsScreen extends Component {
         <TouchableOpacity
           onPress={() => {
             this._onPressButton;
+            navigation.getScreenProps().notifyUpdate();
             navigation.state.params.setDisplayName(
               navigation.state.params.displayName,
               true
@@ -90,14 +91,14 @@ class SettingsScreen extends Component {
               </Text>
               <Text style={{ fontSize: 14 }}>
                 We believe in the personal ownership of data. It is not ours to
-                collect. No messages are stored on our servers nor read as they
-                are routed. In fact even if we or another entity wanted to read
-                them, we can not. All messages are encrypted using 256 bit AES
-                symmetrical encryption. To ensure that only you and the intended
-                recipient can read the messages a super secret key is generated
-                and stored locally on your phone. The super secret key is shared
-                through the camera via the QR code. To maintain privacy do not
-                share screenshots of your QR codes.{" "}
+                collect. No beams are stored on our servers nor read as they are
+                routed. In fact even if we or another entity wanted to read
+                them, we can not. All beams are encrypted using 256 bit AES
+                symmetrical encryption. A super secret key is generated and
+                stored locally on your phone to ensure that only you and the
+                intended recipient can read the beams. This super secret key is
+                shared through the camera via the QR code. To maintain privacy
+                do not share screenshots of your QR codes.{" "}
               </Text>
               <Text style={{ fontWeight: "bold", fontSize: 14, marginTop: 10 }}>
                 Please beam responsibly.

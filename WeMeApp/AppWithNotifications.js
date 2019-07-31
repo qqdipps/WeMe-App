@@ -5,7 +5,11 @@ import App from "./App.js";
 class AppWithNotifications extends Component {
   render() {
     return (
-      <InAppNotificationProvider>
+      <InAppNotificationProvider
+        closeInterval={2000}
+        backgroundColour={"#fff"}
+        height={55}
+      >
         <App />
       </InAppNotificationProvider>
     );

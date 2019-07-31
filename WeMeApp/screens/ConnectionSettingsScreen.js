@@ -39,6 +39,7 @@ class SettingsScreen extends Component {
           onPress={() => {
             this._onPressButton;
             navigation.state.params.saveFunction();
+            navigation.getScreenProps().notifyUpdate();
           }}
         >
           <Text style={{ color: "#fff", fontSize: 24, marginRight: 25 }}>
