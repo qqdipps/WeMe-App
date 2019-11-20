@@ -3,7 +3,7 @@ WeMe React native mobile app
 
 Have you ever felt uncomfortable when a person that you just met, asks for your phone number or social media account? You wouldn't give your address to a stranger. Don't give out your social media or phone number. Instead, use the WeMe messaging app to spawn lightning-fast connections and beam messages without compromising your privacy and safety.
 
-WeMe is an encrpyted messaging app where users connect using QR codes rather than phone numbers or social media.
+**WeMe is an encrpyted messaging app where users connect using QR codes**
 
 [Product Plan](https://gist.github.com/qqdipps/11b99b19e04908463803538ca15b2ba7)    
 [Industry Presentation](https://www.youtube.com/watch?v=nirNad86kB0&feature=youtu.be)    
